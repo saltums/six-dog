@@ -22,6 +22,7 @@ $manifestPath = Join-Path $root "data\raw-manifest.json"
 $eventsPath = Join-Path $root "data\events.json"
 $errorLogPath = Join-Path $root "data\parse-errors.log"
 $docsDataDir = Join-Path $root "docs\data"
+$correctionsPath = Join-Path $root "data\corrections.json"
 
 if (-not (Test-Path $manifestPath)) {
     throw "$manifestPath が見つかりません。先に Fetch-Snapshots.ps1 を実行してください。"
@@ -29,6 +30,23 @@ if (-not (Test-Path $manifestPath)) {
 
 $manifest = Get-Content $manifestPath -Raw -Encoding UTF8 | ConvertFrom-Json
 Write-Output "マニフェスト件数: $($manifest.Count)"
+
+# data/corrections.json: パーサーを直さなくても後から手動で直せる補正リスト
+# (演者名の除外・別名の統一)。無くても動くようフォールバックを用意する。
+$excludePerformers = New-Object 'System.Collections.Generic.HashSet[string]' ([StringComparer]::OrdinalIgnoreCase)
+$renamePerformers = @{}
+if (Test-Path $correctionsPath) {
+    $corrections = Get-Content $correctionsPath -Raw -Encoding UTF8 | ConvertFrom-Json
+    if ($corrections.excludePerformers) {
+        foreach ($n in $corrections.excludePerformers) { [void]$excludePerformers.Add($n.Trim()) }
+    }
+    if ($corrections.renamePerformers) {
+        $corrections.renamePerformers.PSObject.Properties | Where-Object { $_.Name -ne '_comment' } | ForEach-Object {
+            $renamePerformers[$_.Name] = $_.Value
+        }
+    }
+    Write-Output "補正ファイル読み込み: 除外 $($excludePerformers.Count) 件 / 別名統一 $($renamePerformers.Count) 件"
+}
 
 # ---------- ユーティリティ ----------
 
@@ -48,6 +66,9 @@ function Convert-ZenkakuDigits([string]$s) {
 
 function ConvertTo-PlainLines([string]$htmlFragment) {
     $t = $htmlFragment
+    # 2016年以降の世代はp内末尾にスライドショー画像(キャプション付き)が入っており、
+    # 出演者名と紛れるため丸ごと除去する(常にブロック末尾に出現する前提)
+    $t = [regex]::Replace($t, '<span class="bd-slide.*', '', $ROpt)
     $t = [regex]::Replace($t, '<br\s*/?>', "`n", $ROpt)
     $t = [regex]::Replace($t, '<[^>]+>', '', $ROpt)
     $t = $t -replace '&amp;', '&' -replace '&nbsp;', ' ' -replace '&quot;', '"'
@@ -57,7 +78,8 @@ function ConvertTo-PlainLines([string]$htmlFragment) {
 
 $dayLineRe = [regex]'^(\d{1,2})日\s*[\(（]([^\)）]{1,4})[\)）]\s*(.*)$'
 $openLineRe = [regex]'^OPEN\s*/\s*START\s*(.*)$'
-$advLineRe = [regex]'^adv\s*/\s*door\s*(.*)$'
+# 2016年以降の世代は "adv/door" ではなく "前売/当日" 表記になる
+$advLineRe = [regex]'^(?:adv\s*/\s*door|前売\s*/\s*当日)\s*(.*)$'
 
 function Parse-DayBlock([string[]]$lines, [int]$year, [int]$month, [hashtable]$sourceInfo, [System.Collections.Generic.List[string]]$errorLog) {
     if ($lines.Count -eq 0) { return $null }
@@ -81,8 +103,8 @@ function Parse-DayBlock([string[]]$lines, [int]$year, [int]$month, [hashtable]$s
 
         if ($mode -eq "title" -and $openLineRe.IsMatch($line)) {
             $rest = $openLineRe.Match($line).Groups[1].Value.Trim()
-            # 世代によっては "OPEN/START <時刻> adv/door <料金>" が同一行にまとまっている
-            $inlineAdv = [regex]::Match($rest, 'adv\s*/\s*door\s*(.*)$')
+            # 世代によっては "OPEN/START <時刻> adv/door(or 前売/当日) <料金>" が同一行にまとまっている
+            $inlineAdv = [regex]::Match($rest, '(?:adv\s*/\s*door|前売\s*/\s*当日)\s*(.*)$')
             if ($inlineAdv.Success) {
                 $openTimeRaw = $rest.Substring(0, $inlineAdv.Index).Trim()
                 $advRaw = $inlineAdv.Groups[1].Value.Trim()
@@ -153,6 +175,11 @@ function Parse-DayBlock([string[]]$lines, [int]$year, [int]$month, [hashtable]$s
     foreach ($pl in $performerLines) {
         foreach ($tok in ($pl -split '[/／]')) {
             $tt = $tok.Trim()
+            # "バンドA etc..." "バンドBetc...." のように"/"の前に無く末尾にくっつく
+            # "etc"(大小文字問わず、ドット任意)を除去する。除去した結果空になった
+            # トークン(元々「etc...」単体だった場合)は捨てる。
+            $tt = [regex]::Replace($tt, '(?i)\s*etc\.*\s*$', '')
+            $tt = $tt.Trim()
             if ($tt -ne '') { $performers.Add($tt) }
         }
     }
@@ -237,7 +264,8 @@ foreach ($entry in $manifest) {
     if (-not (Test-Path $filePath)) { continue }
     $html = Get-Content $filePath -Raw -Encoding UTF8
 
-    if ($html -notmatch 'OPEN\s*/\s*START' -or $html -notmatch 'adv\s*/\s*door') {
+    $hasAdvDoor = $html -match 'adv\s*/\s*door' -or $html -match '前売\s*/\s*当日'
+    if ($html -notmatch 'OPEN\s*/\s*START' -or -not $hasAdvDoor) {
         continue  # スケジュールページではない
     }
     $scannedSchedulePages++
@@ -249,6 +277,8 @@ foreach ($entry in $manifest) {
     }
 
     $h2Matches = [regex]::Matches($html, '<h2>\s*(\d{4})\s*/\s*(\d{1,2})\s*</h2>(.*?)(?=<h2>|\z)', $ROpt)
+    # 2016年以降: 月ごとの見出しではなく「MM/DD(曜) 【タイトル】」という日ごとの<h2>になる
+    $dayLevelH2Matches = [regex]::Matches($html, '<h2>\s*(\d{1,2})/(\d{1,2})\s*[\(（]([^\)）]{1,4})[\)）]\s*(?:<br\s*/?>)?\s*(?:【([^】]*)】)?\s*</h2>(.*?)(?=<h2>|\z)', $ROpt)
 
     if ($h2Matches.Count -gt 0) {
         foreach ($hm in $h2Matches) {
@@ -263,6 +293,31 @@ foreach ($entry in $manifest) {
                     $ev = Parse-DayBlock -lines $subLines -year $year -month $month -sourceInfo $sourceInfo -errorLog $errorLog
                     if ($ev) { $allEvents.Add($ev) }
                 }
+            }
+        }
+    } elseif ($dayLevelH2Matches.Count -gt 0) {
+        # ページ全体で年は共通(<h3>2016.11 SiX-DOG Schedule</h3>のような表記から取得、
+        # 無ければキャプチャのタイムスタンプの年で代用)。月と日は<h2>ごとに個別に持つ。
+        $pageYearMatch = [regex]::Match($html, '(\d{4})\s*\.\s*\d{1,2}\s*SiX-DOG\s*Schedule')
+        $pageYear = if ($pageYearMatch.Success) { [int]$pageYearMatch.Groups[1].Value } else { [int]$entry.timestamp.Substring(0, 4) }
+        $sourceInfo = $sourceInfoBase.Clone()
+        $sourceInfo.era = "day-heading"
+        foreach ($hm in $dayLevelH2Matches) {
+            # <h2>タグは "MM/DD(曜)" の順(月が先)
+            $month = [int]$hm.Groups[1].Value
+            $day = [int]$hm.Groups[2].Value
+            $weekday = $hm.Groups[3].Value
+            $titleFromHeading = $hm.Groups[4].Value.Trim()
+            $blockHtml = $hm.Groups[5].Value
+            foreach ($pInner in (Get-DayBlocks $blockHtml)) {
+                $lines = ConvertTo-PlainLines $pInner
+                if ($lines.Count -eq 0) { continue }
+                # 日付・曜日・タイトルは<h2>側にあるため、既存のParse-DayBlockが読める
+                # 「N日 (曜)タイトル」形式の先頭行を合成してから渡す(パースロジックを再利用するため)
+                $syntheticHead = "${day}日 ($weekday)$titleFromHeading"
+                $subLines = @($syntheticHead) + $lines
+                $ev = Parse-DayBlock -lines $subLines -year $pageYear -month $month -sourceInfo $sourceInfo -errorLog $errorLog
+                if ($ev) { $allEvents.Add($ev) }
             }
         }
     } else {
@@ -295,6 +350,68 @@ foreach ($g in $grouped) {
 }
 
 $finalEvents = $finalEvents | Sort-Object event_date
+
+# ---------- 出演者名の正規化(大文字小文字・空白違いによる別名扱いを統合) ----------
+# 例: "the adonis" と "THE ADONIS" が別バンド扱いになりランキングが分裂する問題を防ぐ。
+# 表記ゆれのキー(trim・全角空白→半角・連続空白圧縮・小文字化)ごとに、最も出現回数の多い
+# 表記を正式名として採用し、全イベントの出演者名をその表記に統一する。
+function Get-NormalizedPerformerKey([string]$name) {
+    $t = $name.Trim()
+    $t = $t -replace '　', ' '
+    $t = $t -replace '\s+', ' '
+    return $t.ToLowerInvariant()
+}
+
+$variantCounts = @{}
+foreach ($ev in $finalEvents) {
+    foreach ($p in $ev.performers) {
+        $key = Get-NormalizedPerformerKey $p
+        if (-not $variantCounts.ContainsKey($key)) { $variantCounts[$key] = @{} }
+        if (-not $variantCounts[$key].ContainsKey($p)) { $variantCounts[$key][$p] = 0 }
+        $variantCounts[$key][$p]++
+    }
+}
+$canonicalName = @{}
+$mergedVariantCount = 0
+foreach ($key in $variantCounts.Keys) {
+    $variants = $variantCounts[$key]
+    if ($variants.Keys.Count -gt 1) {
+        $mergedVariantCount++
+        $best = $variants.GetEnumerator() | Sort-Object -Property @{Expression = "Value"; Descending = $true }, @{Expression = "Name"; Descending = $false } | Select-Object -First 1
+        $canonicalName[$key] = $best.Name
+    } else {
+        $canonicalName[$key] = ($variants.Keys | Select-Object -First 1)
+    }
+}
+if ($mergedVariantCount -gt 0) {
+    Write-Output "出演者名の表記ゆれを統合: $mergedVariantCount 件"
+}
+foreach ($ev in $finalEvents) {
+    if ($ev.performers -and $ev.performers.Count -gt 0) {
+        $ev.performers = @($ev.performers | ForEach-Object { $canonicalName[(Get-NormalizedPerformerKey $_)] } | Select-Object -Unique)
+    }
+}
+
+# ---------- data/corrections.json の補正を適用 ----------
+$renameByKey = @{}
+foreach ($k in $renamePerformers.Keys) { $renameByKey[(Get-NormalizedPerformerKey $k)] = $renamePerformers[$k] }
+
+$excludedCount = 0
+foreach ($ev in $finalEvents) {
+    if ($ev.performers -and $ev.performers.Count -gt 0) {
+        $ev.performers = @($ev.performers | ForEach-Object {
+            $p = $_
+            $renameKey = Get-NormalizedPerformerKey $p
+            if ($renameByKey.ContainsKey($renameKey)) { $p = $renameByKey[$renameKey] }
+            $p
+        } | Where-Object {
+            if ($excludePerformers.Contains($_.Trim())) { $script:excludedCount++; $false } else { $true }
+        } | Select-Object -Unique)
+    }
+}
+if ($excludedCount -gt 0) {
+    Write-Output "補正ファイルにより除外した出演者エントリ: $excludedCount 件"
+}
 
 Write-Output "重複排除後イベント件数: $($finalEvents.Count)"
 if ($finalEvents.Count -gt 0) {

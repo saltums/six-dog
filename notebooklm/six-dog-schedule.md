@@ -1,7 +1,7 @@
 ﻿# SiX-DOG 公演履歴アーカイブ
 
 名古屋のライブハウス「SiX-DOG」の公演スケジュールを Wayback Machine のアーカイブから復元したものです。
-公演日 2011-09-01 〜 2016-02-29 / 全 521 件。
+公演日 2011-09-01 〜 2018-07-31 / 全 638 件。
 
 
 ## 2011 年
@@ -101,7 +101,7 @@
 **2011-09-19(月) — Humming Dog**
 - 時間: 時間未定
 - 料金: adv ---- / door ---- (Ｄ別)
-- 出演: ●歌童　●早織　●オノユウキ / etc...
+- 出演: ●歌童　●早織　●オノユウキ
 - 出典: [20110920144844](https://web.archive.org/web/20110920144844/http://six-dog.com:80/pg23.html)
 
 **2011-09-22(木) — 星城大学軽音イベントサークル 星の陣　Vol 1.1**
@@ -112,7 +112,7 @@
 **2011-09-23(金) — トランジットLoop 入場無料のFreeライブ!!!!お客様＆出演バンド共に お得な特典付き!!!詳しくはTOPページからアクセス!!**
 - 時間: 時間未定
 - 料金: adv ---- / door ---- (Ｄ別)
-- 出演: ●from ●UGLY SWAN　●anti rust sound / ●金田・久田・内田　●LYNX　etc....
+- 出演: ●from ●UGLY SWAN　●anti rust sound / ●金田・久田・内田　●LYNX
 - 出典: [20110920144844](https://web.archive.org/web/20110920144844/http://six-dog.com:80/pg23.html)
 
 **2011-09-24(土) — ノーリプライ×aireal tramダブル主催企画 待ったナシの5番勝負!!大運動会!!!!**
@@ -242,7 +242,7 @@
 **2013-02-10(日) — from Last live**
 - 時間: OPEN 17:00 / START 17:30
 - 料金: adv ¥1500 / door ¥1800 (Ｄ別)
-- 出演: （O.A）スロウハイツと太陽 / ごみ減量係 / honeycoming / Aireal tram / Green perch / from(解散）
+- 出演: （O.A）スロウハイツと太陽 / ごみ減量係 / honeycoming / Aireal tram / Green Perch / from(解散）
 - 出典: [20150716204746](https://web.archive.org/web/20150716204746/http://www.six-dog.com:80/pg180.html)
 
 **2013-02-11(月) — トランジットLOOP**
@@ -254,7 +254,7 @@
 **2013-02-13(水) — ドキッ☆女だらけのゲスロックフェス Vol.4～ホワイトデーは3倍返し～ ゲスチョコをプレゼントします!!!!**
 - 時間: 時間未定
 - 料金: adv ---- / door ---- (Ｄ別)
-- 出演: kugelschreiber / マゼンタ / To'day / ヤマトナデシコ大乱闘　etc......
+- 出演: kugelschreiber / マゼンタ / To'day / ヤマトナデシコ大乱闘
 - 備考: ※当日ご来場の方先着20名にゲスロックオリジナル
 - 出典: [20150716204746](https://web.archive.org/web/20150716204746/http://www.six-dog.com:80/pg180.html)
 
@@ -299,7 +299,7 @@
 **2013-02-24(日) — Final call vol.18**
 - 時間: 時間未定
 - 料金: adv ---- / door ---- (Ｄ別)
-- 出演: 3rdeR / the Untrue / amaterous / ハーシーハーギー / FULLHOUSE / テマフユン / arrow etc...
+- 出演: 3rdeR / the Untrue / amaterous / ハーシーハーギー / FULLHOUSE / テマフユン / arrow
 - 出典: [20150716204746](https://web.archive.org/web/20150716204746/http://www.six-dog.com:80/pg180.html)
 
 **2013-02-25(月) — 星城大学軽音楽部**
@@ -462,7 +462,7 @@
 **2013-03-31(日) — 店長企画　『おれとお前ならやれるだろ!! vol.1』**
 - 時間: 時間未定
 - 料金: adv ¥1500 / door ¥1800 (Ｄ別)
-- 出演: いい藍 / D.pride / スロウハイツと太陽 / Green Perch / Hirofumi oka etc...
+- 出演: いい藍 / D.pride / スロウハイツと太陽 / Green Perch / Hirofumi oka
 - 出典: [20150716204746](https://web.archive.org/web/20150716204746/http://www.six-dog.com:80/pg180.html)
 
 ### 4 月
@@ -500,7 +500,7 @@
 **2013-04-12(金) — ひろふみゅーじっく[歌は心]**
 - 時間: OPEN 17:30 / START 18:00
 - 料金: adv ¥2000 / door ¥2500 (Ｄ別)
-- 出演: 守晃 / ちえ坊 / 田中雄也 / 仙人掌人形 / 中田圭祐 / Hirofumi Oka
+- 出演: 守晃 / ちえ坊 / 田中雄也 / 仙人掌人形 / 中田圭祐 / Hirofumi oka
 - 出典: [20150716204746](https://web.archive.org/web/20150716204746/http://www.six-dog.com:80/pg180.html)
 
 **2013-04-13(土) — 宴奴Dragon vol.4 Omnibus Album『flowerring』 & move@SHaKEr.Single『動き出せ！幸せのカタチ』レコ発記念イベント in NAGOYA**
@@ -530,7 +530,7 @@
 **2013-04-18(木) — noNothing初主催企画 「Way of Life」vol.1**
 - 時間: OPEN 17:30 / START 18:00
 - 料金: adv ¥1500 / door ¥1800 (Ｄ別)
-- 出演: noNothing / わすれなぐさ / The way I am / crybabyDNA(三重) / Joker press(岐阜) / Marnie stern
+- 出演: Nonothing / わすれなぐさ / The way I am / crybabyDNA(三重) / Joker press(岐阜) / Marnie stern
 - 出典: [20150716204746](https://web.archive.org/web/20150716204746/http://www.six-dog.com:80/pg180.html)
 
 **2013-04-19(金) — Humming Dog**
@@ -590,7 +590,7 @@
 **2013-04-29(月) — Aireal tram×the adonis W主催ライブ**
 - 時間: OPEN 17:00 / START 17:30
 - 料金: adv ¥1500 / door ¥1800 (Ｄ別)
-- 出演: three out / スロウハイツと太陽 / PURPLE HUMPTY(大阪) / Half time Old / from a novel(横浜） / the adonis / Airealtram
+- 出演: Three out / スロウハイツと太陽 / PURPLE HUMPTY(大阪) / Half time Old / from a novel(横浜） / the adonis / Airealtram
 - 出典: [20150716204746](https://web.archive.org/web/20150716204746/http://www.six-dog.com:80/pg180.html)
 
 **2013-04-30(火) — BUZZ NiGHT case.5 2days!!!!**
@@ -686,7 +686,7 @@
 **2013-05-22(水) — Hello→vol.26**
 - 時間: 時間未定
 - 料金: adv ¥1000 / door ¥1000 (Ｄ別)
-- 出演: ごみ減量係 / up to you / ひーろーむー / starting crumble etc.....
+- 出演: ごみ減量係 / up to you / ひーろーむー / starting crumble
 - 出典: [20150716204746](https://web.archive.org/web/20150716204746/http://www.six-dog.com:80/pg180.html)
 
 **2013-05-25(土) — 名古屋工業大学**
@@ -716,7 +716,7 @@
 **2013-06-04(火) — 天下一演奏会**
 - 時間: 時間未定
 - 料金: adv ¥500 / door ¥500 (Ｄ別)
-- 出演: MACVES / Jackpot / りさちぃ / Pride Sounds / THE GOOD HOPE（ゲスト）
+- 出演: MACVES / Jackpot / りさちぃ / pride sounds / THE GOOD HOPE（ゲスト）
 - 出典: [20150716204746](https://web.archive.org/web/20150716204746/http://www.six-dog.com:80/pg180.html)
 
 **2013-06-05(水) — 天下一演奏会**
@@ -797,7 +797,7 @@
 **2013-06-30(日) — THERE'S NO TURNING BACK!!**
 - 時間: 時間未定
 - 料金: adv ---- / door ---- (Ｄ別)
-- 出演: THE BOY MEETS GIRLS / THE ADONIS / BARE FOOT BAKERY
+- 出演: THE BOY MEETS GIRLS / the adonis / bare foot bakery
 - 出典: [20150716204746](https://web.archive.org/web/20150716204746/http://www.six-dog.com:80/pg180.html)
 
 ### 7 月
@@ -817,13 +817,13 @@
 **2013-07-06(土) — 蟹江大作戦3days!!!!**
 - 時間: OPEN 17:00 / START 17:30
 - 料金: adv ¥1500 / door ¥1800 (Ｄ別)
-- 出演: D.pride / bare foot bakery / コウジマツモト / NeoN / the adonis / スロウハイツと太陽 etc...
+- 出演: D.pride / bare foot bakery / コウジマツモト / NeoN / the adonis / スロウハイツと太陽
 - 出典: [20150716204746](https://web.archive.org/web/20150716204746/http://www.six-dog.com:80/pg180.html)
 
 **2013-07-07(日) — 蟹江大作戦3days!!!!**
 - 時間: OPEN 16:30 / START 17:00
 - 料金: adv ¥1500 / door ¥1800 (Ｄ別)
-- 出演: Be!cont!new / ノーリプライ / synethed roar / play truant? / サムライズム(滋賀) / Green Perch / 緑黄色社会 / EARNIE FROGs
+- 出演: Be!cont!new / ノーリプライ / synethed roar / play truant? / サムライズム(滋賀) / Green Perch / 緑黄色社会 / EARNIE FROGS
 - 出典: [20150716204746](https://web.archive.org/web/20150716204746/http://www.six-dog.com:80/pg180.html)
 
 **2013-07-09(火) — Hello→vol.33**
@@ -888,7 +888,7 @@
 **2013-07-27(土) — Final call vol.29**
 - 時間: 時間未定
 - 料金: adv ---- / door ---- (Ｄ別)
-- 出演: 5'cmate / CALDERA / Green Perch / Giggly Daisy / 谷川POPゴリラ（Tokyo）etc....
+- 出演: 5'cmate / CALDERA / Green Perch / Giggly Daisy / 谷川POPゴリラ（Tokyo）
 - 出典: [20150716204746](https://web.archive.org/web/20150716204746/http://www.six-dog.com:80/pg180.html)
 
 **2013-07-28(日) — Final call vol.30**
@@ -954,7 +954,7 @@
 **2014-01-13(月) — 店長VS新ブッキングまひろ企画!! GOODBYE MORNING vol.2**
 - 時間: OPEN 16:30 / START 17:00
 - 料金: adv ¥1000 / door ¥1200 (Ｄ別)
-- 出演: ろりぽっぷ / Historic Route / Mille Feuille(大阪) / Gun Clasp Kangaroo / 高崎　太志 / room wear 980 / 街のポセイドン
+- 出演: ろりぽっぷ / Historic Route / Mille feuille(大阪) / Gun Clasp Kangaroo / 高崎　太志 / room wear 980 / 街のポセイドン
 - 出典: [20150716204746](https://web.archive.org/web/20150716204746/http://www.six-dog.com:80/pg180.html)
 
 **2014-01-17(金) — Hello→Vol.26**
@@ -983,7 +983,7 @@
 **2014-01-25(土) — honeycoming × Gun Clasp Kangaroo W主催!!**
 - 時間: OPEN 16:00 / START 16:30
 - 料金: adv ¥1500 / door ¥1800 (Ｄ別)
-- 出演: honeycoming / Gun Clasp Kangaroo / CHANNEL / 自由なき世界 / calmcalm(滋賀)　etc.....
+- 出演: honeycoming / Gun Clasp Kangaroo / CHANNEL / 自由なき世界 / calmcalm(滋賀)
 - 出典: [20150716204746](https://web.archive.org/web/20150716204746/http://www.six-dog.com:80/pg180.html)
 
 **2014-01-26(日) — 『ただいま、行ってきます‼〜僕らはここから生まれた〜』**
@@ -1048,7 +1048,7 @@
 **2014-04-12(土) — calmcalm主催ライブ**
 - 時間: 時間未定
 - 料金: adv ---- / door ---- (Ｄ別)
-- 出演: calmcalm(滋賀) / SOLITAIRE(滋賀) / 心電ズ / play truant? etc.....
+- 出演: calmcalm(滋賀) / SOLITAIRE(滋賀) / 心電ズ / play truant?
 - 出典: [20150716204746](https://web.archive.org/web/20150716204746/http://www.six-dog.com:80/pg180.html)
 
 **2014-04-13(日) — 六犬回転 vol.4 -ロッケンロール-**
@@ -1070,7 +1070,7 @@
 **2014-04-18(金) — オスメス☆メスオス タオル発売記念イベント 「DO YOU LIKE DOYOU？」**
 - 時間: OPEN 17:30 / START 18:00
 - 料金: adv ¥1500 / door ¥1800 (Ｄ別)
-- 出演: the senca / BIGショタコーン / 金谷好益(大阪) / 野沢光彦☆(大阪) / オスメス☆メスオス etc....
+- 出演: the senca / BIGショタコーン / 金谷好益(大阪) / 野沢光彦☆(大阪) / オスメス☆メスオス
 - 出典: [20150716204746](https://web.archive.org/web/20150716204746/http://www.six-dog.com:80/pg180.html)
 
 **2014-04-19(土) — ThreeOutレコ発 「君の望む理想郷」**
@@ -1123,7 +1123,7 @@
 **2014-04-27(日) — 小笠原NIGHT vol.1**
 - 時間: 時間未定
 - 料金: adv ---- / door ---- (Ｄ別)
-- 出演: the living will / Gun Clasp Kangaroo etc.....
+- 出演: the living will / Gun Clasp Kangaroo
 - 出典: [20150716204746](https://web.archive.org/web/20150716204746/http://www.six-dog.com:80/pg180.html)
 
 **2014-04-29(火) — Access All Area**
@@ -1199,7 +1199,7 @@
 **2015-01-11(月) — SiX-DOG Pre'天下一演奏会!! 2Days!!**
 - 時間: OPEN 15:00 / START 15:30
 - 料金: adv ---- / door ---- FREE!!(入場時Drink代のみ￥500-)
-- 出演: 29 / Even / Noward / Jack pot / 栗田幹大 / MACVES / 居眠りアリス / clumsy / Riot / Act1 / 【GUEST:pilot】
+- 出演: 29 / Even / Noward / Jack pot / 栗田幹大 / MACVES / 居眠りアリス / clumsy / Riot / ACT1 / 【GUEST:pilot】
 - 出典: [20150124090354](https://web.archive.org/web/20150124090354/http://www.six-dog.com:80/pg185.html)
 
 **2015-01-12(日) — 「永遠の二番手ロックフェスvol.6」**
@@ -1229,7 +1229,7 @@
 **2015-01-16(日) — SiX-DOG 9th Anniversary!!**
 - 時間: 時間未定
 - 料金: adv ¥1500 / door ¥1800 (Ｄ別)
-- 出演: anti rust sound / Hello Hillbilly / Marnie / from028 / LilyField / 灰音 / ONE×ONE(神戸)
+- 出演: anti rust sound / Hello hillbilly / Marnie / from028 / LilyField / 灰音 / ONE×ONE(神戸)
 - 出典: [20150124090410](https://web.archive.org/web/20150124090410/http://www.six-dog.com:80/pg188.html)
 
 **2015-01-17(土) — ontology circuit ‘2015’**
@@ -1241,7 +1241,7 @@
 **2015-01-18(木) — Humming Dog**
 - 時間: OPEN 18:00 / START 18:30
 - 料金: adv ¥1000 / door ¥1500 (Ｄ別)
-- 出演: イマイズミケイゴ / 高崎太志 / 小野優樹 / 早織 / Chili / サブリユキヒロ / ギロチンジョニー
+- 出演: イマイズミケイゴ / 高崎太志 / 小野優樹 / 早織 / chili / サブリユキヒロ / ギロチンジョニー
 - 出典: [20150124090415](https://web.archive.org/web/20150124090415/http://www.six-dog.com:80/pg189.html)
 
 **2015-01-19(土) — SiX-DOG PRESENTS【HOME GAME】vol.8**
@@ -1289,7 +1289,7 @@
 **2015-01-26(日) — アコースティックイベント【夢の裏側】**
 - 時間: 時間未定
 - 料金: adv ¥1500 / door ¥2000 (Ｄ別)
-- 出演: 守晃(the senca) / ケイゴ(Hello Hillbilly) / 三木正明(EARNIE FROGs) / 日比啓太(D.pride) / フジイユウキ(the livingwill) / 鬼頭大晴(Half time old) / 小野優樹(the adonis) etc... / ●バンドのボーカルによるアコースティックイベント!!夢の裏側!! / 新しい試みですので是非お見逃しなく!!
+- 出演: 守晃(the senca) / ケイゴ(Hello Hillbilly) / 三木正明(EARNIE FROGs) / 日比啓太(D.pride) / フジイユウキ(the livingwill) / 鬼頭大晴(Half time old) / 小野優樹(the adonis) / ●バンドのボーカルによるアコースティックイベント!!夢の裏側!! / 新しい試みですので是非お見逃しなく!!
 - 出典: [20150124090405](https://web.archive.org/web/20150124090405/http://www.six-dog.com:80/pg187.html)
 
 **2015-01-27(日) — SiX-DOG PRESENTS【HOME GAME】vol.13**
@@ -1308,7 +1308,7 @@
 **2015-01-29(月) — SiX-DOG Pre'【六犬大忘年会】3days!!**
 - 時間: 時間未定
 - 料金: adv ¥1000 / door ¥1500 (Drink別）
-- 出演: ATSUSHI / Sci-fi / 廣中伸也（名阪） / 金谷好益（大阪） / イマイズミケイゴ / きまたかずき(Accent Color) / ギロチンジョニー / 佐藤守晃(the senca) etc... / 100セット限定です!!￥500
+- 出演: ATSUSHI / Sci-fi / 廣中伸也（名阪） / 金谷好益（大阪） / イマイズミケイゴ / きまたかずき(Accent Color) / ギロチンジョニー / 佐藤守晃(the senca) / 100セット限定です!!￥500
 - 備考: ※六犬大忘年会限定缶バッジ&ステッカーを販売します!!
 - 出典: [20150124090415](https://web.archive.org/web/20150124090415/http://www.six-dog.com:80/pg189.html)
 
@@ -1389,7 +1389,7 @@
 **2015-02-11(月) — SiX-DOG Pre'天下一演奏会!! 2Days!!**
 - 時間: OPEN 15:00 / START 15:30
 - 料金: adv ---- / door ---- FREE!!(入場時Drink代のみ￥500-)
-- 出演: 29 / Even / Noward / Jack pot / 栗田幹大 / MACVES / 居眠りアリス / clumsy / Riot / Act1 / 【GUEST:pilot】
+- 出演: 29 / Even / Noward / Jack pot / 栗田幹大 / MACVES / 居眠りアリス / clumsy / Riot / ACT1 / 【GUEST:pilot】
 - 出典: [20150224015224](https://web.archive.org/web/20150224015224/http://www.six-dog.com:80/pg185.html)
 
 **2015-02-12(日) — 「永遠の二番手ロックフェスvol.6」**
@@ -1419,7 +1419,7 @@
 **2015-02-16(日) — SiX-DOG 9th Anniversary!!**
 - 時間: 時間未定
 - 料金: adv ¥1500 / door ¥1800 (Ｄ別)
-- 出演: anti rust sound / Hello Hillbilly / Marnie / from028 / LilyField / 灰音 / ONE×ONE(神戸)
+- 出演: anti rust sound / Hello hillbilly / Marnie / from028 / LilyField / 灰音 / ONE×ONE(神戸)
 - 出典: [20150224015240](https://web.archive.org/web/20150224015240/http://www.six-dog.com:80/pg188.html)
 
 **2015-02-17(土) — ontology circuit ‘2015’**
@@ -1431,7 +1431,7 @@
 **2015-02-18(木) — Humming Dog**
 - 時間: OPEN 18:00 / START 18:30
 - 料金: adv ¥1000 / door ¥1500 (Ｄ別)
-- 出演: イマイズミケイゴ / 高崎太志 / 小野優樹 / 早織 / Chili / サブリユキヒロ / ギロチンジョニー
+- 出演: イマイズミケイゴ / 高崎太志 / 小野優樹 / 早織 / chili / サブリユキヒロ / ギロチンジョニー
 - 出典: [20150224015245](https://web.archive.org/web/20150224015245/http://www.six-dog.com:80/pg189.html)
 
 **2015-02-19(土) — SiX-DOG PRESENTS【HOME GAME】vol.8**
@@ -1479,7 +1479,7 @@
 **2015-02-26(日) — アコースティックイベント【夢の裏側】**
 - 時間: 時間未定
 - 料金: adv ¥1500 / door ¥2000 (Ｄ別)
-- 出演: 守晃(the senca) / ケイゴ(Hello Hillbilly) / 三木正明(EARNIE FROGs) / 日比啓太(D.pride) / フジイユウキ(the livingwill) / 鬼頭大晴(Half time old) / 小野優樹(the adonis) etc... / ●バンドのボーカルによるアコースティックイベント!!夢の裏側!! / 新しい試みですので是非お見逃しなく!!
+- 出演: 守晃(the senca) / ケイゴ(Hello Hillbilly) / 三木正明(EARNIE FROGs) / 日比啓太(D.pride) / フジイユウキ(the livingwill) / 鬼頭大晴(Half time old) / 小野優樹(the adonis) / ●バンドのボーカルによるアコースティックイベント!!夢の裏側!! / 新しい試みですので是非お見逃しなく!!
 - 出典: [20150224015235](https://web.archive.org/web/20150224015235/http://www.six-dog.com:80/pg187.html)
 
 **2015-02-27(日) — SiX-DOG PRESENTS【HOME GAME】vol.13**
@@ -1558,7 +1558,7 @@
 **2015-03-12(土) — calmcalm主催ライブ**
 - 時間: 時間未定
 - 料金: adv ---- / door ---- (Ｄ別)
-- 出演: calmcalm(滋賀) / SOLITAIRE(滋賀) / 心電ズ / play truant? etc.....
+- 出演: calmcalm(滋賀) / SOLITAIRE(滋賀) / 心電ズ / play truant?
 - 出典: [20150326055916](https://web.archive.org/web/20150326055916/http://www.six-dog.com:80/pg113.html)
 
 **2015-03-13(日) — 六犬回転 vol.4 -ロッケンロール-**
@@ -1576,7 +1576,7 @@
 **2015-03-15(日) — 永遠の二番手ロックフェスpresents 『BUMP[K]NIGHT!!』**
 - 時間: OPEN 16:30 / START 17:00
 - 料金: adv ¥1000 / door ¥1500 (Ｄ別)
-- 出演: アロエ / Bamps / foundgirl / BUMP OF THE YEAR～3年連続受賞～ / DARK OF CHICKEN / 激渋BOYS&GIRLS etc...
+- 出演: アロエ / Bamps / foundgirl / BUMP OF THE YEAR～3年連続受賞～ / DARK OF CHICKEN / 激渋BOYS&GIRLS
 - 出典: [20150326055845](https://web.archive.org/web/20150326055845/http://www.six-dog.com:80/pg191.html)
 
 **2015-03-16(水) — メンテナンス**
@@ -1592,7 +1592,7 @@
 **2015-03-18(金) — オスメス☆メスオス タオル発売記念イベント 「DO YOU LIKE DOYOU？」**
 - 時間: OPEN 17:30 / START 18:00
 - 料金: adv ¥1500 / door ¥1800 (Ｄ別)
-- 出演: the senca / BIGショタコーン / 金谷好益(大阪) / 野沢光彦☆(大阪) / オスメス☆メスオス etc....
+- 出演: the senca / BIGショタコーン / 金谷好益(大阪) / 野沢光彦☆(大阪) / オスメス☆メスオス
 - 出典: [20150326055916](https://web.archive.org/web/20150326055916/http://www.six-dog.com:80/pg113.html)
 
 **2015-03-19(土) — ThreeOutレコ発 「君の望む理想郷」**
@@ -1645,13 +1645,13 @@
 **2015-03-27(日) — 小笠原NIGHT vol.1**
 - 時間: 時間未定
 - 料金: adv ---- / door ---- (Ｄ別)
-- 出演: the living will / Gun Clasp Kangaroo etc.....
+- 出演: the living will / Gun Clasp Kangaroo
 - 出典: [20150326055916](https://web.archive.org/web/20150326055916/http://www.six-dog.com:80/pg113.html)
 
 **2015-03-28(土) — Stary Dogs　～野良犬は2度鳴く～ Vol.3**
 - 時間: 時間未定
 - 料金: adv ---- / door ---- (Ｄ別)
-- 出演: Marnie etc...
+- 出演: Marnie
 - 出典: [20150326055845](https://web.archive.org/web/20150326055845/http://www.six-dog.com:80/pg191.html)
 
 **2015-03-29(火) — Access All Area**
@@ -1723,7 +1723,7 @@
 **2015-04-12(土) — calmcalm主催ライブ**
 - 時間: 時間未定
 - 料金: adv ---- / door ---- (Ｄ別)
-- 出演: calmcalm(滋賀) / SOLITAIRE(滋賀) / 心電ズ / play truant? etc.....
+- 出演: calmcalm(滋賀) / SOLITAIRE(滋賀) / 心電ズ / play truant?
 - 出典: [20150425174954](https://web.archive.org/web/20150425174954/http://www.six-dog.com:80/pg113.html)
 
 **2015-04-13(日) — 六犬回転 vol.4 -ロッケンロール-**
@@ -1741,7 +1741,7 @@
 **2015-04-15(日) — 永遠の二番手ロックフェスpresents 『BUMP[K]NIGHT!!』**
 - 時間: OPEN 16:30 / START 17:00
 - 料金: adv ¥1000 / door ¥1500 (Ｄ別)
-- 出演: アロエ / Bamps / foundgirl / BUMP OF THE YEAR～3年連続受賞～ / DARK OF CHICKEN / 激渋BOYS&GIRLS etc...
+- 出演: アロエ / Bamps / foundgirl / BUMP OF THE YEAR～3年連続受賞～ / DARK OF CHICKEN / 激渋BOYS&GIRLS
 - 出典: [20150425173426](https://web.archive.org/web/20150425173426/http://www.six-dog.com:80/pg191.html)
 
 **2015-04-16(水) — メンテナンス**
@@ -1757,7 +1757,7 @@
 **2015-04-18(金) — オスメス☆メスオス タオル発売記念イベント 「DO YOU LIKE DOYOU？」**
 - 時間: OPEN 17:30 / START 18:00
 - 料金: adv ¥1500 / door ¥1800 (Ｄ別)
-- 出演: the senca / BIGショタコーン / 金谷好益(大阪) / 野沢光彦☆(大阪) / オスメス☆メスオス etc....
+- 出演: the senca / BIGショタコーン / 金谷好益(大阪) / 野沢光彦☆(大阪) / オスメス☆メスオス
 - 出典: [20150425174954](https://web.archive.org/web/20150425174954/http://www.six-dog.com:80/pg113.html)
 
 **2015-04-19(土) — ThreeOutレコ発 「君の望む理想郷」**
@@ -1810,13 +1810,13 @@
 **2015-04-27(日) — 小笠原NIGHT vol.1**
 - 時間: 時間未定
 - 料金: adv ---- / door ---- (Ｄ別)
-- 出演: the living will / Gun Clasp Kangaroo etc.....
+- 出演: the living will / Gun Clasp Kangaroo
 - 出典: [20150425174954](https://web.archive.org/web/20150425174954/http://www.six-dog.com:80/pg113.html)
 
 **2015-04-28(土) — Stary Dogs　～野良犬は2度鳴く～ Vol.3**
 - 時間: 時間未定
 - 料金: adv ---- / door ---- (Ｄ別)
-- 出演: Marnie etc...
+- 出演: Marnie
 - 出典: [20150425173426](https://web.archive.org/web/20150425173426/http://www.six-dog.com:80/pg191.html)
 
 **2015-04-29(火) — Access All Area**
@@ -1911,7 +1911,7 @@
 **2015-05-15(日) — 永遠の二番手ロックフェスpresents 『BUMP[K]NIGHT!!』**
 - 時間: OPEN 16:30 / START 17:00
 - 料金: adv ¥1000 / door ¥1500 (Ｄ別)
-- 出演: アロエ / Bamps / foundgirl / BUMP OF THE YEAR～3年連続受賞～ / DARK OF CHICKEN / 激渋BOYS&GIRLS etc...
+- 出演: アロエ / Bamps / foundgirl / BUMP OF THE YEAR～3年連続受賞～ / DARK OF CHICKEN / 激渋BOYS&GIRLS
 - 出典: [20150526055943](https://web.archive.org/web/20150526055943/http://www.six-dog.com:80/pg191.html)
 
 **2015-05-16(水) — メンテナンス**
@@ -1927,7 +1927,7 @@
 **2015-05-18(木) — Humming Dog**
 - 時間: OPEN 18:00 / START 18:30
 - 料金: adv ¥1000 / door ¥1500 (Ｄ別)
-- 出演: イマイズミケイゴ / 高崎太志 / 小野優樹 / 早織 / Chili / サブリユキヒロ / ギロチンジョニー
+- 出演: イマイズミケイゴ / 高崎太志 / 小野優樹 / 早織 / chili / サブリユキヒロ / ギロチンジョニー
 - 出典: [20150506024829](https://web.archive.org/web/20150506024829/http://six-dog.com/pg189.html)
 
 **2015-05-19(金) — Hello→ vol.55**
@@ -1987,21 +1987,21 @@
 **2015-05-28(日) — SiX-DOG Pre'【六犬大忘年会】3days!!**
 - 時間: 時間未定
 - 料金: adv ¥1500 / door ¥2000 (Drink別）
-- 出演: COLLIE / the kinkies / ごみ減量係 / REDDOG / THE GOOD HOPE / へて春雨 / ネームライティングフィニッシュ etc... / 100セット限定です!!￥500
+- 出演: COLLIE / the kinkies / ごみ減量係 / REDDOG / THE GOOD HOPE / へて春雨 / ネームライティングフィニッシュ / 100セット限定です!!￥500
 - 備考: ※六犬大忘年会限定缶バッジ&ステッカーを販売します!!
 - 出典: [20150506024829](https://web.archive.org/web/20150506024829/http://six-dog.com/pg189.html)
 
 **2015-05-29(月) — SiX-DOG Pre'【六犬大忘年会】3days!!**
 - 時間: 時間未定
 - 料金: adv ¥1000 / door ¥1500 (Drink別）
-- 出演: ATSUSHI / Sci-fi / 廣中伸也（名阪） / 金谷好益（大阪） / イマイズミケイゴ / きまたかずき(Accent Color) / ギロチンジョニー / 佐藤守晃(the senca) etc... / 100セット限定です!!￥500
+- 出演: ATSUSHI / Sci-fi / 廣中伸也（名阪） / 金谷好益（大阪） / イマイズミケイゴ / きまたかずき(Accent Color) / ギロチンジョニー / 佐藤守晃(the senca) / 100セット限定です!!￥500
 - 備考: ※六犬大忘年会限定缶バッジ&ステッカーを販売します!!
 - 出典: [20150506024829](https://web.archive.org/web/20150506024829/http://six-dog.com/pg189.html)
 
 **2015-05-30(月) — SiX-DOG Pre'【六犬大忘年会】3days!!**
 - 時間: 時間未定
 - 料金: adv ¥1500 / door ¥2000 (Ｄ別)
-- 出演: Noward / 居眠りアリス / 緑黄色社会 / NOAH'S ARK / 高崎太志 etc.... / 100セット限定です!!￥500 / ご予約はお早めに!!
+- 出演: Noward / 居眠りアリス / 緑黄色社会 / NOAH'S ARK / 高崎太志 / 100セット限定です!!￥500 / ご予約はお早めに!!
 - 備考: ※六犬大忘年会限定缶バッジ&ステッカーを販売します!!; 今年もありがとうございました。SiX-DOG店長蟹江です。いつの年でも年末になると「もう年末かー」と嘆く人が多いですが、今年のライブ納めはSiX-DOGで締めませんか!?
 - 出典: [20150506024829](https://web.archive.org/web/20150506024829/http://six-dog.com/pg189.html)
 
@@ -2040,7 +2040,7 @@
 **2015-06-05(金) — MOLE HiLL×SiX-DOG PRESENTS 【もぐらフェス　名古屋編】**
 - 時間: OPEN 17:00 / START 17:30
 - 料金: adv ¥2000 / door ¥2500 (Ｄ別)
-- 出演: the Vases / ZOO THE ANNUAL PASSPORT / sylph emew / ReVision of Sence / Chameleon / MOLE HiLL
+- 出演: the Vases / Zoo the annual passport / sylph emew / ReVision of Sence / Chameleon / MOLE HiLL
 - 出典: [20150625063134](https://web.archive.org/web/20150625063134/http://www.six-dog.com:80/pg199.html)
 
 **2015-06-06(土) — 「HighLisk2015」 会場:名古屋市芸術創造センター／DAYTRIVE／SiX-DOG／布池セシリアホール**
@@ -2101,7 +2101,7 @@
 **2015-06-15(日) — 永遠の二番手ロックフェスpresents 『BUMP[K]NIGHT!!』**
 - 時間: OPEN 16:30 / START 17:00
 - 料金: adv ¥1000 / door ¥1500 (Ｄ別)
-- 出演: アロエ / Bamps / foundgirl / BUMP OF THE YEAR～3年連続受賞～ / DARK OF CHICKEN / 激渋BOYS&GIRLS etc...
+- 出演: アロエ / Bamps / foundgirl / BUMP OF THE YEAR～3年連続受賞～ / DARK OF CHICKEN / 激渋BOYS&GIRLS
 - 出典: [20150626072649](https://web.archive.org/web/20150626072649/http://www.six-dog.com:80/pg191.html)
 
 **2015-06-16(水) — メンテナンス**
@@ -2118,7 +2118,7 @@
 **2015-06-18(金) — オスメス☆メスオス タオル発売記念イベント 「DO YOU LIKE DOYOU？」**
 - 時間: OPEN 17:30 / START 18:00
 - 料金: adv ¥1500 / door ¥1800 (Ｄ別)
-- 出演: the senca / BIGショタコーン / 金谷好益(大阪) / 野沢光彦☆(大阪) / オスメス☆メスオス etc....
+- 出演: the senca / BIGショタコーン / 金谷好益(大阪) / 野沢光彦☆(大阪) / オスメス☆メスオス
 - 出典: [20150626054944](https://web.archive.org/web/20150626054944/http://www.six-dog.com:80/pg113.html)
 
 **2015-06-19(木) — ontology circuit2015 After Special**
@@ -2131,7 +2131,7 @@
 **2015-06-20(土) — Final call vol.65**
 - 時間: OPEN 16:30 / START 17:00
 - 料金: adv ¥1500 / door ¥2000 (Ｄ別)
-- 出演: Blind Potato Trio / LIFEWORK / Charlie / ブラウンシガーパンフレット / Green Perch / BackRush / バニーガールラブジェットコースターズ
+- 出演: Blind potato Trio / LIFEWORK / Charlie / ブラウンシガーパンフレット / Green Perch / BackRush / バニーガールラブジェットコースターズ
 - 出典: [20150625063134](https://web.archive.org/web/20150625063134/http://www.six-dog.com:80/pg199.html)
 
 **2015-06-21(月) — 新入生歓迎ライブ2014　5days!!**
@@ -2179,7 +2179,7 @@
 **2015-06-28(土) — Stary Dogs　～野良犬は2度鳴く～ Vol.3**
 - 時間: 時間未定
 - 料金: adv ---- / door ---- (Ｄ別)
-- 出演: Marnie etc...
+- 出演: Marnie
 - 出典: [20150626072649](https://web.archive.org/web/20150626072649/http://www.six-dog.com:80/pg191.html)
 
 **2015-06-29(火) — Access All Area**
@@ -2253,7 +2253,7 @@
 **2015-07-11(月) — SiX-DOG Pre'天下一演奏会!! 2Days!!**
 - 時間: OPEN 15:00 / START 15:30
 - 料金: adv ---- / door ---- FREE!!(入場時Drink代のみ￥500-)
-- 出演: 29 / Even / Noward / Jack pot / 栗田幹大 / MACVES / 居眠りアリス / clumsy / Riot / Act1 / 【GUEST:pilot】
+- 出演: 29 / Even / Noward / Jack pot / 栗田幹大 / MACVES / 居眠りアリス / clumsy / Riot / ACT1 / 【GUEST:pilot】
 - 出典: [20150719131958](https://web.archive.org/web/20150719131958/http://www.six-dog.com:80/pg185.html)
 
 **2015-07-12(日) — 「永遠の二番手ロックフェスvol.6」**
@@ -2295,7 +2295,7 @@
 **2015-07-18(木) — Humming Dog**
 - 時間: OPEN 18:00 / START 18:30
 - 料金: adv ¥1000 / door ¥1500 (Ｄ別)
-- 出演: イマイズミケイゴ / 高崎太志 / 小野優樹 / 早織 / Chili / サブリユキヒロ / ギロチンジョニー
+- 出演: イマイズミケイゴ / 高崎太志 / 小野優樹 / 早織 / chili / サブリユキヒロ / ギロチンジョニー
 - 出典: [20150717183058](https://web.archive.org/web/20150717183058/http://www.six-dog.com:80/pg189.html)
 
 **2015-07-19(土) — SiX-DOG PRESENTS【HOME GAME】vol.8**
@@ -2343,7 +2343,7 @@
 **2015-07-26(日) — アコースティックイベント【夢の裏側】**
 - 時間: 時間未定
 - 料金: adv ¥1500 / door ¥2000 (Ｄ別)
-- 出演: 守晃(the senca) / ケイゴ(Hello Hillbilly) / 三木正明(EARNIE FROGs) / 日比啓太(D.pride) / フジイユウキ(the livingwill) / 鬼頭大晴(Half time old) / 小野優樹(the adonis) etc... / ●バンドのボーカルによるアコースティックイベント!!夢の裏側!! / 新しい試みですので是非お見逃しなく!!
+- 出演: 守晃(the senca) / ケイゴ(Hello Hillbilly) / 三木正明(EARNIE FROGs) / 日比啓太(D.pride) / フジイユウキ(the livingwill) / 鬼頭大晴(Half time old) / 小野優樹(the adonis) / ●バンドのボーカルによるアコースティックイベント!!夢の裏側!! / 新しい試みですので是非お見逃しなく!!
 - 出典: [20150719072215](https://web.archive.org/web/20150719072215/http://www.six-dog.com:80/pg187.html)
 
 **2015-07-27(日) — SiX-DOG PRESENTS【HOME GAME】vol.13**
@@ -2362,7 +2362,7 @@
 **2015-07-29(月) — SiX-DOG Pre'【六犬大忘年会】3days!!**
 - 時間: 時間未定
 - 料金: adv ¥1000 / door ¥1500 (Drink別）
-- 出演: ATSUSHI / Sci-fi / 廣中伸也（名阪） / 金谷好益（大阪） / イマイズミケイゴ / きまたかずき(Accent Color) / ギロチンジョニー / 佐藤守晃(the senca) etc... / 100セット限定です!!￥500
+- 出演: ATSUSHI / Sci-fi / 廣中伸也（名阪） / 金谷好益（大阪） / イマイズミケイゴ / きまたかずき(Accent Color) / ギロチンジョニー / 佐藤守晃(the senca) / 100セット限定です!!￥500
 - 備考: ※六犬大忘年会限定缶バッジ&ステッカーを販売します!!
 - 出典: [20150717183058](https://web.archive.org/web/20150717183058/http://www.six-dog.com:80/pg189.html)
 
@@ -2383,7 +2383,7 @@
 **2015-08-05(金) — MOLE HiLL×SiX-DOG PRESENTS 【もぐらフェス　名古屋編】**
 - 時間: OPEN 17:00 / START 17:30
 - 料金: adv ¥2000 / door ¥2500 (Ｄ別)
-- 出演: the Vases / ZOO THE ANNUAL PASSPORT / sylph emew / ReVision of Sence / Chameleon / MOLE HiLL
+- 出演: the Vases / Zoo the annual passport / sylph emew / ReVision of Sence / Chameleon / MOLE HiLL
 - 出典: [20150815071353](https://web.archive.org/web/20150815071353/http://www.six-dog.com:80/pg199.html)
 
 **2015-08-06(土) — 「HighLisk2015」 会場:名古屋市芸術創造センター／DAYTRIVE／SiX-DOG／布池セシリアホール**
@@ -2447,7 +2447,7 @@
 **2015-08-20(土) — Final call vol.65**
 - 時間: OPEN 16:30 / START 17:00
 - 料金: adv ¥1500 / door ¥2000 (Ｄ別)
-- 出演: Blind Potato Trio / LIFEWORK / Charlie / ブラウンシガーパンフレット / Green Perch / BackRush / バニーガールラブジェットコースターズ
+- 出演: Blind potato Trio / LIFEWORK / Charlie / ブラウンシガーパンフレット / Green Perch / BackRush / バニーガールラブジェットコースターズ
 - 出典: [20150815071353](https://web.archive.org/web/20150815071353/http://www.six-dog.com:80/pg199.html)
 
 **2015-08-21(日) — ジェットストリームアタック!!**
@@ -2471,7 +2471,7 @@
 **2015-08-25(木) — 居眠りアリス PRESENTS**
 - 時間: OPEN 17:30 / START 18:00
 - 料金: adv ¥1500 / door ¥2000 (Ｄ別)
-- 出演: ペンギンラッシュ / bit and pieces / 平山結(リトルネロ) / Hello Hillbilly / オスメス☆メスオス / 居眠りアリス
+- 出演: ペンギンラッシュ / bit and pieces / 平山結(リトルネロ) / Hello hillbilly / オスメス☆メスオス / 居眠りアリス
 - 出典: [20150815071353](https://web.archive.org/web/20150815071353/http://www.six-dog.com:80/pg199.html)
 
 **2015-08-26(金) — 飛べるトリ PRESENTS**
@@ -2496,13 +2496,13 @@
 **2015-09-01(土) — Noward　4th Single[夕日が沈むこの街で]レコ発企画 【夕日が沈む君の街までツアー】**
 - 時間: 時間未定
 - 料金: adv ¥1500 / door ¥1800 (Ｄ別)
-- 出演: Noward / ab initio（東京） / the kinkies / THE GOOD HOPE etc....
+- 出演: Noward / ab initio（東京） / the kinkies / THE GOOD HOPE
 - 出典: [20150901194656](https://web.archive.org/web/20150901194656/http://www.six-dog.com:80/pg212.html)
 
 **2015-09-02(日) — Final call vol.63**
 - 時間: OPEN 17:30 / START 18:00
 - 料金: adv ¥1500 / door ¥1800 (Ｄ別)
-- 出演: ブラウンシガーパンフレット / あまのじゃく（大阪） / マリファナ / The 弾丸ノイズ / OneTrip
+- 出演: ブラウンシガーパンフレット / あまのじゃく（大阪） / マリファナ / The 弾丸ノイズ / OneTrip
 - 出典: [20150901194656](https://web.archive.org/web/20150901194656/http://www.six-dog.com:80/pg212.html)
 
 **2015-09-03(月) — (タイトル不明)**
@@ -2537,14 +2537,14 @@
 **2015-09-08(土) — 24時間テレビ　愛はライブハウスを救う!?**
 - 時間: 時間未定
 - 料金: adv ¥1500 / door ¥1800 (Ｄ別)
-- 出演: 野村康太 / みずたにしおり / 小泉 / ATSUSHI etc.....
+- 出演: 野村康太 / みずたにしおり / 小泉 / ATSUSHI
 - 備考: ※当日のお客様から頂いたチケットの売上は24時間テレビに募金させていただきます。
 - 出典: [20150901194656](https://web.archive.org/web/20150901194656/http://www.six-dog.com:80/pg212.html)
 
 **2015-09-09(日) — Mahiro Pre' 【Sound that begins from here】**
 - 時間: 時間未定
 - 料金: adv ¥1500 / door ¥1800 (Ｄ別)
-- 出演: 絶対領域 / 693 / 里緒 / fourtheulus / etc....
+- 出演: 絶対領域 / 693 / 里緒 / fourtheulus
 - 出典: [20150901194656](https://web.archive.org/web/20150901194656/http://www.six-dog.com:80/pg212.html)
 
 **2015-09-10(水) — 【名芸 東西大作戦！！(仮)】**
@@ -2562,13 +2562,13 @@
 **2015-09-12(金) — Hello→ vol.51**
 - 時間: OPEN 17:30 / START 18:00
 - 料金: adv ¥1000 / door ¥1500 (Ｄ別)
-- 出演: 栗田幹大 / the kinkies / ONE×ONE(神戸) / THE YUTORI-ZU / Hello Hillbilly
+- 出演: 栗田幹大 / the kinkies / ONE×ONE(神戸) / THE YUTORI-ZU / Hello hillbilly
 - 出典: [20150901194732](https://web.archive.org/web/20150901194732/http://www.six-dog.com:80/pg186.html)
 
 **2015-09-13(土) — SiX-DOG Pre' トランジットLOOP**
 - 時間: OPEN 17:00 / START 17:30
 - 料金: adv ---- / door ---- (Ｄ別)
-- 出演: 180 / The winipeg / anti rust sound / R-Ex. / Blind Potato Trio / Cannon Ball Rash!!
+- 出演: 180 / The winipeg / anti rust sound / R-Ex. / Blind potato Trio / Cannon Ball Rash!!
 - 備考: チケット代なしDrink代のみ￥500-でご入場できます。
 - 出典: [20150901194732](https://web.archive.org/web/20150901194732/http://www.six-dog.com:80/pg186.html)
 
@@ -2602,7 +2602,7 @@
 **2015-09-19(金) — Humming Dog**
 - 時間: OPEN 18:00 / START 18:30
 - 料金: adv ¥1000 / door ¥1500 (Ｄ別)
-- 出演: minor syndrome(大阪) / 堀前 恵士 / 栗田幹大 / おかひろふみ / 早織 etc.....
+- 出演: minor syndrome(大阪) / 堀前 恵士 / 栗田幹大 / おかひろふみ / 早織
 - 出典: [20150901194732](https://web.archive.org/web/20150901194732/http://www.six-dog.com:80/pg186.html)
 
 **2015-09-20(土) — Final call vol.51**
@@ -2638,7 +2638,7 @@
 **2015-09-25(木) — Hello→**
 - 時間: 時間未定
 - 料金: adv ¥1000 / door ¥1500 (Ｄ別)
-- 出演: BANGING / さわやかやまお etc....
+- 出演: BANGING / さわやかやまお
 - 出典: [20150901194732](https://web.archive.org/web/20150901194732/http://www.six-dog.com:80/pg186.html)
 
 **2015-09-26(水) — 六犬祭**
@@ -2693,7 +2693,7 @@
 **2015-10-04(土) — SiX-DOG Pre' 【Stray Dogs ～野良犬は二度鳴く～vol.5】**
 - 時間: OPEN 18:00 / START 18:30
 - 料金: adv ¥1500 / door ¥2000 (Ｄ別)
-- 出演: 宇宙宇宙宇宙宇宙(O.A) / 雲雀HeLL's / the irony(東京) / BluesNote / Hello Hillbilly
+- 出演: 宇宙宇宙宇宙宇宙(O.A) / 雲雀HeLL's / the irony(東京) / BluesNote / Hello hillbilly
 - 出典: [20151012002636](https://web.archive.org/web/20151012002636/http://www.six-dog.com:80/pg193.html)
 
 **2015-10-05(日) — Mille Feuile Pre' キミトボクノイロ vol.8**
@@ -2765,7 +2765,7 @@
 **2015-10-16(日) — SiX-DOG 9th Anniversary!!**
 - 時間: 時間未定
 - 料金: adv ¥1500 / door ¥1800 (Ｄ別)
-- 出演: anti rust sound / Hello Hillbilly / Marnie / from028 / LilyField / 灰音 / ONE×ONE(神戸)
+- 出演: anti rust sound / Hello hillbilly / Marnie / from028 / LilyField / 灰音 / ONE×ONE(神戸)
 - 出典: [20151012002624](https://web.archive.org/web/20151012002624/http://www.six-dog.com:80/pg188.html)
 
 **2015-10-17(土) — ontology circuit ‘2015’**
@@ -2777,7 +2777,7 @@
 **2015-10-18(木) — Humming Dog**
 - 時間: OPEN 18:00 / START 18:30
 - 料金: adv ¥1000 / door ¥1500 (Ｄ別)
-- 出演: イマイズミケイゴ / 高崎太志 / 小野優樹 / 早織 / Chili / サブリユキヒロ / ギロチンジョニー
+- 出演: イマイズミケイゴ / 高崎太志 / 小野優樹 / 早織 / chili / サブリユキヒロ / ギロチンジョニー
 - 出典: [20151012002629](https://web.archive.org/web/20151012002629/http://www.six-dog.com:80/pg189.html)
 
 **2015-10-19(金) — Hello→ vol.55**
@@ -2819,13 +2819,13 @@
 **2015-10-25(日) — Final call vol.58**
 - 時間: OPEN 18:00 / START 18:30
 - 料金: adv ¥1500 / door ¥2000 (Ｄ別)
-- 出演: カプチーノトラジディ / NO.XX6 / Hydromen / synesthed roar
+- 出演: カプチーノトラジディ / No.xx6 / Hydromen / synesthed roar
 - 出典: [20151011075657](https://web.archive.org/web/20151011075657/http://www.six-dog.com:80/pg190.html)
 
 **2015-10-26(日) — アコースティックイベント【夢の裏側】**
 - 時間: 時間未定
 - 料金: adv ¥1500 / door ¥2000 (Ｄ別)
-- 出演: 守晃(the senca) / ケイゴ(Hello Hillbilly) / 三木正明(EARNIE FROGs) / 日比啓太(D.pride) / フジイユウキ(the livingwill) / 鬼頭大晴(Half time old) / 小野優樹(the adonis) etc... / ●バンドのボーカルによるアコースティックイベント!!夢の裏側!! / 新しい試みですので是非お見逃しなく!!
+- 出演: 守晃(the senca) / ケイゴ(Hello Hillbilly) / 三木正明(EARNIE FROGs) / 日比啓太(D.pride) / フジイユウキ(the livingwill) / 鬼頭大晴(Half time old) / 小野優樹(the adonis) / ●バンドのボーカルによるアコースティックイベント!!夢の裏側!! / 新しい試みですので是非お見逃しなく!!
 - 出典: [20151012002619](https://web.archive.org/web/20151012002619/http://www.six-dog.com:80/pg187.html)
 
 **2015-10-27(土) — SiX-DOG Pre'【鬼のコピバンイベント】**
@@ -2837,14 +2837,14 @@
 **2015-10-28(日) — SiX-DOG Pre'【六犬大忘年会】3days!!**
 - 時間: 時間未定
 - 料金: adv ¥1500 / door ¥2000 (Drink別）
-- 出演: COLLIE / the kinkies / ごみ減量係 / REDDOG / THE GOOD HOPE / へて春雨 / ネームライティングフィニッシュ etc... / 100セット限定です!!￥500
+- 出演: COLLIE / the kinkies / ごみ減量係 / REDDOG / THE GOOD HOPE / へて春雨 / ネームライティングフィニッシュ / 100セット限定です!!￥500
 - 備考: ※六犬大忘年会限定缶バッジ&ステッカーを販売します!!
 - 出典: [20151012002629](https://web.archive.org/web/20151012002629/http://www.six-dog.com:80/pg189.html)
 
 **2015-10-29(月) — SiX-DOG Pre'【六犬大忘年会】3days!!**
 - 時間: 時間未定
 - 料金: adv ¥1000 / door ¥1500 (Drink別）
-- 出演: ATSUSHI / Sci-fi / 廣中伸也（名阪） / 金谷好益（大阪） / イマイズミケイゴ / きまたかずき(Accent Color) / ギロチンジョニー / 佐藤守晃(the senca) etc... / 100セット限定です!!￥500
+- 出演: ATSUSHI / Sci-fi / 廣中伸也（名阪） / 金谷好益（大阪） / イマイズミケイゴ / きまたかずき(Accent Color) / ギロチンジョニー / 佐藤守晃(the senca) / 100セット限定です!!￥500
 - 備考: ※六犬大忘年会限定缶バッジ&ステッカーを販売します!!
 - 出典: [20151012002629](https://web.archive.org/web/20151012002629/http://www.six-dog.com:80/pg189.html)
 
@@ -2882,13 +2882,13 @@
 **2015-11-07(水) — 名古屋バンド総会議**
 - 時間: OPEN 17:00 / START 17:30
 - 料金: adv ¥1500 / door ¥2000 (Ｄ別)
-- 出演: Noward / The 3 minutes / JellyLike / Unjustdice / しらぬい / noNothing / HelloHillbilly
+- 出演: Noward / The 3 minutes / Jellylike / Unjustdice / しらぬい / Nonothing / HelloHillbilly
 - 出典: [20151110011953](https://web.archive.org/web/20151110011953/http://www.six-dog.com:80/pg214.html)
 
 **2015-11-08(木) — Humming Dog**
 - 時間: 時間未定
 - 料金: adv ¥1000 / door ¥1500 (Ｄ別)
-- 出演: 金谷好益（大阪） / 知美 / ギロチンジョニー etc...
+- 出演: 金谷好益（大阪） / 知美 / ギロチンジョニー
 - 出典: [20151110011953](https://web.archive.org/web/20151110011953/http://www.six-dog.com:80/pg214.html)
 
 **2015-11-10(土) — Goodbye Morning vol.6**
@@ -2906,7 +2906,7 @@
 **2015-11-14(水) — CHAI Presents『ほったらかシリーズ』リリースツアー CHAIのチャイコフスキップツアー ～Меня зовут「ぴ」～**
 - 時間: OPEN 17:30 / START 18:00
 - 料金: adv ¥1500 / door ¥2000 (Ｄ別)
-- 出演: CHAI / littleneem(横浜) / Noward / NeoN / フジイユウキ
+- 出演: CHAI / littleneem(横浜) / Noward / NeoN / フジイユウキ
 - 出典: [20151110011953](https://web.archive.org/web/20151110011953/http://www.six-dog.com:80/pg214.html)
 
 **2015-11-15(木) — 『so Good!!』 ～もりあきソロアルバム【みすぼらサンディ】レコ発～**
@@ -2923,7 +2923,7 @@
 **2015-11-17(土) — Final call vol.70**
 - 時間: OPEN 17:00 / START 17:30
 - 料金: adv ¥1500 / door ¥2000 (Ｄ別)
-- 出演: ブラウンシガーパンフレット / Back Rush / THE CLIME / and chat / deadendの向こう側
+- 出演: ブラウンシガーパンフレット / Back Rush / THE CLIME / and chat / deadendの向こう側
 - 出典: [20151110011953](https://web.archive.org/web/20151110011953/http://www.six-dog.com:80/pg214.html)
 
 **2015-11-18(日) — ユアファミリア主催 "「三ツ星ポップガーデン」リリースパーティー なごや編"**
@@ -2988,19 +2988,19 @@
 **2016-02-04(水) — SiX-DOG 10th ANNIVERSARY**
 - 時間: OPEN 17:30 / START 18:00
 - 料金: adv ¥1500 / door ¥2000 (Ｄ別)
-- 出演: 海のスピカと沈むクジラ / ねぎぼうず / 萌花 / 金谷好益(大阪) / かなっぺ / フジイユウキ / 里緒
+- 出演: 海のスピカと沈むクジラ / ねぎぼうず / 萌花 / 金谷好益(大阪) / かなっぺ / フジイユウキ / 里緒
 - 出典: [20160207090517](https://web.archive.org/web/20160207090517/http://six-dog.com/pg215.html)
 
 **2016-02-06(金) — SiX-DOG 10th ANNIVERSARY**
 - 時間: OPEN 18:00 / START 18:30
 - 料金: adv ¥1500 / door ¥2000 (Ｄ別)
-- 出演: アマリリス(横浜) / REDDOG / Jellylike / Shift Control etc...
+- 出演: アマリリス(横浜) / REDDOG / Jellylike / Shift Control
 - 出典: [20160207090517](https://web.archive.org/web/20160207090517/http://six-dog.com/pg215.html)
 
 **2016-02-07(土) — SiX-DOG 10th ANNIVERSARY**
 - 時間: OPEN 17:00 / START 17:30
 - 料金: adv ¥1500 / door ¥2000 (Ｄ別)
-- 出演: ブラウンシガーパンフレット / wH / D.pride / グッドパエリア(大阪) / brimar / The Blind Potato
+- 出演: ブラウンシガーパンフレット / wH / D.pride / グッドパエリア(大阪) / brimar / The Blind Potato
 - 出典: [20160207090517](https://web.archive.org/web/20160207090517/http://six-dog.com/pg215.html)
 
 **2016-02-08(日) — SiX-DOG 10th ANNIVERSARY**
@@ -3012,7 +3012,7 @@
 **2016-02-10(火) — SiX-DOG 10th ANNIVERSARY**
 - 時間: 時間未定
 - 料金: adv ¥1500 / door ¥2000 (Ｄ別)
-- 出演: the Vasis / Labo / theULTRALEA(滋賀) / MACVES etc...
+- 出演: the Vasis / Labo / theULTRALEA(滋賀) / MACVES
 - 出典: [20160207090517](https://web.archive.org/web/20160207090517/http://six-dog.com/pg215.html)
 
 **2016-02-11(水) — SiX-DOG 10th ANNIVERSARY**
@@ -3030,7 +3030,7 @@
 **2016-02-14(土) — SiX-DOG 10th ANNIVERSARY 「横浜BAY JUNGLE×名古屋SiX-DOG周年記念交歓企画 "ジャングル犬の集い"-名古屋編-」**
 - 時間: 時間未定
 - 料金: adv ¥2000 / door ¥2500 (Ｄ別)
-- 出演: chameleon(横浜) / Aoiiii(横浜) / Aireal tram / Applehead / polypterus etc...
+- 出演: chameleon(横浜) / Aoiiii(横浜) / Aireal tram / Applehead / Polypterus
 - 出典: [20160207090517](https://web.archive.org/web/20160207090517/http://six-dog.com/pg215.html)
 
 **2016-02-15(日) — SiX-DOG 10th ANNIVERSARY 名古屋女子大学　イベント**
@@ -3065,7 +3065,7 @@
 **2016-02-23(月) — SiX-DOG 10th ANNIVERSARY**
 - 時間: OPEN 17:00 / START 17:30
 - 料金: adv ¥1500 / door ¥2000 (Ｄ別)
-- 出演: COLLIE / アオイハル(東京) / ドラマストア(大阪) / ab initio(東京) / pilot etc....
+- 出演: COLLIE / アオイハル(東京) / ドラマストア(大阪) / ab initio(東京) / pilot
 - 出典: [20160207090517](https://web.archive.org/web/20160207090517/http://six-dog.com/pg215.html)
 
 **2016-02-24(火) — SiX-DOG 10th ANNIVERSARY**
@@ -3089,7 +3089,7 @@
 **2016-02-28(土) — SiX-DOG 10th ANNIVERSARY**
 - 時間: OPEN 17:30 / START 18:00
 - 料金: adv ¥1500 / door ¥2000 (Ｄ別)
-- 出演: CHASE / monodrama(大阪) / Noward / Human Drive(東京) / Hello Hillbilly
+- 出演: CHASE / monodrama(大阪) / Noward / Human Drive(東京) / Hello hillbilly
 - 出典: [20160207090517](https://web.archive.org/web/20160207090517/http://six-dog.com/pg215.html)
 
 **2016-02-29(日) — SiX-DOG 10th ANNIVERSARY**
@@ -3097,4 +3097,699 @@
 - 料金: adv ¥1500 / door ¥2000 (Ｄ別)
 - 出演: カラノイス（大阪） / 693 / London♡Dolman / Cannon Ball Rush‼︎ / Melancholic17 / Four Leaf Clover
 - 出典: [20160207090517](https://web.archive.org/web/20160207090517/http://six-dog.com/pg215.html)
+
+### 11 月
+
+**2016-11-02(水) — SiX-DOG 11th Anniversary acoustic day**
+- 時間: OPEN 18:00 / START 18:30
+- 料金: adv ¥1500 / door ¥2000 (別途Drink代￥500-)
+- 出演: 萌花 / カイラ / ぞん(アオミドリ凸凹) / 水咲加奈(福井) / 牧 謙次郎 / ちゃるけん(東京) / 坂田穂乃花
+- 出典: [20170109060735](https://web.archive.org/web/20170109060735/http://six-dog.com:80/pg217.html)
+
+**2016-11-04(金) — SiX-DOG 11th Anniversary**
+- 時間: OPEN 17:30 / START 18:00
+- 料金: adv ¥2000 / door ¥2500 (別途Drink代￥500-)
+- 出演: Zynius / キツネアザミ / DABIDE'Sfire / The Best Averege / Zoo the annual passport
+- 出典: [20170109060735](https://web.archive.org/web/20170109060735/http://six-dog.com:80/pg217.html)
+
+**2016-11-05(土) — SiX-DOG 11th Anniversary**
+- 時間: OPEN 17:30 / START 18:00
+- 料金: adv ¥1500 / door ¥2000 (別途Drink代￥500-)
+- 出演: OverSleep / Early Delay / mandarin / Black Rip Street / ATSUSHI
+- 出典: [20170109060735](https://web.archive.org/web/20170109060735/http://six-dog.com:80/pg217.html)
+
+**2016-11-06(日) — 響宴×SiX-DOG 11th Anniversary**
+- 時間: 時間未定
+- 料金: adv ---- / door ---- (別途Drink代￥500-)
+- 出典: [20170109060735](https://web.archive.org/web/20170109060735/http://six-dog.com:80/pg217.html)
+
+**2016-11-09(水) — あいくれ＆ontology pre'×SiX-DOG 11th Anniversary**
+- 時間: OPEN 18:00 / START 18:30
+- 料金: adv ¥2000 / door ¥2500 (別途Drink代￥500-)
+- 出演: あいくれ / WAFY / INKYMAP / HEADLAMP / ThreeOut / O.A ソラネコ
+- 出典: [20170109060735](https://web.archive.org/web/20170109060735/http://six-dog.com:80/pg217.html)
+
+**2016-11-11(金) — RENT HALL**
+- 時間: 時間未定
+- 料金: adv ---- / door ---- (別途Drink代￥500-)
+- 出典: [20170109060735](https://web.archive.org/web/20170109060735/http://six-dog.com:80/pg217.html)
+
+**2016-11-12(土) — 85 10th Anniversary×SiX-DOG 11th Anniversary**
+- 時間: OPEN 16:30 / START 17:00
+- 料金: adv ¥1500 / door ¥2000 (別途Drink代￥500-)
+- 出演: 85 / カナダコイウチ / ジャップトリック / DODODＯズ / 百々川 / ＭＣ ガーベラガーデン
+- 出典: [20170109060735](https://web.archive.org/web/20170109060735/http://six-dog.com:80/pg217.html)
+
+**2016-11-13(日) — ノーリプライレコ発×SiX-DOG 11th Anniversary**
+- 時間: OPEN 15:00 / START 15:30
+- 料金: adv ¥1500 / door ¥2000 (別途Drink代￥500-)
+- 出演: Green Perch / ASREFRAIN / anClover / The Bunnygirl Love Jet Coastars / 無印良音 / anti rust sound / Triedlight / ノーリプライ
+- 出典: [20170109060735](https://web.archive.org/web/20170109060735/http://six-dog.com:80/pg217.html)
+
+**2016-11-15(火) — SiX-DOG 11th Anniversary**
+- 時間: OPEN 17:30 / START 18:00
+- 料金: adv ¥1500 / door ¥2000 (別途Drink代￥500-)
+- 出演: ソラネコ / ザ・モアイズユー(大阪) / さんかくとバツ(大阪) / キューピーズ / 栗田幹大(Jellylike)
+- 出典: [20170109060735](https://web.archive.org/web/20170109060735/http://six-dog.com:80/pg217.html)
+
+**2016-11-16(水) — SiX-DOG 11th Anniversary**
+- 時間: OPEN 17:30 / START 18:00
+- 料金: adv ¥2000 / door ¥2500 (別途Drink代￥500-)
+- 出演: 27FANCLUB / DONKEY NOSE / 佐藤守晃とブルーハワイ / Aftertalk(東京) / ペンギンラッシュ / the Tiger
+- 出典: [20170109060735](https://web.archive.org/web/20170109060735/http://six-dog.com:80/pg217.html)
+
+**2016-11-18(金) — SiX-DOG 11th Anniversary**
+- 時間: OPEN 18:30 / START 19:00
+- 料金: adv ¥1500 / door ¥2000 (別途Drink代￥500-)
+- 出演: unbacker / Last Memories / EYE OF PROVRDENCE(東京) / Long sleeper
+- 出典: [20170109060735](https://web.archive.org/web/20170109060735/http://six-dog.com:80/pg217.html)
+
+**2016-11-19(土) — SiX-DOG 11th Anniversary**
+- 時間: OPEN 17:30 / START 18:00
+- 料金: adv ¥2000 / door ¥2500 (別途Drink代￥500-)
+- 出演: Tits,Tats & Whiskers(Tokyo) / brimar / THE ROCKADELIC SUNDAY / tomoya＋ / クレイウォークス / Cannnon Ball Rush!!
+- 出典: [20170109060735](https://web.archive.org/web/20170109060735/http://six-dog.com:80/pg217.html)
+
+**2016-11-20(日) — SiX-DOG 11th Anniversary**
+- 時間: OPEN 17:30 / START 18:00
+- 料金: adv ¥2000 / door ¥2500 (別途Drink代￥500-)
+- 出演: ブラウンシガーパンフレット / the kinkies / かえる王国(東京) / YLD STRAWBERRY / pilot / CRICKET QUARTET
+- 出典: [20170109060735](https://web.archive.org/web/20170109060735/http://six-dog.com:80/pg217.html)
+
+**2016-11-22(火) — SiX-DOG 11th Anniversary**
+- 時間: OPEN 17:30 / START 18:00
+- 料金: adv ¥1500 / door ¥2000 (別途Drink代￥500-)
+- 出演: フジイユウキ(the livingwill) / ふくじわゆきち(オスメス☆メスオス) / ayaka. / 金谷好益(大阪) / chili / rui ogawa / 里緒
+- 出典: [20170109060735](https://web.archive.org/web/20170109060735/http://six-dog.com:80/pg217.html)
+
+**2016-11-24(木) — SiX-DOG 11th Anniversary**
+- 時間: OPEN 17:00 / START 17:30
+- 料金: adv ¥1500 / door ¥2000 (別途Drink代￥500-)
+- 出演: Hello hillbilly / カラノイス(大阪) / ねぎぼうず / スプラージオン(東京) / 小松沙緒里(大阪) / zipper and land / 桜井由希
+- 出典: [20170109060735](https://web.archive.org/web/20170109060735/http://six-dog.com:80/pg217.html)
+
+**2016-11-25(金) — SiX-DOG 11th Anniversary**
+- 時間: OPEN 17:30 / START 18:00
+- 料金: adv ¥2000 / door ¥2500 (別途Drink代￥500-)
+- 出演: kagonome-isin / 三輪和也(鳴ル銅鑼) / iTuca / ねぇ、忘れないでね。 / FIRE ARROW
+- 出典: [20170109060735](https://web.archive.org/web/20170109060735/http://six-dog.com:80/pg217.html)
+
+**2016-11-26(土) — SiX-DOG 11th Anniversary**
+- 時間: OPEN 17:00 / START 17:30
+- 料金: adv ¥2000 / door ¥2500 (別途Drink代￥500-)
+- 出演: オムライスシャワー / オールウェイズサンデイ / BackRush / HumanDrive(東京) / homesick / Zoo the annual passport / reckless
+- 出典: [20170109060735](https://web.archive.org/web/20170109060735/http://six-dog.com:80/pg217.html)
+
+**2016-11-27(日) — SiX-DOG 11th Anniversary**
+- 時間: OPEN 17:00 / START 17:30
+- 料金: adv ¥2000 / door ¥2500 (別途Drink代￥500-)
+- 出演: 空騒ぎメランコリニスタ / 檸檬をかじる彼女 / xenonlight / gugaguga(大阪) / Accent Color / ワスレナ / Palet
+- 出典: [20170109060735](https://web.archive.org/web/20170109060735/http://six-dog.com:80/pg217.html)
+
+**2016-11-29(火) — SiX-DOG 11th Anniversary**
+- 時間: 時間未定
+- 料金: adv ¥1500 / door ¥2000 (別途Drink代￥500-)
+- 出演: いずみ / ひなつけんた(滋賀) / 二葉 / 知美 / KIKI
+- 出典: [20170109060735](https://web.archive.org/web/20170109060735/http://six-dog.com:80/pg217.html)
+
+### 12 月
+
+**2016-12-03(土) — 名古屋学芸大学**
+- 時間: 時間未定
+- 料金: adv ---- / door ---- (別途Drink代￥500-)
+- 出典: [20170726182422](https://web.archive.org/web/20170726182422/http://six-dog.com:80/pg213.html)
+
+**2016-12-04(日) — SiX-DOG pre' [ Working Dog ]**
+- 時間: OPEN 17:00 / START 17:30
+- 料金: adv ---- / door ---- (別途Drink代￥500-)
+- 出演: カモメカモネ / The Blind Potato / LiLi lost a friend / ブラウンシガーパンフレット / 檸檬をかじる彼女 / Green Perch
+- 備考: ※ドリンク代のみ500円の入場となります。
+- 出典: [20170726182422](https://web.archive.org/web/20170726182422/http://six-dog.com:80/pg213.html)
+
+**2016-12-05(月) — オワラナイウタ**
+- 時間: OPEN 17:30 / START 18:00
+- 料金: adv ¥2000 / door ¥2500 (別途Drink代￥500-)
+- 出演: クロナガス(大阪) / Aireal tram / homesick / 東成美(群青のスピカ) / ThreeOut
+- 備考: ※12月11日の行われるShinonome Curcuit2016のチケットをお持ちの方は; 入場時に500円OFFとなります。
+- 出典: [20170726182422](https://web.archive.org/web/20170726182422/http://six-dog.com:80/pg213.html)
+
+**2016-12-07(水) — Hello→ vol,96**
+- 時間: 時間未定
+- 料金: adv ---- / door ---- (別途Drink代￥500-)
+- 出典: [20170726182422](https://web.archive.org/web/20170726182422/http://six-dog.com:80/pg213.html)
+
+**2016-12-08(木) — Hello→ vol.97**
+- 時間: OPEN 18:00 / START 18:30
+- 料金: adv ¥1500 / door ¥2000 (別途Drink代￥500-)
+- 出演: フジイユウキ / Youth walker / 愛色に染まる彼方(東京) / zipper and land
+- 出典: [20170726182422](https://web.archive.org/web/20170726182422/http://six-dog.com:80/pg213.html)
+
+**2016-12-10(土) — SiX-DOG pre' 鬼のコピバンイベント**
+- 時間: OPEN 17:30 / START 18:00
+- 料金: adv ¥500 / door ¥1000 (別途Drink代￥500-)
+- 出演: Belt Comb Bear(ベースボールベアー) / チョットムッチー(チャットモンチ―) / やっぱちょっと無理ズッキーニ(RHCP) / ヒデラメ(凛として時雨) / おじさんシャンプーレボリューション(アジカン)
+- 出典: [20170726182422](https://web.archive.org/web/20170726182422/http://six-dog.com:80/pg213.html)
+
+**2016-12-11(日) — Shinonome Circuit 2016**
+- 時間: OPEN 11:30 / START 12:15
+- 料金: adv ¥3300 / door ¥3800 (別途Drink代￥500-)
+- 出演: 鶴 / EARNIE FROGS / スロウハイツと太陽 / ThreeOut / GOOD BYE APRIL / 群青のスピカ / (thee) things as they are / PLUE / Shift Control / waybee / ポルカドットスティングレイ / nothingman / ペンギンラッシュ / ケトル / 田村友昌(tonetone) / FouFou / BOYS END SWING GIRL / ユビキタス / FOLKS / ATLANTIS AIRPORT / in da my house / WOMCADOLE / all that jaz: / Manhole New World / palitextdestroy / 久世悠喜
+- 出典: [20170726182422](https://web.archive.org/web/20170726182422/http://six-dog.com:80/pg213.html)
+
+**2016-12-15(木) — Sweetness -坂田穂乃花レコ発-**
+- 時間: OPEN 17:30 / START 18:00
+- 料金: adv ¥1500 / door ¥2000 (別途Drink代￥500-)
+- 出演: 瑞希 / アオミドリ凸凹 / 里緒 / 美紅 / 萌花 / 坂田穂乃花
+- 出典: [20170726182422](https://web.archive.org/web/20170726182422/http://six-dog.com:80/pg213.html)
+
+**2016-12-16(金) — Hello→vol.98**
+- 時間: 時間未定
+- 料金: adv ¥1500 / door ¥2000 (別途Drink代￥500-)
+- 出演: ダグアウトカヌー(東京) / Atonement / キューピーズ / homesick
+- 出典: [20170726182422](https://web.archive.org/web/20170726182422/http://six-dog.com:80/pg213.html)
+
+**2016-12-17(土) — RENT HALL**
+- 時間: 時間未定
+- 料金: adv ---- / door ---- (別途Drink代￥500-)
+- 出典: [20170726182422](https://web.archive.org/web/20170726182422/http://six-dog.com:80/pg213.html)
+
+**2016-12-20(火) — Humming Dog**
+- 時間: OPEN 18:00 / START 18:30
+- 料金: adv ¥1500 / door ¥2000 (別途Drink代￥500-)
+- 出演: 朝日椎名 / 成瀬ブルックリン(東京) / 陽 / fumica / 玖蘭
+- 出典: [20170726182422](https://web.archive.org/web/20170726182422/http://six-dog.com:80/pg213.html)
+
+**2016-12-24(土) — RENT HALL**
+- 時間: 時間未定
+- 料金: adv ---- / door ---- (別途Drink代￥500-)
+- 備考: ※一般入場できません。
+- 出典: [20170726182422](https://web.archive.org/web/20170726182422/http://six-dog.com:80/pg213.html)
+
+**2016-12-25(日) — RENT HALL**
+- 時間: 時間未定
+- 料金: adv ---- / door ---- (別途Drink代￥500-)
+- 備考: ※一般入場できません。
+- 出典: [20170726182422](https://web.archive.org/web/20170726182422/http://six-dog.com:80/pg213.html)
+
+**2016-12-28(水) — 六犬大忘年会**
+- 時間: OPEN 18:00 / START 18:30
+- 料金: adv ¥2000 / door ¥2500 (別途Drink代￥500-)
+- 出演: 里緒 / 美紅 / ayaka. / ruiogawa / カイラ
+- 出典: [20170726182422](https://web.archive.org/web/20170726182422/http://six-dog.com:80/pg213.html)
+
+**2016-12-29(木) — 六犬大忘年会**
+- 時間: OPEN 17:00 / START 17:30
+- 料金: adv ¥2000 / door ¥2500 (別途Drink代￥500-)
+- 出演: homesick / ザ・モアイズユー(大阪) / ワシヤマカズキ(Suspended 4th) / フジイユウキ / BackRush / イマイズミケイゴ(Hello hillbilly)
+- 出典: [20170726182422](https://web.archive.org/web/20170726182422/http://six-dog.com:80/pg213.html)
+
+**2016-12-30(金) — 六犬大忘年会**
+- 時間: 時間未定
+- 料金: adv ¥2000 / door ¥2500 (別途Drink代￥500-)
+- 出演: ThreeOut / 居眠りアリス / ペンギンラッシュ / Zoo the annual passport / 東成美(群青のスピカ)
+- 出典: [20170726182422](https://web.archive.org/web/20170726182422/http://six-dog.com:80/pg213.html)
+
+**2016-12-31(土) — ByeBye 2016**
+- 時間: 時間未定
+- 料金: adv ---- / door ---- (別途Drink代￥500-)
+- 備考: 今年もありがとうございました。; 来年もSiX-DOGを宜しくお願い致します。
+- 出典: [20170726182422](https://web.archive.org/web/20170726182422/http://six-dog.com:80/pg213.html)
+
+## 2017 年
+
+### 1 月
+
+**2017-01-03(火) — RENT HALL**
+- 時間: 時間未定
+- 料金: adv ---- / door ---- (別途Drink代￥500-)
+- 出典: [20170108200715](https://web.archive.org/web/20170108200715/http://six-dog.com:80/pg218.html)
+
+**2017-01-06(金) — MUSIC A HERO day1**
+- 時間: OPEN 17:30 / START 18:00
+- 料金: adv ---- / door ----
+- 備考: 前売 当日 ￥1500 ￥2000(別途Drink代￥500); 榊原 宙生(ネノコクランク) / Jellylike / アオミドリ凸凹 / 百長 / 居眠りアリス / ザ・モアイズユー(大阪); 写真展示：chili / JP / TAJITAJI / ささきまりあ / →SATOMIN← / ナツミ; フリーマーケットあり！！
+- 出典: [20170108200715](https://web.archive.org/web/20170108200715/http://six-dog.com:80/pg218.html)
+
+**2017-01-07(土) — MUSIC A HERO day2**
+- 時間: OPEN 15:00 / START 15:30
+- 料金: adv ---- / door ----
+- 備考: 前売 当日 ￥1500 ￥2000(別途Drink代￥500); Shift Control / MACVES / Aireal tram / HUMANDRIVE / HEADLAMP / ZOO THE ANNUAL PASSPORT; ライブペイント：たまゆらあいり; 写真展示：chili / JP / TAJITAJI / ささきまりあ / →SATOMIN← / ナツミ; フリーマーケットあり！！HEADLAMP Gtケイゴも特別出店！！; ザ・キャンプ　コバヤシヨウヘイによる今日の付箋展示も！
+- 出典: [20170108200715](https://web.archive.org/web/20170108200715/http://six-dog.com:80/pg218.html)
+
+**2017-01-08(日) — MUSIC A HERO　day3**
+- 時間: OPEN 17:30 / START 18:00
+- 料金: adv ---- / door ----
+- 備考: 前売 当日 ￥1500 ￥2000(別途Drink代￥500); ソラネコ / Suspended 4th / off-hands / mock heroic(千葉) / Hello Hillbilly / homesick; 写真展示：chili / JP / TAJITAJI / ささきまりあ / →SATOMIN← / ナツミ; フリーマーケットあり！！; ザ・キャンプ　コバヤシヨウヘイによる今日の付箋展示も！
+- 出典: [20170108200715](https://web.archive.org/web/20170108200715/http://six-dog.com:80/pg218.html)
+
+**2017-01-09(月) — メンテナンス**
+- 時間: 時間未定
+- 料金: adv ---- / door ---- (別途Drink代￥500-)
+- 出典: [20170108200715](https://web.archive.org/web/20170108200715/http://six-dog.com:80/pg218.html)
+
+**2017-01-11(水) — MUSIC A HERO -acoustic-**
+- 時間: OPEN 17:00 / START 17:30
+- 料金: adv ---- / door ----
+- 備考: 前売 当日 ￥2000 ￥2500(別途Drink代￥500); ねぇ、忘れないでね / 萌花 / ひなつけんた / 美紅 / さつき / もりあき / 深海知夏 / 里緒; 写真展示：chili / JP / TAJITAJI / ささきまりあ / →SATOMIN← / ナツミ; フリーマーケットあり！！
+- 出典: [20170108200715](https://web.archive.org/web/20170108200715/http://six-dog.com:80/pg218.html)
+
+**2017-01-14(土) — First appearance Vol.2**
+- 時間: OPEN 18:00 / START 18:30
+- 料金: adv ---- / door ---- (別途Drink代￥500-)
+- 出演: Early Delay / BlueBells / BlackBlank / 月刊無彩色 / 坂田穂乃花
+- 出典: [20170108200715](https://web.archive.org/web/20170108200715/http://six-dog.com:80/pg218.html)
+
+**2017-01-16(月) — xenonlight pre. [Re:chord]**
+- 時間: OPEN 18:30 / START 18:50
+- 料金: adv ¥2000 / door ¥2500 (別途Drink代￥500-)
+- 出演: Calmine / コトリノループトリノ / Applehead / xenonlight
+- 出典: [20170108200715](https://web.archive.org/web/20170108200715/http://six-dog.com:80/pg218.html)
+
+**2017-01-18(水) — メンテナンス**
+- 時間: 時間未定
+- 料金: adv ---- / door ---- (別途Drink代￥500-)
+- 出典: [20170108200715](https://web.archive.org/web/20170108200715/http://six-dog.com:80/pg218.html)
+
+**2017-01-21(土) — rain maker pre ~思い出せなくなるその日まで~ cover band live vol.2**
+- 時間: OPEN 18:00 / START 18:30
+- 料金: adv ¥1000 / door ¥1500 (別途Drink代￥500-)
+- 出演: rain maker (back number) / 瑛太の妻 (木村カエラ)
+- 出典: [20170108200715](https://web.archive.org/web/20170108200715/http://six-dog.com:80/pg218.html)
+
+**2017-01-22(日) — (タイトル不明)**
+- 時間: 時間未定
+- 料金: adv ---- / door ---- (別途Drink代￥500-)
+- 出演: いずみ / ドレミファ騒動 / リフレクトリフレイン / All over
+- 出典: [20170108200715](https://web.archive.org/web/20170108200715/http://six-dog.com:80/pg218.html)
+
+**2017-01-25(水) — (タイトル不明)**
+- 時間: 時間未定
+- 料金: adv ---- / door ---- (別途Drink代￥500-)
+- 出演: イマイズミケイゴ(HelloHillbilly) / 燦々とゆうすけ(ZOO THE ANNUAL PASSPORT) / 落合 Melancholic17 / あきたけ(hologram to chronicle) / まこと(キューピーズ)
+- 出典: [20170108200715](https://web.archive.org/web/20170108200715/http://six-dog.com:80/pg218.html)
+
+**2017-01-28(土) — RENT HALL**
+- 時間: 時間未定
+- 料金: adv ---- / door ---- (別途Drink代￥500-)
+- 出典: [20170108200715](https://web.archive.org/web/20170108200715/http://six-dog.com:80/pg218.html)
+
+**2017-01-29(日) — "潜在衝動 vol.1"**
+- 時間: OPEN 18:00 / START 18:30
+- 料金: adv ¥2000 / door ¥2500 (別途Drink代￥500-)
+- 出演: Suspended 4th / シックハック / キツネアザミ / ラスハイノペイ(O.A)
+- 出典: [20170108200715](https://web.archive.org/web/20170108200715/http://six-dog.com:80/pg218.html)
+
+**2017-01-31(火) — 里緒pre' この街で**
+- 時間: OPEN 18:00 / START 18:30
+- 料金: adv ¥1800 / door ¥2300 (別途Drink代￥500-)
+- 出演: 里緒 / ayaka. / 美紅 / コウスケ（homesick） / ケイゴ（Hello Hillbilly）
+- 出典: [20170108200715](https://web.archive.org/web/20170108200715/http://six-dog.com:80/pg218.html)
+
+### 6 月
+
+**2017-06-03(土) — Stray Dogs**
+- 時間: 時間未定
+- 料金: adv ---- / door ---- (別途Drink代￥500-)
+- 出演: The chat rocks / THE BUNNY GIRL LOVE JET COASTARS / bigaudio
+- 出典: [20170726182548](https://web.archive.org/web/20170726182548/http://six-dog.com:80/pg224.html)
+
+**2017-06-04(日) — Stray Dogs**
+- 時間: 時間未定
+- 料金: adv ---- / door ---- (別途Drink代￥500-)
+- 出演: 音童三人衆 / too much / Youth walker / NCU
+- 出典: [20170726182548](https://web.archive.org/web/20170726182548/http://six-dog.com:80/pg224.html)
+
+**2017-06-10(土) — パンフィルム～5/100秒前の景色**
+- 時間: OPEN 17:30 / START 18:00
+- 料金: adv ¥1500 / door ---- (別途Drink代￥500-)
+- 出演: ブラウンシガーパンフレット / カモメカモネ / The Blind Potato / FUZZKLAXON
+- 出典: [20170726182548](https://web.archive.org/web/20170726182548/http://six-dog.com:80/pg224.html)
+
+**2017-06-11(日) — 響宴**
+- 時間: 時間未定
+- 料金: adv ---- / door ---- (別途Drink代￥500-)
+- 出典: [20170726182548](https://web.archive.org/web/20170726182548/http://six-dog.com:80/pg224.html)
+
+**2017-06-14(水) — star lounge×SiX-DOG～名古屋編～**
+- 時間: OPEN 18:00 / START 18:30
+- 料金: adv ¥2000 / door ¥2500 (別途Drink代￥500-)
+- 出演: The Best Average / kagonome-isin / インスタントランドリー / 居眠りアリス
+- 出典: [20170726182548](https://web.archive.org/web/20170726182548/http://six-dog.com:80/pg224.html)
+
+**2017-06-16(金) — RENT HALL**
+- 時間: 時間未定
+- 料金: adv ---- / door ---- (別途Drink代￥500-)
+- 出典: [20170726182548](https://web.archive.org/web/20170726182548/http://six-dog.com:80/pg224.html)
+
+**2017-06-17(土) — おかえりグッドパエリア**
+- 時間: OPEN 17:00 / START 17:30
+- 料金: adv ¥1500 / door ¥2000 (別途Drink代￥500-)
+- 出演: グッドパエリア(大阪) / 居眠りアリス / 絶対領域 / homesick / ザ・モアイズユー(大阪) / hymn / アオボシ(大阪)
+- 出典: [20170726182548](https://web.archive.org/web/20170726182548/http://six-dog.com:80/pg224.html)
+
+**2017-06-18(日) — ROCK'N'ROLL MANIA 6**
+- 時間: OPEN 17:00 / START 17:30
+- 料金: adv ¥2500 / door ¥2500 (別途Drink代￥500-)
+- 出演: ブラジャーズ / 理科室コーヒー実験ブレンド / THE STEPHANIES / イヌガヨ / THE ZUTAZUTAZ
+- 出典: [20170726182548](https://web.archive.org/web/20170726182548/http://six-dog.com:80/pg224.html)
+
+**2017-06-22(木) — アコースティック**
+- 時間: 時間未定
+- 料金: adv ---- / door ---- (別途Drink代￥500-)
+- 出演: 深居優治 / 田中浩輔 / いずみ / きまたん
+- 出典: [20170726182548](https://web.archive.org/web/20170726182548/http://six-dog.com:80/pg224.html)
+
+**2017-06-23(金) — 〜Face to Face〜**
+- 時間: OPEN 17:00 / START 17:30
+- 料金: adv ¥1500 / door ¥2000 (別途Drink代￥500-)
+- 出演: 田中創也 / theDinonix / サツキヤマイ / PhiLiA / mock heroic / Merry Side Story
+- 出典: [20170726182548](https://web.archive.org/web/20170726182548/http://six-dog.com:80/pg224.html)
+
+**2017-06-24(土) — BACK RUSH 2nd mini album 「IGNITION COIL」レコ発ライブ 「フリーダムとかけまして安い洋服屋さんと解きます。その心はどちらもジーユーでしょう」**
+- 時間: OPEN 17:00 / START 17:30
+- 料金: adv ¥2000 / door ¥2500 (別途Drink代￥500-)
+- 出演: Cheap Necture / ちか / The Purple / N-First / 110番(東京) / クレイウォークス / Back Rush
+- 出典: [20170726182548](https://web.archive.org/web/20170726182548/http://six-dog.com:80/pg224.html)
+
+**2017-06-25(日) — 南山大学**
+- 時間: 時間未定
+- 料金: adv ---- / door ---- (別途Drink代￥500-)
+- 出典: [20170726182548](https://web.archive.org/web/20170726182548/http://six-dog.com:80/pg224.html)
+
+**2017-06-30(金) — HOME GAME前夜祭**
+- 時間: OPEN 17:30 / START 18:00
+- 料金: adv ¥2000 / door ¥2500 (別途Drink代￥500-)
+- 出演: キューピーズ / FaiRieR / ayaka. / 音童三人衆 / 多部大 / 鉛の風船
+- 出典: [20170726182548](https://web.archive.org/web/20170726182548/http://six-dog.com:80/pg224.html)
+
+### 10 月
+
+**2017-10-07(土) — SpitCore pre'**
+- 時間: OPEN 18:30 / START 19:00
+- 料金: adv ---- / door ----
+- 備考: 前売 当日 ￥1500 ￥2000-(別途Drink代￥500); Mash143 / I’mfake / クレイウォークス / SpitCore
+- 出典: [20180121031406](https://web.archive.org/web/20180121031406/http://www.six-dog.com/pg228.html)
+
+**2017-10-08(日) — Stray Dogs**
+- 時間: OPEN 17:30 / START 18:00
+- 料金: adv ---- / door ----
+- 備考: 前売 当日 ￥2000 ￥2500(別途Drink代￥500); オムライスシャワー / Kyle / THE BUNNYGIRL LOVEJETCOASTARS / big audio / wonder of hippos
+- 出典: [20180121031406](https://web.archive.org/web/20180121031406/http://www.six-dog.com/pg228.html)
+
+**2017-10-11(水) — RENT HALL**
+- 時間: 時間未定
+- 料金: adv ---- / door ----
+- 備考: 前売 当日 ￥---- ￥----(別途Drink代￥500)
+- 出典: [20180121031406](https://web.archive.org/web/20180121031406/http://www.six-dog.com/pg228.html)
+
+**2017-10-12(木) — RENT HALL**
+- 時間: 時間未定
+- 料金: adv ---- / door ---- (別途Drink代￥500-)
+- 出典: [20180121031406](https://web.archive.org/web/20180121031406/http://www.six-dog.com/pg228.html)
+
+**2017-10-14(土) — Hello→vol.108**
+- 時間: 時間未定
+- 料金: adv ---- / door ---- (別途Drink代￥500-)
+- 出演: コトノハタラズ / ブラウンシガーパンフレット / ひなつけんた / Roots Tone / Triedlight / reckless / No Smoking
+- 出典: [20180121031406](https://web.archive.org/web/20180121031406/http://www.six-dog.com/pg228.html)
+
+**2017-10-15(日) — Hello→vol.109**
+- 時間: 時間未定
+- 料金: adv ---- / door ---- (別途Drink代￥500-)
+- 出演: KiD / FiSHBORN / Haru / アクアリウム / 忍者（kagonome-isin） / 榊原宙生（ネノコクランク）
+- 出典: [20180121031406](https://web.archive.org/web/20180121031406/http://www.six-dog.com/pg228.html)
+
+**2017-10-18(水) — ゲネプロ使用**
+- 時間: 時間未定
+- 料金: adv ---- / door ---- (別途Drink代￥500-)
+- 出典: [20180121031406](https://web.archive.org/web/20180121031406/http://www.six-dog.com/pg228.html)
+
+**2017-10-19(木) — ゲネプロ使用**
+- 時間: 時間未定
+- 料金: adv ---- / door ---- (別途Drink代￥500-)
+- 出典: [20180121031406](https://web.archive.org/web/20180121031406/http://www.six-dog.com/pg228.html)
+
+**2017-10-20(金) — Hello→vol.110**
+- 時間: OPEN 17:30 / START 18:00
+- 料金: adv ¥2000 / door ¥2500 (別途Drink代￥500-)
+- 出演: 田中想也 / the heaps / WELVED VELVED / 喧騒く
+- 出典: [20180121031406](https://web.archive.org/web/20180121031406/http://www.six-dog.com/pg228.html)
+
+**2017-10-21(土) — 二番手ロックフェス**
+- 時間: OPEN 16:00 / START 16:30
+- 料金: adv ¥500 / door ¥1000 (別途Drink代￥500-)
+- 出演: GuyG's / The SALADAVORS / 魔法陣グルグル / 09!09!7188 / レッチリ / SUPER MEHER / NANIWA
+- 出典: [20180121031406](https://web.archive.org/web/20180121031406/http://www.six-dog.com/pg228.html)
+
+**2017-10-22(日) — 魔女フェスティバル vol.2**
+- 時間: OPEN 17:30 / START 18:00
+- 料金: adv ---- / door ----
+- 備考: 前売　￥2000(ワンドリンク込み); 小塩ズボン製作所 / Dark horses / MIKALEY CRUE / MAGNOLIA
+- 出典: [20180121031406](https://web.archive.org/web/20180121031406/http://www.six-dog.com/pg228.html)
+
+**2017-10-27(金) — ネコまっしぐら vol.4**
+- 時間: OPEN 18:00 / START 18:30
+- 料金: adv ¥1500 / door ¥2000 (別途Drink代￥500-)
+- 出演: TRILOGY / home sick / ザ・モアイズユー / iroiro / ソラネコ
+- 出典: [20180121031406](https://web.archive.org/web/20180121031406/http://www.six-dog.com/pg228.html)
+
+**2017-10-28(土) — RENT HALL**
+- 時間: 時間未定
+- 料金: adv ---- / door ---- (別途Drink代￥500-)
+- 出典: [20180121031406](https://web.archive.org/web/20180121031406/http://www.six-dog.com/pg228.html)
+
+**2017-10-29(日) — RENT HALL**
+- 時間: 時間未定
+- 料金: adv ---- / door ---- (別途Drink代￥500-)
+- 出典: [20180121031406](https://web.archive.org/web/20180121031406/http://www.six-dog.com/pg228.html)
+
+**2017-10-30(月) — 闇会-Acoustic-**
+- 時間: OPEN 18:30 / START 19:00
+- 料金: adv ¥2000 / door ¥2500 (別途Drink代￥500-)
+- 出演: rui ogawa / 深居優治 / 江角謙樹 / 美紅 / 里緒
+- 出典: [20180121031406](https://web.archive.org/web/20180121031406/http://www.six-dog.com/pg228.html)
+
+### 11 月
+
+**2017-11-01(水) — SiX-DOG 12th Anniversary**
+- 時間: OPEN 17:30 / START 18:00
+- 料金: adv ¥2000 / door ¥2500 (別途Drink代￥500-)
+- 出演: イマイズミケイゴ / 里緒 / Mez-zo-forte / the cibo / kagonome-isin
+- 出典: [20180121035356](https://web.archive.org/web/20180121035356/http://www.six-dog.com/pg229.html)
+
+**2017-11-04(土) — SiX-DOG 12th Anniversary**
+- 時間: 時間未定
+- 料金: adv ---- / door ---- (別途Drink代￥500-）
+- 出典: [20180121035356](https://web.archive.org/web/20180121035356/http://www.six-dog.com/pg229.html)
+
+**2017-11-05(日) — SiX-DOG 12th Anniversary**
+- 時間: OPEN 17:00 / START 17:30
+- 料金: adv ¥2000 / door ¥2500 (別途Drink代￥500-)
+- 出演: bigaudio / THE BUNNYGIRL LOVEJET COASTARS / ブラウンシガーパンフレット / anti rust sound / SpitCore / Cannon Ball Rush!!
+- 出典: [20180121035356](https://web.archive.org/web/20180121035356/http://www.six-dog.com/pg229.html)
+
+**2017-11-07(火) — SiX-DOG 12th Anniversary**
+- 時間: OPEN 17:30 / START 18:00
+- 料金: adv ¥2000 / door ¥2500 (別途Drink代￥500-)
+- 出演: 午前3時と退屈 / Manhole New World / doos / バラムバベリア / ペンギンラッシュ
+- 出典: [20180121035356](https://web.archive.org/web/20180121035356/http://www.six-dog.com/pg229.html)
+
+**2017-11-08(水) — SiX-DOG 12th Anniversary**
+- 時間: 時間未定
+- 料金: adv ---- / door ---- (別途Drink代￥500-)
+- 出典: [20180121035356](https://web.archive.org/web/20180121035356/http://www.six-dog.com/pg229.html)
+
+**2017-11-10(金) — SiX-DOG 12th Anniversary**
+- 時間: 時間未定
+- 料金: adv ---- / door ---- (別途Drink代￥500-)
+- 出典: [20180121035356](https://web.archive.org/web/20180121035356/http://www.six-dog.com/pg229.html)
+
+**2017-11-11(土) — 滋賀cocoza×新栄SiX-DOG交歓イベント 未来を担う者達 名古屋編**
+- 時間: OPEN 17:00 / START 17:30
+- 料金: adv ¥1500 / door ¥2000 (別途Drink代￥500-)
+- 出演: Time Paradox / The Dragers / Merry Side Story / 鉛の風船 / ColorsPlayArrow / Green Perch
+- 出典: [20180121035356](https://web.archive.org/web/20180121035356/http://www.six-dog.com/pg229.html)
+
+**2017-11-12(日) — 砂場サーキット**
+- 時間: 時間未定
+- 料金: adv ---- / door ---- (別途Drink代￥500-)
+- 出典: [20180121035356](https://web.archive.org/web/20180121035356/http://www.six-dog.com/pg229.html)
+
+**2017-11-16(木) — mock heroicリリースツアー　MajiでKoiする恋文ツアー 名古屋編**
+- 時間: OPEN 17:30 / START 18:00
+- 料金: adv ¥2000 / door ¥2500 (別途Drink代￥500-)
+- 出演: mock heroic / 居眠りアリス / ネノコクランク / カラノイス / 坂田穂乃花
+- 出典: [20180121035356](https://web.archive.org/web/20180121035356/http://www.six-dog.com/pg229.html)
+
+**2017-11-17(金) — 響宴×SiX-DOG 12th Anniversary**
+- 時間: OPEN 17:30 / START 18:00
+- 料金: adv ¥1000 / door ¥1500 (別途Drink代￥500-)
+- 出演: サツキヤマイ / the 4th tunnel / the heaps / キツネアザミ / 大三元 / コメント
+- 出典: [20180121035356](https://web.archive.org/web/20180121035356/http://www.six-dog.com/pg229.html)
+
+**2017-11-18(土) — DO YOU LIKE DO YOU？ PV発～嬉しくて、つい。～**
+- 時間: OPEN 17:30 / START 18:00
+- 料金: adv ¥2500 / door ¥3000 (別途Drink代￥500-)
+- 出演: オスメス☆メスオス　以外シークレット!!
+- 出典: [20180121035356](https://web.archive.org/web/20180121035356/http://www.six-dog.com/pg229.html)
+
+**2017-11-19(日) — SiX-DOG 12th Anniversary**
+- 時間: 時間未定
+- 料金: adv ---- / door ---- (別途Drink代￥500-)
+- 出演: いつかの空蝉 / the livingwill / reckless / aftertalk / SIAN / Agorophius / Triedlight
+- 出典: [20180121035356](https://web.archive.org/web/20180121035356/http://www.six-dog.com/pg229.html)
+
+**2017-11-21(火) — Humming Dog SiX-DOG 12th Anniversary**
+- 時間: 時間未定
+- 料金: adv ---- / door ---- (別途Drink代￥500-)
+- 出演: 金谷好益 / 多部大 / 田中想也 / カナダコウイチ / 栗田幹大 / あきたけ
+- 出典: [20180121035356](https://web.archive.org/web/20180121035356/http://www.six-dog.com/pg229.html)
+
+**2017-11-23(木) — SiX-DOG 12th Anniversary**
+- 時間: 時間未定
+- 料金: adv ---- / door ---- (別途Drink代￥500-)
+- 出演: コトノハタラズ / 虹とワニと40 / アクアリウム / 夜ごはんはまだ
+- 出典: [20180121035356](https://web.archive.org/web/20180121035356/http://www.six-dog.com/pg229.html)
+
+**2017-11-24(金) — SiX-DOG 12th Anniversary**
+- 時間: OPEN 17:00 / START 17:30
+- 料金: adv ¥2000 / door ¥2500 (別途Drink代￥500-)
+- 出演: deronderonderon(横浜) / 傘 / MAHOROBA / the Dinonix / ソラネコ / sheeptwarp
+- 出典: [20180121035356](https://web.archive.org/web/20180121035356/http://www.six-dog.com/pg229.html)
+
+**2017-11-25(土) — Shinonome サーキット**
+- 時間: OPEN 11:30 / START 12:00
+- 料金: adv ¥3300 / door ¥4000 (別途Drink代￥500-)
+- 出演: EARNIE FROGS / phonon / Half time Old / 群青のスピカ / Aireal tram / ShiftControl / PELICAN MEETS BLUE / ソウルフード / アルコサイト / tonetone / FouFou / ケトル / in da my house / uguis / TAKECOVER / shellfish / the unknown forecast / 久世悠喜 / WOMCADOLE / みそっかす / スロウハイツと太陽 / T / ssue / climbgrow / Half-Life / フィッシュライフ / GRAND FAMILY ORCHESTRA / reGretGirl / the quiet room / Manhole New World / オスメス☆メスオス / Zoo the annual passport / 詳しい情報はこちらから
+- 出典: [20180121035356](https://web.archive.org/web/20180121035356/http://www.six-dog.com/pg229.html)
+
+**2017-11-26(日) — SiX-DOG 12th Anniversary**
+- 時間: 時間未定
+- 料金: adv ---- / door ---- (別途Drink代￥500-)
+- 出典: [20180121035356](https://web.archive.org/web/20180121035356/http://www.six-dog.com/pg229.html)
+
+**2017-11-30(木) — SiX-DOG 12th Anniversary**
+- 時間: 時間未定
+- 料金: adv ---- / door ---- (別途Drink代￥500-)
+- 出演: homesick / postman / The Best Average / ザ・モアイズユー
+- 出典: [20180121035356](https://web.archive.org/web/20180121035356/http://www.six-dog.com/pg229.html)
+
+## 2018 年
+
+### 7 月
+
+**2018-07-01(日) — HOME GAME～kasa.ソライロブランケットリリースツアー名古屋編～**
+- 時間: OPEN 17:30 / START 18:00
+- 料金: adv ¥2000 / door ¥2500 (別途Drink代￥500-)
+- 出演: ソライロブランケット / Radicalism / 傘 / リマリッジマリッジ / キツネアザミ / プルースト / ソラネコ
+- 出典: [20180826154821](https://web.archive.org/web/20180826154821/http://six-dog.com/pg225.html)
+
+**2018-07-03(火) — ontology 5th Anniversary 番外編×HOMEGAME**
+- 時間: OPEN 18:30 / START 
+- 料金: adv ¥2300 / door ¥2800 (別途Drink代￥500-)
+- 出演: ペンギンラッシュ / 大瀧ヌーバンド / 【DJ】真路　daniky　ヒロイリフネ
+- 出典: [20180826154821](https://web.archive.org/web/20180826154821/http://six-dog.com/pg225.html)
+
+**2018-07-05(木) — HOMEGAME**
+- 時間: 時間未定
+- 料金: adv ---- / door ---- (別途Drink代￥500-)
+- 出演: KOHAKU / サツキヤマイ
+- 出典: [20180826154821](https://web.archive.org/web/20180826154821/http://six-dog.com/pg225.html)
+
+**2018-07-07(土) — HOMEGAME**
+- 時間: OPEN 17:00 / START 17:30
+- 料金: adv ¥2000 / door ¥2500 (別途Drink代￥500-)
+- 出演: ノベルスウェイ / Green Perch / bigaudio / ロボトミートロボ / The Blind Potato / Triedlight
+- 出典: [20180826154821](https://web.archive.org/web/20180826154821/http://six-dog.com/pg225.html)
+
+**2018-07-08(日) — 見放題2018～ルーキー達が名古屋で後夜祭～**
+- 時間: OPEN 17:00 / START 17:30
+- 料金: adv ¥2300 / door ¥2800 (別途Drink代￥500-)
+- 出演: アメノイロ。 / T / ssue / ヤングオオハラ / Maki / chick in wisteria / 見放題リストバンド持参で2ドリンク無料！
+- 出典: [20180826154821](https://web.archive.org/web/20180826154821/http://six-dog.com/pg225.html)
+
+**2018-07-10(火) — HOME GAME**
+- 時間: 時間未定
+- 料金: adv ---- / door ---- (別途Drink代￥500-)
+- 出典: [20180826154821](https://web.archive.org/web/20180826154821/http://six-dog.com/pg225.html)
+
+**2018-07-11(水) — HOME GAME**
+- 時間: OPEN 17:30 / START 18:00
+- 料金: adv ¥2000 / door ¥2500 (別途Drink代￥500-)
+- 出演: Mez-zo-forute / 里緒 / aint / しらぬい
+- 出典: [20180826154821](https://web.archive.org/web/20180826154821/http://six-dog.com/pg225.html)
+
+**2018-07-14(土) — でらのめサーキット**
+- 時間: 時間未定
+- 料金: adv ---- / door ---- (別途Drink代￥500-)
+- 出典: [20180826154821](https://web.archive.org/web/20180826154821/http://six-dog.com/pg225.html)
+
+**2018-07-15(日) — でらのめサーキット**
+- 時間: 時間未定
+- 料金: adv ---- / door ---- (別途Drink代￥500-)
+- 出典: [20180826154821](https://web.archive.org/web/20180826154821/http://six-dog.com/pg225.html)
+
+**2018-07-16(月) — でらのめサーキット**
+- 時間: 時間未定
+- 料金: adv ---- / door ---- (別途Drink代￥500-)
+- 出典: [20180826154821](https://web.archive.org/web/20180826154821/http://six-dog.com/pg225.html)
+
+**2018-07-19(木) — HOME GAME**
+- 時間: OPEN 18:00 / START 18:30
+- 料金: adv ¥2000 / door ¥2500 (別途Drink代￥500-)
+- 出演: Merry Sidd Story / gugaguga / merlott / コウスケ
+- 出典: [20180826154821](https://web.archive.org/web/20180826154821/http://six-dog.com/pg225.html)
+
+**2018-07-21(土) — HOME GAME×HUMANDRIVE**
+- 時間: OPEN 17:30 / START 18:00
+- 料金: adv ¥2000 / door ¥2500 (別途Drink代￥500-)
+- 出演: HUMANDRIVE / ホロ / Zoo the annual passport / マヨナカホリック / homesick / 山田あさひ
+- 出典: [20180826154821](https://web.archive.org/web/20180826154821/http://six-dog.com/pg225.html)
+
+**2018-07-22(日) — RENTHALL**
+- 時間: 時間未定
+- 料金: adv ---- / door ---- (別途Drink代￥500-)
+- 出典: [20180826154821](https://web.archive.org/web/20180826154821/http://six-dog.com/pg225.html)
+
+**2018-07-24(火) — HOME GAME アコースティック**
+- 時間: 時間未定
+- 料金: adv ---- / door ---- (別途Drink代￥500-)
+- 出演: 金谷好益 / 佐藤翼 / 美紅 / ギロチンジョニー / Ruri / えんま
+- 出典: [20180826154821](https://web.archive.org/web/20180826154821/http://six-dog.com/pg225.html)
+
+**2018-07-25(水) — HOME GAME アンプラグド**
+- 時間: OPEN 18:00 / START 18:30
+- 料金: adv ¥1000 / door ---- (別途Drink代￥500-)
+- 出演: 秋路ヒラク / 山崎広貴 / 多部大 / 重永柊弥 / 平田ゆき乃 / ayaka.
+- 出典: [20180826154821](https://web.archive.org/web/20180826154821/http://six-dog.com/pg225.html)
+
+**2018-07-26(木) — (タイトル不明)**
+- 時間: 時間未定
+- 料金: adv ---- / door ---- (別途Drink代￥500-)
+- 出演: some time's
+- 出典: [20180826154821](https://web.archive.org/web/20180826154821/http://six-dog.com/pg225.html)
+
+**2018-07-27(金) — ボクトポーリアレコ発『さよならハイティーン』×HOME GAME**
+- 時間: OPEN 17:30 / START 18:00
+- 料金: adv ¥1800 / door ¥2300 (別途Drink代￥500-)
+- 出演: はるか / Haru / Rurclara(大阪) / トリプルサンダークラッシャー / deronderonderon / ボクトポーリア
+- 出典: [20180826154821](https://web.archive.org/web/20180826154821/http://six-dog.com/pg225.html)
+
+**2018-07-28(土) — HOME GAME**
+- 時間: OPEN 17:30 / START 18:00
+- 料金: adv ¥2000 / door ¥2500 (別途Drink代￥500-)
+- 出演: the ULTRALEA / iroiro / 傘 / カモメカモネ / The Qube / クレイウォークス
+- 出典: [20180826154821](https://web.archive.org/web/20180826154821/http://six-dog.com/pg225.html)
+
+**2018-07-29(日) — Colors Play Arrow×HOME GAME**
+- 時間: OPEN 18:00 / START 18:30
+- 料金: adv ¥2000 / door ¥2500 (別途Drink代￥500-)
+- 出演: Colors Play Arrow / アクロバット少年 / フジイユウキ / asagaeri / Haru
+- 出典: [20180826154821](https://web.archive.org/web/20180826154821/http://six-dog.com/pg225.html)
+
+**2018-07-31(火) — HOME GAME**
+- 時間: OPEN 17:30 / START 18:00
+- 料金: adv ¥2000 / door ¥2500 (別途Drink代￥500-)
+- 出演: ネノコクランク / Time Paradox / MOLE HiLL / EARNIE FROGS / ザ・モイズユー / the whimsical glider
+- 出典: [20180826154821](https://web.archive.org/web/20180826154821/http://six-dog.com/pg225.html)
 
