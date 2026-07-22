@@ -119,6 +119,13 @@
           b.textContent = `出演 ${ev.performers.length}`;
           cell.appendChild(b);
         }
+        if (ev.date_confidence === "estimated") {
+          const w = document.createElement("span");
+          w.className = "badge badge-warn";
+          w.textContent = "月不明";
+          w.title = "この公演の月・年はページ更新日から推定したもので、実際とズレている可能性があります";
+          cell.appendChild(w);
+        }
         cell.addEventListener("click", () => showDetail(ev));
       }
       calGrid.appendChild(cell);
@@ -154,7 +161,7 @@
       item.type = "button";
       item.className = "list-item";
       item.innerHTML = `
-        <div class="date">${ev.event_date}</div>
+        <div class="date">${ev.event_date}${ev.date_confidence === "estimated" ? ' <span class="badge badge-warn" title="月・年は推定です">月不明</span>' : ""}</div>
         <div class="body">
           <div class="t">${escapeHtml(ev.title || "(タイトル不明)")}</div>
           <div class="p">${escapeHtml((ev.performers || []).join(" / "))}</div>
@@ -175,6 +182,7 @@
       <button class="close" aria-label="閉じる" type="button">×</button>
       <div class="detail-eyebrow">${ev.event_date}${ev.weekday ? " (" + ev.weekday + ")" : ""}</div>
       <div class="detail-title">${escapeHtml(ev.title || "(タイトル不明)")}</div>
+      ${ev.date_confidence === "estimated" ? `<div class="detail-notes">⚠ この日付の月・年は推定です。元ページに月の記載が無く、スナップショットが取得された時期から推測しているため、実際の公演日と異なる可能性があります。</div>` : ""}
       <dl class="detail-grid">
         <dt>TIME</dt><dd>${escapeHtml(timeLabel(ev.open_time, ev.start_time))}</dd>
         <dt>PRICE</dt><dd>${escapeHtml(priceLabel(ev.price_adv, ev.price_door))}${ev.price_note ? " " + escapeHtml(ev.price_note) : ""}</dd>

@@ -260,6 +260,12 @@ main {
   background: var(--venue-soft);
   color: var(--venue);
 }
+.badge-warn {
+  background: transparent;
+  border: 1px solid var(--stamp);
+  color: var(--stamp);
+  margin-left: 4px;
+}
 .cal-empty-month {
   grid-column: 1 / -1;
   text-align: center;

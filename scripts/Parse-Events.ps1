@@ -136,6 +136,11 @@ function Parse-DayBlock([string[]]$lines, [int]$year, [int]$month, [hashtable]$s
             $notes.Add($line)
             continue
         }
+        if ($line -match 'Drink代' -or $line -match '参加大学' -or $line -match '募集中' -or $line -match '発売中' -or $line -match 'コラボイベント') {
+            # "Drink代のみ￥500" "参加大学：..." のような案内文はノート扱い(出演者ではない)
+            $notes.Add($line)
+            continue
+        }
         $performerLines.Add($line)
     }
 
@@ -173,12 +178,13 @@ function Parse-DayBlock([string[]]$lines, [int]$year, [int]$month, [hashtable]$s
 
     $performers = New-Object System.Collections.Generic.List[string]
     foreach ($pl in $performerLines) {
-        foreach ($tok in ($pl -split '[/／]')) {
+        # "/"や"／"だけでなく、箇条書きの"●"で区切られている出演者リストにも対応
+        foreach ($tok in ($pl -split '[/／●]')) {
             $tt = $tok.Trim()
             # "バンドA etc..." "バンドBetc...." のように"/"の前に無く末尾にくっつく
-            # "etc"(大小文字問わず、ドット任意)を除去する。除去した結果空になった
-            # トークン(元々「etc...」単体だった場合)は捨てる。
-            $tt = [regex]::Replace($tt, '(?i)\s*etc\.*\s*$', '')
+            # "etc"(大小文字問わず、ドット任意)や "and more...." を除去する。
+            # 除去した結果空になったトークンは捨てる。
+            $tt = [regex]::Replace($tt, '(?i)\s*(etc\.*|and more\.*)\s*$', '')
             $tt = $tt.Trim()
             if ($tt -ne '') { $performers.Add($tt) }
         }
@@ -210,6 +216,12 @@ function Parse-DayBlock([string[]]$lines, [int]$year, [int]$month, [hashtable]$s
         return $null
     }
 
+    # single-month世代(ページに月見出しが無くキャプチャ日時から月を推測している)は、
+    # 「年月」が確定情報ではなく推定である旨をデータ上明示する。日にちはページ本文に
+    # 明記されているため信頼できるが、月/年はページの更新停滞により実際とズレている
+    # 可能性がある。
+    $dateConfidence = if ($sourceInfo.era -eq 'single-month') { 'estimated' } else { 'confirmed' }
+
     return [pscustomobject]@{
         event_date                = $dateStr
         weekday                   = $weekday
@@ -224,6 +236,7 @@ function Parse-DayBlock([string[]]$lines, [int]$year, [int]$month, [hashtable]$s
         source_snapshot_url       = $sourceInfo.wayback_url
         source_snapshot_timestamp = $sourceInfo.timestamp
         source_era                = $sourceInfo.era
+        date_confidence           = $dateConfidence
         field_count               = $fieldCount
     }
 }
@@ -340,22 +353,41 @@ foreach ($entry in $manifest) {
 Write-Output "スケジュールページと判定: $scannedSchedulePages 件"
 Write-Output "抽出した生イベント件数(重複含む): $($allEvents.Count)"
 
-# ---------- "single-month"世代の誤日付を除去 ----------
-# single-month世代のページには月見出しが無く、キャプチャのタイムスタンプから月を
-# 推測している。しかし更新が止まったページが同じ内容のまま何ヶ月も再クロールされる
-# ことがあり、その場合は同じ「N日」のブロックが毎回違う月として誤って解釈され、
-# 同一の公演が複数の実在しない日付ににせの形で複製されてしまう
-# (例:「12日 永遠の二番手ロックフェスvol.6」が2015-01-12/02-12/07-12/10-12の
-#  4件に化ける)。日付内の「日」と内容(曜日・タイトル・時間・料金・出演者)が完全一致し、
-# 月/年だけが異なる候補が複数あれば、同一イベントの使い回し表示とみなし、
+# ---------- 重複排除(1): event_date ごとに field_count 最大 → タイムスタンプ最新 を採用 ----------
+# 同じ日付に複数の候補がある場合は、まず「その日に実際にあった公演として一番情報が
+# 充実している候補」を先に確定させる。ここを最初にやることで、後段の「使い回し
+# コンテンツ」除去が、たまたま同じ日付に居合わせた別の本物のイベントを誤って
+# 消してしまう事故を防ぐ(下記参照)。
+
+$grouped = $allEvents | Group-Object event_date
+$finalEvents = New-Object System.Collections.Generic.List[object]
+foreach ($g in $grouped) {
+    $best = $g.Group | Sort-Object -Property @{Expression = "field_count"; Descending = $true }, @{Expression = "source_snapshot_timestamp"; Descending = $true } | Select-Object -First 1
+    $finalEvents.Add($best)
+}
+
+# ---------- 重複排除(2): 使い回しコンテンツによる誤日付を除去(全世代共通) ----------
+# ページの更新が止まっているのに同じ内容のまま何度も再クロールされることがある。
+# single-month世代(月見出しが無くキャプチャのタイムスタンプから月を推測)ではその
+# たびに違う月と誤解釈され、accordion世代(明示的な月見出しあり)でも「今後6ヶ月分」の
+# 表示に古い未更新の月がそのまま含まれ続けることで、同じ公演が複数の月に渡って
+# 重複表示される(例:「ThreeOutレコ発『君の望む理想郷』」が2014年4月〜2015年6月の
+# 毎月19日、計7件に化ける)。日付内の「日」と内容(曜日・タイトル・時間・料金・出演者)が
+# 完全一致し、月/年だけが異なる候補が複数あれば同一公演の使い回し表示とみなし、
 # 最も古いキャプチャによる推定日付のものだけを残す。
+#
+# 重複排除(1)の"後"にこれを行うのがポイント: 先にevent_dateごとの本物の勝者を決めて
+# あるので、使い回し候補の中に「たまたま同じ日付に本当に別のイベントがあった」ケースが
+# 混ざっていても、その日付の枠は既に本物のイベントに確定済みであり、使い回し候補は
+# その日付では最初から負けている(=このグループに含まれない)。よって、たまたま
+# 別イベントと同日になった使い回し候補を誤って"正式代表"に選んでしまうことがない。
 function Get-ContentFingerprint($ev) {
     return (@($ev.weekday, $ev.title, $ev.open_time, $ev.start_time, $ev.price_adv, $ev.price_door, ($ev.performers -join '|')) -join '::')
 }
 
 $staleGroups = @{}
-foreach ($ev in $allEvents) {
-    if ($ev.source_era -ne 'single-month' -or -not $ev.title) { continue }
+foreach ($ev in $finalEvents) {
+    if (-not $ev.title) { continue }
     $dayOfMonth = $ev.event_date.Substring(8, 2)
     $key = "$dayOfMonth::" + (Get-ContentFingerprint $ev)
     if (-not $staleGroups.ContainsKey($key)) { $staleGroups[$key] = New-Object System.Collections.Generic.List[object] }
@@ -373,22 +405,17 @@ foreach ($key in $staleGroups.Keys) {
             if ($e.event_date -ne $keepDate) {
                 [void]$dropSet.Add($e)
                 $staleDropCount++
+            } else {
+                # 生き残った代表も、複数月にまたがる使い回しから選んだ「最古のキャプチャに
+                # よる推定」でしかないため、世代によらず月不明扱いにする
+                $e.date_confidence = 'estimated'
             }
         }
     }
 }
 if ($staleDropCount -gt 0) {
-    Write-Output "月見出しの無いページの使い回しコンテンツによる誤日付を除去: $staleDropCount 件"
-    $allEvents = @($allEvents | Where-Object { -not $dropSet.Contains($_) })
-}
-
-# ---------- 重複排除: event_date ごとに field_count 最大 → タイムスタンプ最新 を採用 ----------
-
-$grouped = $allEvents | Group-Object event_date
-$finalEvents = New-Object System.Collections.Generic.List[object]
-foreach ($g in $grouped) {
-    $best = $g.Group | Sort-Object -Property @{Expression = "field_count"; Descending = $true }, @{Expression = "source_snapshot_timestamp"; Descending = $true } | Select-Object -First 1
-    $finalEvents.Add($best)
+    Write-Output "使い回しコンテンツによる誤日付を除去: $staleDropCount 件"
+    $finalEvents = @($finalEvents | Where-Object { -not $dropSet.Contains($_) })
 }
 
 $finalEvents = $finalEvents | Sort-Object event_date

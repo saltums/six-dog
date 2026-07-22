@@ -228,7 +228,7 @@
       row.className = "drilldown-item";
       const d = document.createElement("span");
       d.className = "d";
-      d.textContent = ev.event_date;
+      d.textContent = ev.event_date + (ev.date_confidence === "estimated" ? " (月不明)" : "");
       const a = document.createElement("a");
       a.href = ev.source_snapshot_url;
       a.target = "_blank";
@@ -256,7 +256,11 @@
         return scoped.filter(ev => ev.event_date.slice(5, 7) === mm).length;
       });
       labels = Array.from({ length: 12 }, (_, m) => `${m + 1}月`);
+      const estimatedCount = scoped.filter(ev => ev.date_confidence === "estimated").length;
       subtitle = `${selectedYear}年の月別公演数`;
+      if (estimatedCount > 0) {
+        subtitle += ` — うち${estimatedCount}件は月が推定値(⚠月不明)のため実際とズレている可能性あり`;
+      }
     }
     trendSubEl.textContent = subtitle;
 
