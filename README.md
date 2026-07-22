@@ -16,8 +16,10 @@ data/
   raw-manifest.json       取得したスナップショットの一覧(URL・タイムスタンプ・保存先)
   events.json             正規化済みイベントデータ(唯一のソース)
   parse-errors.log        パースできなかった行のログ
+  corrections.json        パーサーを直さずに後から手動で直すための補正リスト(下記参照)
 docs/                     GitHub Pages 公開ルート(素のHTML/CSS/JS、ビルド不要)
-  index.html / styles.css / app.js
+  index.html / styles.css / app.js   カレンダー・検索画面
+  bi.html / bi.js                    出演者BIダッシュボード
   data/events.json
 notebooklm/
   six-dog-schedule.md     NotebookLM にアップロードする用のMarkdown
@@ -42,7 +44,23 @@ notebooklm/
 
 サイトは運営期間中にURL構造が複数回変わっており(スケジュールページが月ごとに別URLになる時期もある)、固定URLを追いかける方式では全期間をカバーできません。そのため `Fetch-Snapshots.ps1` はドメイン全体のユニークコンテンツHTMLを網羅的に取得し、`Parse-Events.ps1` 側で `OPEN/START` / `adv/door` という共通パターンを持つページだけをスケジュールページとして判定・解析します。
 
-同じ日付の公演情報が複数スナップショットに重複して現れる場合は、情報が最も充実しているレコードを優先して採用しています。
+同じ日付の公演情報が複数スナップショットに重複して現れる場合は、情報が最も充実しているレコードを優先して採用しています。出演者名は大文字小文字・空白の表記ゆれ(例: `the adonis` / `THE ADONIS`)を自動で1つの表記に統合しています。
+
+サイトは2011年頃・2013〜2016年頃・2016〜2018年頃で構造が異なりますが、いずれも `Parse-Events.ps1` が自動判別して解析します(2019年以降はサイト自体の更新が止まっているため対象外)。
+
+## データの手動補正について(`data/corrections.json`)
+
+自動解析だけでは直せない誤りは、パーサーのコードを書き換えずに `data/corrections.json` を編集して直せます。編集後は `.\scripts\Parse-Events.ps1` を再実行すれば反映されます(再取得は不要)。
+
+```json
+{
+  "excludePerformers": ["etc", "ノイズとして混入する名前"],
+  "renamePerformers": { "元の表記": "統一したい正式表記" }
+}
+```
+
+- `excludePerformers` — 出演者リストから除外したい文字列(大文字小文字は区別しません)
+- `renamePerformers` — 自動統合(表記ゆれ)では拾いきれない別名を、指定した表記に統一します
 
 ## 公開しているデータについて
 
