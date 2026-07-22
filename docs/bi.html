@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SiX-DOG ARCHIVE — 出演者BIダッシュボード</title>
+<meta name="description" content="SiX-DOG の公演データを出演者・頻度・時系列で分析するダッシュボード" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<header class="topbar">
+  <div class="inner">
+    <div class="brand">SiX-DOG <span class="sub">ARCHIVE</span></div>
+    <div class="tagline">出演者BIダッシュボード — 公演データを頻度・時系列で分析</div>
+    <nav class="nav-tabs">
+      <a href="index.html">カレンダー</a>
+      <a href="bi.html" class="active" aria-current="page">BIダッシュボード</a>
+    </nav>
+  </div>
+</header>
+
+<main class="bi-main">
+
+  <div class="filter-row" id="yearFilter">
+    <span class="filter-label">対象期間</span>
+    <!-- チップはJSで生成 -->
+  </div>
+
+  <div class="kpi-row" id="kpiRow"></div>
+
+  <section class="panel">
+    <div class="panel-head">
+      <div>
+        <div class="panel-title">出演者ランキング</div>
+        <div class="panel-sub" id="rankingSub"></div>
+      </div>
+      <div class="view-toggle" id="rankingToggle">
+        <button type="button" data-view="chart" class="active">グラフ</button>
+        <button type="button" data-view="table">テーブル</button>
+      </div>
+    </div>
+    <div id="rankingChart" class="bar-chart-h"></div>
+    <div id="rankingTable" class="table-wrap hidden"></div>
+    <div id="drilldown" class="drilldown hidden"></div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <div>
+        <div class="panel-title" id="trendTitle">公演数の推移</div>
+        <div class="panel-sub" id="trendSub"></div>
+      </div>
+    </div>
+    <div class="bar-chart-v-wrap">
+      <div class="bar-chart-v" id="trendChart"></div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <div>
+        <div class="panel-title">曜日別 開催傾向</div>
+        <div class="panel-sub">どの曜日に公演が多かったか</div>
+      </div>
+    </div>
+    <div class="dow-chart" id="dowChart"></div>
+  </section>
+
+</main>
+
+<div class="tooltip hidden" id="tooltip"></div>
+
+<footer>SiX-DOG Archive — 個人アーカイブプロジェクト — データは Wayback Machine のアーカイブに基づき復元</footer>
+
+<script src="bi.js"></script>
+</body>
+</html>

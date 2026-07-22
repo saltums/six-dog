@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SiX-DOG ARCHIVE — 公演記録</title>
+<meta name="description" content="名古屋のライブハウス SiX-DOG の公演スケジュールを Wayback Machine から復元したアーカイブ" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<header class="topbar">
+  <div class="inner">
+    <div class="brand">SiX-DOG <span class="sub">ARCHIVE</span></div>
+    <div class="tagline">名古屋のライブハウス「SiX-DOG」公演記録 — Wayback Machine から復元した個人アーカイブ</div>
+    <nav class="nav-tabs">
+      <a href="index.html" class="active" aria-current="page">カレンダー</a>
+      <a href="bi.html">BIダッシュボード</a>
+    </nav>
+  </div>
+</header>
+
+<div class="controls">
+  <div class="search-wrap">
+    <input id="search" type="text" placeholder="バンド名・イベント名で検索" autocomplete="off" />
+  </div>
+  <div class="month-nav">
+    <button id="prevMonth" aria-label="前の月" type="button">‹</button>
+    <select id="monthSelect" aria-label="表示する年月"></select>
+    <button id="nextMonth" aria-label="次の月" type="button">›</button>
+  </div>
+  <div class="stats" id="stats"></div>
+</div>
+
+<main>
+  <section id="calendarView">
+    <div class="cal-grid" id="calGrid"></div>
+  </section>
+  <section id="listView" class="list hidden"></section>
+</main>
+
+<div id="detailOverlay" class="overlay hidden">
+  <div class="detail-card" id="detailCard"></div>
+</div>
+
+<footer>SiX-DOG Archive — 個人アーカイブプロジェクト — データは Wayback Machine のアーカイブに基づき復元</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
