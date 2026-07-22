@@ -340,6 +340,48 @@ foreach ($entry in $manifest) {
 Write-Output "スケジュールページと判定: $scannedSchedulePages 件"
 Write-Output "抽出した生イベント件数(重複含む): $($allEvents.Count)"
 
+# ---------- "single-month"世代の誤日付を除去 ----------
+# single-month世代のページには月見出しが無く、キャプチャのタイムスタンプから月を
+# 推測している。しかし更新が止まったページが同じ内容のまま何ヶ月も再クロールされる
+# ことがあり、その場合は同じ「N日」のブロックが毎回違う月として誤って解釈され、
+# 同一の公演が複数の実在しない日付ににせの形で複製されてしまう
+# (例:「12日 永遠の二番手ロックフェスvol.6」が2015-01-12/02-12/07-12/10-12の
+#  4件に化ける)。日付内の「日」と内容(曜日・タイトル・時間・料金・出演者)が完全一致し、
+# 月/年だけが異なる候補が複数あれば、同一イベントの使い回し表示とみなし、
+# 最も古いキャプチャによる推定日付のものだけを残す。
+function Get-ContentFingerprint($ev) {
+    return (@($ev.weekday, $ev.title, $ev.open_time, $ev.start_time, $ev.price_adv, $ev.price_door, ($ev.performers -join '|')) -join '::')
+}
+
+$staleGroups = @{}
+foreach ($ev in $allEvents) {
+    if ($ev.source_era -ne 'single-month' -or -not $ev.title) { continue }
+    $dayOfMonth = $ev.event_date.Substring(8, 2)
+    $key = "$dayOfMonth::" + (Get-ContentFingerprint $ev)
+    if (-not $staleGroups.ContainsKey($key)) { $staleGroups[$key] = New-Object System.Collections.Generic.List[object] }
+    $staleGroups[$key].Add($ev)
+}
+$dropSet = New-Object 'System.Collections.Generic.HashSet[object]'
+$staleDropCount = 0
+foreach ($key in $staleGroups.Keys) {
+    $group = $staleGroups[$key]
+    $distinctDates = @($group | Select-Object -ExpandProperty event_date -Unique)
+    if ($distinctDates.Count -gt 1) {
+        $sorted = $group | Sort-Object source_snapshot_timestamp
+        $keepDate = $sorted[0].event_date
+        foreach ($e in $group) {
+            if ($e.event_date -ne $keepDate) {
+                [void]$dropSet.Add($e)
+                $staleDropCount++
+            }
+        }
+    }
+}
+if ($staleDropCount -gt 0) {
+    Write-Output "月見出しの無いページの使い回しコンテンツによる誤日付を除去: $staleDropCount 件"
+    $allEvents = @($allEvents | Where-Object { -not $dropSet.Contains($_) })
+}
+
 # ---------- 重複排除: event_date ごとに field_count 最大 → タイムスタンプ最新 を採用 ----------
 
 $grouped = $allEvents | Group-Object event_date
