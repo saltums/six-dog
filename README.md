@@ -96,6 +96,14 @@ notebooklm/
 - Token作成手順: GitHub → Settings → Developer settings → Fine-grained tokens → このリポジトリを選択 → Permissions で **Contents: Read and write** を付与
 - `Parse-Events.ps1` を再実行しても `manual-overrides.json` 自体は残るが、`data/events.json` 側には自動マージされない(現状はクライアント側での表示時マージのみ)。恒久的に取り込みたい場合は内容を確認して `data/corrections.json` や次回の `Import-Xlsx.ps1` 用スプレッドシートに反映すること
 
+## アーティスト名の統合(`docs/artists.html`)
+
+「A」「A(アコースティック)」のような表記ゆれを、**公演ごとの表示は元の表記のまま残しつつ**、BIダッシュボードのランキングやカレンダー検索でだけ1つの名前にまとめて集計できる管理画面。ナビの「アーティスト管理」から開く。
+
+- 一覧から複数の表記にチェックを入れ、統合先の名前を入力して「統合する」を押すとグループ化される(保存はイベント編集と同じくGitHub Personal Access Tokenが必要)
+- グループの各メンバーは「✕ 解除」でいつでも統合を解除できる
+- 統合先の名前(`docs/data/artist-aliases.json`、表記→統合先のフラットな対応表)は`data/corrections.json`の`renamePerformers`と違い、**元データの文字列自体は書き換えない**。公演詳細やNotebookLM出力には引き続き元の表記(例:「A(アコースティック)」)が表示される
+
 ## 公開しているデータについて
 
 日付・出演者名・料金・時間などのテキスト情報のみを公開しており、フライヤー画像やサイトデザインなど元サイトの著作物は複製していません。各公演には Wayback Machine 上の元ページへのリンクを付けています。
