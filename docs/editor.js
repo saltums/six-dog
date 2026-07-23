@@ -21,6 +21,7 @@
     repo: "six-dog",
     branch: "master",
     overridesPath: "docs/data/manual-overrides.json",
+    aliasesPath: "docs/data/artist-aliases.json",
   };
   const TOKEN_KEY = "sixdog_gh_token";
 
@@ -73,27 +74,47 @@
     return res.json();
   }
 
-  async function fetchOverrides() {
+  // ---------- 汎用: リポジトリ内のJSONファイルを読み書き ----------
+
+  async function fetchJsonFileAuthed(path) {
     try {
-      const data = await githubApi(`contents/${CONFIG.overridesPath}?ref=${CONFIG.branch}`, { method: "GET" });
+      const data = await githubApi(`contents/${path}?ref=${CONFIG.branch}`, { method: "GET" });
       const text = b64DecodeUtf8(data.content.replace(/\n/g, ""));
-      return { overrides: JSON.parse(text || "{}"), sha: data.sha };
+      return { json: JSON.parse(text || "{}"), sha: data.sha };
     } catch (e) {
-      console.warn("manual-overrides.json の取得に失敗、空として扱います", e);
-      return { overrides: {}, sha: null };
+      console.warn(`${path} の取得に失敗、空として扱います`, e);
+      return { json: {}, sha: null };
     }
   }
 
   // 保存APIキーが無くても閲覧はできるよう、公開読み取りは素のfetchで行う
   // (githubApi()はトークン入力を要求してしまうため保存専用)
-  async function fetchOverridesPublic() {
+  async function fetchJsonFilePublic(relativePath) {
     try {
-      const res = await fetch("data/manual-overrides.json", { cache: "no-store" });
+      const res = await fetch(relativePath, { cache: "no-store" });
       if (!res.ok) return {};
       return await res.json();
     } catch (e) {
       return {};
     }
+  }
+
+  async function saveJsonFile(path, json, message) {
+    const { sha } = await fetchJsonFileAuthed(path);
+    const content = b64EncodeUtf8(JSON.stringify(json, null, 2));
+    const body = { message, content, branch: CONFIG.branch };
+    if (sha) body.sha = sha;
+    await githubApi(`contents/${path}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+  }
+
+  // ---------- manual-overrides.json (イベントごとの修正差分) ----------
+
+  async function fetchOverridesPublic() {
+    return fetchJsonFilePublic("data/manual-overrides.json");
   }
 
   function applyOverrides(events, overrides) {
@@ -108,21 +129,27 @@
   }
 
   async function saveOverride(originalDate, patch) {
-    const { overrides, sha } = await fetchOverrides();
+    const { json: overrides } = await fetchJsonFileAuthed(CONFIG.overridesPath);
     overrides[originalDate] = Object.assign({}, overrides[originalDate] || {}, patch);
-    const content = b64EncodeUtf8(JSON.stringify(overrides, null, 2));
-    const body = {
-      message: `Edit event ${originalDate} via web UI`,
-      content,
-      branch: CONFIG.branch,
-    };
-    if (sha) body.sha = sha;
-    await githubApi(`contents/${CONFIG.overridesPath}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
+    await saveJsonFile(CONFIG.overridesPath, overrides, `Edit event ${originalDate} via web UI`);
     return overrides[originalDate];
+  }
+
+  // ---------- artist-aliases.json (出演者名の呼称統合) ----------
+  // 表示名(例: "A(アコースティック)")はイベントデータ側に手を付けず残したまま、
+  // 集計・検索のときだけ統合先(例: "A")として扱うためのマッピング。
+  // { "表示名": "統合先の正式名" } という単純なフラットマップ。
+
+  async function fetchAliasesPublic() {
+    return fetchJsonFilePublic("data/artist-aliases.json");
+  }
+
+  function resolveCanonicalName(name, aliases) {
+    return (aliases && aliases[name]) || name;
+  }
+
+  async function saveAliases(aliases) {
+    await saveJsonFile(CONFIG.aliasesPath, aliases, "Update artist aliases via web UI");
   }
 
   // ---------- 編集フォームUI ----------
@@ -210,5 +237,9 @@
     applyOverrides,
     buildEditForm,
     clearToken,
+    ensureToken,
+    fetchAliasesPublic,
+    resolveCanonicalName,
+    saveAliases,
   };
 })(window);

@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SiX-DOG ARCHIVE — アーティスト名の統合</title>
+<meta name="description" content="表記ゆれのある出演者名(例: A / A(アコースティック))を、表示はそのまま残して集計上だけまとめる管理画面" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<header class="topbar">
+  <div class="inner">
+    <div class="brand">SiX-DOG <span class="sub">ARCHIVE</span></div>
+    <div class="tagline">アーティスト名の統合 — 表示はそのまま、集計・検索だけをまとめる</div>
+    <nav class="nav-tabs">
+      <a href="index.html">カレンダー</a>
+      <a href="bi.html">BIダッシュボード</a>
+      <a href="artists.html" class="active" aria-current="page">アーティスト管理</a>
+    </nav>
+  </div>
+</header>
+
+<main class="bi-main">
+
+  <section class="panel">
+    <div class="panel-head">
+      <div>
+        <div class="panel-title">使い方</div>
+        <div class="panel-sub">
+          下の一覧はデータ内に登場する出演者の表記すべて。同じアーティストの別表記(例: 「A」「A(アコースティック)」)に
+          チェックを入れて統合先の名前を指定すると、公演詳細では元の表記のまま表示しつつ、BIダッシュボードのランキングや
+          カレンダー検索では統合先の名前でまとめて集計・検索できるようになります。
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="filter-row" style="flex-wrap:wrap">
+      <input type="text" id="artistSearch" placeholder="アーティスト名で絞り込み" autocomplete="off"
+             style="flex:1 1 240px; padding:10px 14px; border:1px solid var(--hairline); border-radius:6px; background:var(--paper-raised); color:var(--ink); font-family:inherit; font-size:14.5px;" />
+      <span class="filter-label" id="artistCount"></span>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <div>
+        <div class="panel-title">統合済みグループ</div>
+        <div class="panel-sub" id="groupedSub"></div>
+      </div>
+    </div>
+    <div id="groupedList" class="artist-groups"></div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <div>
+        <div class="panel-title">未統合の表記</div>
+        <div class="panel-sub">チェックして下の「統合する」を押すと、選んだ表記をまとめられます</div>
+      </div>
+    </div>
+    <div id="ungroupedList" class="artist-list"></div>
+    <div class="merge-bar" id="mergeBar">
+      <span id="mergeCount">0件選択中</span>
+      <input type="text" id="mergeCanonical" placeholder="統合先の名前(例: A)" autocomplete="off" />
+      <button type="button" id="mergeBtn">統合する</button>
+      <span class="edit-status" id="mergeStatus"></span>
+    </div>
+  </section>
+
+</main>
+
+<footer>SiX-DOG Archive — 個人アーカイブプロジェクト — データは Wayback Machine のアーカイブに基づき復元</footer>
+
+<script src="editor.js"></script>
+<script src="artists.js"></script>
+</body>
+</html>

@@ -17,9 +17,15 @@
   const tooltipEl = document.getElementById("tooltip");
 
   let events = [];
+  let aliases = {};
   let selectedYear = "all";
   let rankingView = "chart";
   let selectedPerformer = null;
+
+  // 表示名(例: "A(アコースティック)")は変えず、集計だけ統合先(例: "A")でまとめる
+  function canonicalOf(name) {
+    return window.SixDogEditor ? window.SixDogEditor.resolveCanonicalName(name, aliases) : name;
+  }
 
   function escapeText(s) { return String(s); }
 
@@ -87,9 +93,10 @@
     scoped.forEach(ev => {
       (ev.performers || []).forEach(p => {
         totalAppearances++;
-        const rec = performerCounts.get(p) || { count: 0 };
+        const key = canonicalOf(p);
+        const rec = performerCounts.get(key) || { count: 0 };
         rec.count++;
-        performerCounts.set(p, rec);
+        performerCounts.set(key, rec);
       });
     });
 
@@ -125,11 +132,14 @@
 
   // ---------- 出演者ランキング ----------
   function buildPerformerIndex(scoped) {
+    // キーは統合先の名前(canonicalOf)。表示名が違っても同じアーティストなら
+    // ここでまとめてカウント・ドリルダウンされる(公演側の表記自体は変えない)。
     const idx = new Map();
     scoped.forEach(ev => {
       (ev.performers || []).forEach(p => {
-        if (!idx.has(p)) idx.set(p, []);
-        idx.get(p).push(ev);
+        const key = canonicalOf(p);
+        if (!idx.has(key)) idx.set(key, []);
+        idx.get(key).push(ev);
       });
     });
     return idx;
@@ -337,6 +347,7 @@
     }
     const overrides = await (window.SixDogEditor ? window.SixDogEditor.fetchOverridesPublic() : Promise.resolve({}));
     events = window.SixDogEditor ? window.SixDogEditor.applyOverrides(data, overrides) : data;
+    aliases = window.SixDogEditor ? await window.SixDogEditor.fetchAliasesPublic() : {};
     if (!events.length) {
       kpiRowEl.innerHTML = `<div class="panel-sub">まだデータがありません</div>`;
       return;

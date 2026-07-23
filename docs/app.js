@@ -16,6 +16,7 @@
 
   /** @type {any[]} */
   let events = [];
+  let aliases = {};
   let eventsByDate = new Map();
   let months = []; // [{year, month, key, label}]
   let currentMonthIndex = 0;
@@ -142,7 +143,10 @@
   function renderList(query) {
     const q = query.toLowerCase();
     const matches = events.filter(ev => {
-      const hay = [ev.title, ...(ev.performers || [])].filter(Boolean).join(" ").toLowerCase();
+      const performerNames = ev.performers || [];
+      // 表示名だけでなく統合先の名前(例: "A(アコースティック)" → "A")でも検索できるようにする
+      const canonicalNames = performerNames.map(p => aliases[p]).filter(Boolean);
+      const hay = [ev.title, ...performerNames, ...canonicalNames].filter(Boolean).join(" ").toLowerCase();
       return hay.includes(q);
     });
 
@@ -265,6 +269,7 @@
     }
     const overrides = await (window.SixDogEditor ? window.SixDogEditor.fetchOverridesPublic() : Promise.resolve({}));
     events = window.SixDogEditor ? window.SixDogEditor.applyOverrides(data, overrides) : data;
+    aliases = window.SixDogEditor ? await window.SixDogEditor.fetchAliasesPublic() : {};
     eventsByDate = new Map(events.map(ev => [ev.event_date, ev]));
 
     if (!events.length) {
