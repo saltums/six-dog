@@ -15,9 +15,46 @@
   let counts = new Map();   // 表示名 -> 出現回数
   let aliases = {};         // 表示名(バリアント) -> 統合先(正式名)
   let selected = new Set(); // チェックされた表示名
+  let sortAnchor = null;    // これに近い表記を上位に表示する基準の名前
 
   function escapeHtml(s) {
     return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+
+  // ---------- 文字列類似度(レーベンシュタイン距離ベース) ----------
+  function levenshtein(a, b) {
+    const m = a.length, n = b.length;
+    if (m === 0) return n;
+    if (n === 0) return m;
+    let prev = new Array(n + 1);
+    let curr = new Array(n + 1);
+    for (let j = 0; j <= n; j++) prev[j] = j;
+    for (let i = 1; i <= m; i++) {
+      curr[0] = i;
+      const ca = a.charCodeAt(i - 1);
+      for (let j = 1; j <= n; j++) {
+        const cost = ca === b.charCodeAt(j - 1) ? 0 : 1;
+        curr[j] = Math.min(
+          prev[j] + 1,      // 削除
+          curr[j - 1] + 1,  // 挿入
+          prev[j - 1] + cost // 置換
+        );
+      }
+      [prev, curr] = [curr, prev];
+    }
+    return prev[n];
+  }
+
+  // 0(全然違う)〜1(完全一致)。長い方の文字数で正規化するだけでなく、
+  // 一方がもう一方を含む(例: "A" は "A(アコースティック)" に含まれる)場合は
+  // 表記ゆれとして特に近いとみなし、下駄を履かせる。
+  function similarity(a, b) {
+    if (a === b) return 1;
+    const maxLen = Math.max(a.length, b.length);
+    if (maxLen === 0) return 1;
+    let score = 1 - levenshtein(a, b) / maxLen;
+    if (a.includes(b) || b.includes(a)) score = Math.max(score, 0.85);
+    return score;
   }
 
   async function load() {
@@ -101,28 +138,62 @@
     // ---------- 未統合の表記 ----------
     const groupedKeys = new Set(Object.keys(aliases));
     const canonicalSet = new Set(canonicalNames);
-    const ungrouped = allNames
+    let ungrouped = allNames
       .filter(n => !groupedKeys.has(n) && !canonicalSet.has(n))
-      .filter(n => !q || n.toLowerCase().includes(q))
-      .sort((a, b) => (counts.get(b) - counts.get(a)) || a.localeCompare(b));
+      .filter(n => !q || n.toLowerCase().includes(q));
+
+    if (sortAnchor && counts.has(sortAnchor)) {
+      ungrouped = ungrouped.sort((a, b) => {
+        const diff = similarity(sortAnchor, b) - similarity(sortAnchor, a);
+        if (Math.abs(diff) > 1e-9) return diff;
+        return (counts.get(b) - counts.get(a)) || a.localeCompare(b);
+      });
+    } else {
+      ungrouped = ungrouped.sort((a, b) => (counts.get(b) - counts.get(a)) || a.localeCompare(b));
+    }
+
+    // ---------- 類似度の基準を示すバー ----------
+    const anchorBar = document.getElementById("anchorBar");
+    if (sortAnchor && counts.has(sortAnchor)) {
+      anchorBar.classList.remove("hidden");
+      anchorBar.innerHTML = `類似度の基準: <b>${escapeHtml(sortAnchor)}</b> に近い順で表示中 <button type="button" id="clearAnchorBtn">基準を解除</button>`;
+      document.getElementById("clearAnchorBtn").addEventListener("click", () => { sortAnchor = null; render(); });
+    } else {
+      anchorBar.classList.add("hidden");
+      anchorBar.innerHTML = "";
+    }
 
     ungroupedListEl.innerHTML = "";
     if (!ungrouped.length) {
       ungroupedListEl.innerHTML = `<div class="panel-sub">該当する表記がありません</div>`;
     }
     ungrouped.forEach(n => {
-      const row = document.createElement("label");
-      row.className = "artist-row";
+      const row = document.createElement("div");
+      row.className = "artist-row" + (n === sortAnchor ? " is-anchor" : "");
       const checked = selected.has(n) ? "checked" : "";
+      const simLabel = (sortAnchor && counts.has(sortAnchor) && n !== sortAnchor)
+        ? `<span class="sim">類似度 ${Math.round(similarity(sortAnchor, n) * 100)}%</span>` : "";
       row.innerHTML = `
-        <input type="checkbox" ${checked} />
-        <span class="name">${escapeHtml(n)}</span>
+        <label class="artist-row-main">
+          <input type="checkbox" ${checked} />
+          <span class="name">${escapeHtml(n)}</span>
+        </label>
+        ${simLabel}
         <span class="cnt">${counts.get(n)} 回</span>
+        <button type="button" class="anchor-btn" title="この表記を基準に類似表記を探す">🔍 基準にする</button>
       `;
       row.querySelector("input").addEventListener("change", e => {
-        if (e.target.checked) selected.add(n); else selected.delete(n);
+        const wasEmpty = selected.size === 0;
+        if (e.target.checked) {
+          selected.add(n);
+          if (wasEmpty) { sortAnchor = n; render(); return; }
+        } else {
+          selected.delete(n);
+          if (selected.size === 0) { sortAnchor = null; }
+        }
         updateMergeBar();
       });
+      row.querySelector(".anchor-btn").addEventListener("click", () => { sortAnchor = n; render(); });
       ungroupedListEl.appendChild(row);
     });
 
