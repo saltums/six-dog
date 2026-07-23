@@ -86,6 +86,16 @@ notebooklm/
 
 **注意**: `Import-Xlsx.ps1` は `data/events.json` をスプレッドシートの内容で丸ごと置き換える。後で `Fetch-Snapshots.ps1` / `Parse-Events.ps1` を再実行すると、この手動修正は自動抽出結果で上書きされる(恒久的に残したい修正は `data/corrections.json` にも書き写すこと)。
 
+## 公開サイトからの編集機能
+
+カレンダー画面の公演詳細から「✎ この公演情報を編集」で、タイトル・時間・料金・出演者・備考をその場で修正できる。
+
+- 修正内容は `docs/data/manual-overrides.json`(公演日をキーにした差分)に GitHub Contents API 経由でコミットされ、Pages再ビルド後に全訪問者へ反映される
+- 保存にはこのリポジトリへの**書き込み権限を持つ GitHub Personal Access Token**が必要(初回保存時にブラウザで入力を求められる)。トークンはそのブラウザの localStorage にのみ保存され、GitHub 以外には送信されない
+- トークンを持たない訪問者もフォームは開けるが保存はできない(=実質的にオーナーのみが編集可能)
+- Token作成手順: GitHub → Settings → Developer settings → Fine-grained tokens → このリポジトリを選択 → Permissions で **Contents: Read and write** を付与
+- `Parse-Events.ps1` を再実行しても `manual-overrides.json` 自体は残るが、`data/events.json` 側には自動マージされない(現状はクライアント側での表示時マージのみ)。恒久的に取り込みたい場合は内容を確認して `data/corrections.json` や次回の `Import-Xlsx.ps1` 用スプレッドシートに反映すること
+
 ## 公開しているデータについて
 
 日付・出演者名・料金・時間などのテキスト情報のみを公開しており、フライヤー画像やサイトデザインなど元サイトの著作物は複製していません。各公演には Wayback Machine 上の元ページへのリンクを付けています。
