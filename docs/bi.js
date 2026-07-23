@@ -327,13 +327,16 @@
   }
 
   async function init() {
+    let data = [];
     try {
       const res = await fetch("data/events.json", { cache: "no-store" });
-      events = await res.json();
+      data = await res.json();
     } catch (e) {
       kpiRowEl.innerHTML = `<div class="panel-sub">データの読み込みに失敗しました</div>`;
       return;
     }
+    const overrides = await (window.SixDogEditor ? window.SixDogEditor.fetchOverridesPublic() : Promise.resolve({}));
+    events = window.SixDogEditor ? window.SixDogEditor.applyOverrides(data, overrides) : data;
     if (!events.length) {
       kpiRowEl.innerHTML = `<div class="panel-sub">まだデータがありません</div>`;
       return;

@@ -180,7 +180,7 @@
   function showDetail(ev) {
     detailCard.innerHTML = `
       <button class="close" aria-label="閉じる" type="button">×</button>
-      <div class="detail-eyebrow">${ev.event_date}${ev.weekday ? " (" + ev.weekday + ")" : ""}</div>
+      <div class="detail-eyebrow">${ev.event_date}${ev.weekday ? " (" + ev.weekday + ")" : ""}${ev._edited ? ' <span class="badge-warn" title="手動で修正済み">編集済み</span>' : ""}</div>
       <div class="detail-title">${escapeHtml(ev.title || "(タイトル不明)")}</div>
       ${ev.date_confidence === "estimated" ? `<div class="detail-notes">⚠ この日付の月・年は推定です。元ページに月の記載が無く、スナップショットが取得された時期から推測しているため、実際の公演日と異なる可能性があります。</div>` : ""}
       <dl class="detail-grid">
@@ -193,8 +193,28 @@
         出典: ${formatSnapshotTimestamp(ev.source_snapshot_timestamp)} 時点のスナップショット<br/>
         <a href="${ev.source_snapshot_url}" target="_blank" rel="noopener">Wayback Machine で元ページを見る ↗</a>
       </div>
+      <div class="detail-edit-toggle">
+        <button type="button" class="btn-edit-toggle">✎ この公演情報を編集</button>
+      </div>
+      <div class="edit-form-slot"></div>
     `;
     detailCard.querySelector(".close").addEventListener("click", hideDetail);
+    const editToggleBtn = detailCard.querySelector(".btn-edit-toggle");
+    const editSlot = detailCard.querySelector(".edit-form-slot");
+    editToggleBtn.addEventListener("click", () => {
+      if (!window.SixDogEditor) return;
+      editToggleBtn.classList.add("hidden");
+      const form = window.SixDogEditor.buildEditForm(ev, {
+        onCancel: () => { editSlot.innerHTML = ""; editToggleBtn.classList.remove("hidden"); },
+        onSave: (updatedEv) => {
+          eventsByDate.set(ev.event_date, updatedEv);
+          const idx = events.findIndex(e => e.event_date === ev.event_date);
+          if (idx >= 0) events[idx] = updatedEv;
+          renderCalendar();
+        },
+      });
+      editSlot.appendChild(form);
+    });
     overlay.classList.remove("hidden");
   }
 
@@ -243,7 +263,8 @@
       calGrid.innerHTML = `<div class="cal-empty-month">データの読み込みに失敗しました</div>`;
       return;
     }
-    events = data;
+    const overrides = await (window.SixDogEditor ? window.SixDogEditor.fetchOverridesPublic() : Promise.resolve({}));
+    events = window.SixDogEditor ? window.SixDogEditor.applyOverrides(data, overrides) : data;
     eventsByDate = new Map(events.map(ev => [ev.event_date, ev]));
 
     if (!events.length) {
