@@ -51,6 +51,21 @@
     return m ? m[1] : null;
   }
 
+  // YouTubeのoEmbed(CORS許可・キー不要)でタイトルだけ取得して保存しておく。
+  // 埋め込みプレイヤーは件数が増えると重くなるため使わず、代わりにこのタイトルを
+  // 一覧のリンク文字列として表示する(取得できなければURLをそのまま表示)。
+  async function fetchYouTubeTitle(url) {
+    if (!extractYouTubeId(url)) return null;
+    try {
+      const res = await fetch(`https://www.youtube.com/oembed?url=${encodeURIComponent(url)}&format=json`);
+      if (!res.ok) return null;
+      const data = await res.json();
+      return data.title || null;
+    } catch (e) {
+      return null;
+    }
+  }
+
   function escapeHtml(s) {
     return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   }
@@ -96,10 +111,9 @@
       videos.forEach(v => {
         const item = document.createElement("div");
         item.className = "video-item";
-        const ytId = extractYouTubeId(v.video_url);
+        const linkText = v.video_title || v.video_url;
         item.innerHTML = `
-          ${ytId ? `<div class="video-embed"><iframe src="https://www.youtube.com/embed/${ytId}" loading="lazy" allow="encrypted-media" allowfullscreen title="${escapeHtml(performerName)}の動画"></iframe></div>` : ""}
-          <a class="video-link" href="${encodeURI(v.video_url)}" target="_blank" rel="noopener noreferrer nofollow">${escapeHtml(v.video_url)} ↗</a>
+          <a class="video-link" href="${encodeURI(v.video_url)}" target="_blank" rel="noopener noreferrer nofollow">${escapeHtml(linkText)} ↗</a>
           <div class="video-meta">${v.submitted_by ? escapeHtml(v.submitted_by) + " — " : ""}${formatDate(v.submitted_at)}</div>
           ${v.notes ? `<div class="video-notes">${escapeHtml(v.notes)}</div>` : ""}
         `;
@@ -119,10 +133,12 @@
       if (!/^https?:\/\//i.test(url)) { statusEl.textContent = "http(s):// から始まるURLを入力してください"; return; }
       statusEl.textContent = "投稿中...";
       try {
+        const title = await fetchYouTubeTitle(url);
         await submitVideo({
           event_date: eventDate,
           performer_name: performerName,
           video_url: url,
+          video_title: title,
           submitted_by: by || null,
           notes: notes || null,
         });

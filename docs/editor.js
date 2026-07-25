@@ -1,17 +1,14 @@
 /*
- * サイトを公開したまま、GitHub API経由でイベントデータを直接修正できる編集機能。
+ * サイトを公開したまま、公演データ・出演者名の呼称を修正できる編集機能。
  *
- * 仕組み:
- * - 修正内容は docs/data/manual-overrides.json (event_dateをキーにした差分)に
- *   GitHub Contents API 経由でコミットされる。以後、そのコミットが反映された
- *   時点(Pagesの再ビルド後)で全訪問者に表示される。
- * - 書き込みには GitHub Personal Access Token(このリポジトリへの書き込み権限)が
- *   必要。トークンは「保存」時に一度だけ入力を求め、ブラウザの localStorage に
- *   保存されるだけで、GitHub の API 以外のどこにも送信されない。トークンを
- *   持たない一般の訪問者は編集フォーム自体は開けるが、保存時にトークンを
- *   持っていないため保存できない(=事実上、書き込み権限を持つ人だけが編集できる)。
- * - パーサーを再実行して data/events.json を作り直しても、次にこのファイルを
- *   マージすればここでの修正は失われない(Parse-Events.ps1 側の対応は別途)。
+ * 2種類の仕組みが混在している(意図的):
+ * - 公演情報の編集(event_overrides): 誰でもログイン不要でその場で保存できる。
+ *   Supabase(videos機能と同じプロジェクト)に直接書き込む。「荒らしはいない」
+ *   という前提で、公演データは誰でも編集可能にする方針(ユーザー指示)。
+ * - アーティスト名の統合(artist-aliases.json): こちらは従来通りGitHub Contents
+ *   API経由でコミットする方式のまま(書き込みには書き込み権限を持つGitHub
+ *   Personal Access Tokenが必要)。ランキング集計に影響する操作のため、
+ *   オーナーのみが変更できるよう残している。
  */
 (function (global) {
   "use strict";
@@ -20,9 +17,15 @@
     owner: "saltums",
     repo: "six-dog",
     branch: "master",
-    overridesPath: "docs/data/manual-overrides.json",
     aliasesPath: "docs/data/artist-aliases.json",
   };
+  const SUPABASE = {
+    url: "https://fzylksuomkqkrdujueym.supabase.co",
+    anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6eWxrc3VvbWtxa3JkdWp1ZXltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5NTU5ODcsImV4cCI6MjEwMDUzMTk4N30.D9eORdSj5zkmJDnz8zVDSmMR804PATbWOpDEPChetf0",
+  };
+  function supabaseHeaders(extra) {
+    return Object.assign({ apikey: SUPABASE.anonKey, Authorization: `Bearer ${SUPABASE.anonKey}` }, extra || {});
+  }
   const TOKEN_KEY = "sixdog_gh_token";
 
   function getToken() {
@@ -111,10 +114,25 @@
     });
   }
 
-  // ---------- manual-overrides.json (イベントごとの修正差分) ----------
+  // ---------- event_overrides (公演情報の編集、誰でも保存可・Supabase) ----------
 
   async function fetchOverridesPublic() {
-    return fetchJsonFilePublic("data/manual-overrides.json");
+    try {
+      const res = await fetch(`${SUPABASE.url}/rest/v1/event_overrides?select=*`, { headers: supabaseHeaders() });
+      if (!res.ok) return {};
+      const rows = await res.json();
+      const overrides = {};
+      rows.forEach(row => {
+        const patch = {};
+        ["title", "open_time", "start_time", "price_adv", "price_door", "price_note", "performers", "notes"].forEach(f => {
+          if (row[f] !== null && row[f] !== undefined) patch[f] = row[f];
+        });
+        overrides[row.event_date] = patch;
+      });
+      return overrides;
+    } catch (e) {
+      return {};
+    }
   }
 
   function applyOverrides(events, overrides) {
@@ -129,10 +147,21 @@
   }
 
   async function saveOverride(originalDate, patch) {
-    const { json: overrides } = await fetchJsonFileAuthed(CONFIG.overridesPath);
-    overrides[originalDate] = Object.assign({}, overrides[originalDate] || {}, patch);
-    await saveJsonFile(CONFIG.overridesPath, overrides, `Edit event ${originalDate} via web UI`);
-    return overrides[originalDate];
+    const row = Object.assign({ event_date: originalDate, updated_at: new Date().toISOString() }, patch);
+    const res = await fetch(`${SUPABASE.url}/rest/v1/event_overrides?on_conflict=event_date`, {
+      method: "POST",
+      headers: supabaseHeaders({
+        "Content-Type": "application/json",
+        Prefer: "resolution=merge-duplicates,return=representation",
+      }),
+      body: JSON.stringify(row),
+    });
+    if (!res.ok) {
+      const body = await res.text().catch(() => "");
+      throw new Error(`保存に失敗しました (${res.status}): ${body.slice(0, 200)}`);
+    }
+    const data = await res.json();
+    return data[0];
   }
 
   // ---------- artist-aliases.json (出演者名の呼称統合) ----------
@@ -185,9 +214,8 @@
         <textarea data-field="notes" rows="2">${escapeHtmlText(ev.notes || "")}</textarea>
       </div>
       <div class="edit-actions">
-        <button type="button" class="btn-save">保存(GitHubにコミット)</button>
+        <button type="button" class="btn-save">保存する</button>
         <button type="button" class="btn-cancel">キャンセル</button>
-        <button type="button" class="btn-token">トークン設定</button>
       </div>
       <div class="edit-status"></div>
     `;
@@ -195,10 +223,6 @@
     const statusEl = wrap.querySelector(".edit-status");
 
     wrap.querySelector(".btn-cancel").addEventListener("click", () => onCancel());
-    wrap.querySelector(".btn-token").addEventListener("click", () => {
-      clearToken();
-      ensureToken();
-    });
     wrap.querySelector(".btn-save").addEventListener("click", async () => {
       const patch = {};
       wrap.querySelectorAll("[data-field]").forEach(el => {
@@ -215,7 +239,7 @@
       statusEl.textContent = "保存中...";
       try {
         await saveOverride(ev.event_date, patch);
-        statusEl.textContent = "保存しました。GitHub Pagesの再ビルド後(数分)に公開反映されます。";
+        statusEl.textContent = "保存しました。";
         onSave(Object.assign({}, ev, patch));
       } catch (e) {
         statusEl.textContent = "保存に失敗しました: " + e.message;
