@@ -35,6 +35,16 @@ Write-Output "マニフェスト件数: $($manifest.Count)"
 # (演者名の除外・別名の統一)。無くても動くようフォールバックを用意する。
 $excludePerformers = New-Object 'System.Collections.Generic.HashSet[string]' ([StringComparer]::OrdinalIgnoreCase)
 $renamePerformers = @{}
+
+# 出演者名末尾の「(大阪)」「（東京）」のような出身地表記はノイズとして除去する。
+# 47都道府県 + 頻出する主要都市(名古屋・横浜)を対象にする。
+$regionSuffixNames = @(
+    '北海道','青森','岩手','宮城','秋田','山形','福島','茨城','栃木','群馬','埼玉','千葉','東京','神奈川',
+    '新潟','富山','石川','福井','山梨','長野','岐阜','静岡','愛知','三重','滋賀','京都','大阪','兵庫',
+    '奈良','和歌山','鳥取','島根','岡山','広島','山口','徳島','香川','愛媛','高知','福岡','佐賀','長崎',
+    '熊本','大分','宮崎','鹿児島','沖縄','名古屋','横浜'
+)
+$regionSuffixPattern = '[（(]\s*(' + ($regionSuffixNames -join '|') + ')\s*[）)]\s*$'
 if (Test-Path $correctionsPath) {
     $corrections = Get-Content $correctionsPath -Raw -Encoding UTF8 | ConvertFrom-Json
     if ($corrections.excludePerformers) {
@@ -185,6 +195,8 @@ function Parse-DayBlock([string[]]$lines, [int]$year, [int]$month, [hashtable]$s
             # "etc"(大小文字問わず、ドット任意)や "and more...." を除去する。
             # 除去した結果空になったトークンは捨てる。
             $tt = [regex]::Replace($tt, '(?i)\s*(etc\.*|and more\.*)\s*$', '')
+            # "バンドA(大阪)" のような出身地表記の除去
+            $tt = [regex]::Replace($tt, $regionSuffixPattern, '')
             $tt = $tt.Trim()
             if ($tt -ne '') { $performers.Add($tt) }
         }
