@@ -384,7 +384,7 @@ main {
   cursor: pointer;
 }
 .performers .chip:hover { background: var(--stamp); color: var(--stamp-ink); }
-.performers .chip .chip-video-icon { font-size: 11px; opacity: 0.8; }
+.performers .chip .chip-video-icon { font-size: 11px; opacity: 0.8; margin-left: 4px; }
 .performers-hint {
   font-size: 11px;
   color: var(--ink-soft);

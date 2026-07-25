@@ -192,7 +192,7 @@
         <dt>PRICE</dt><dd>${escapeHtml(priceLabel(ev.price_adv, ev.price_door))}${ev.price_note ? " " + escapeHtml(ev.price_note) : ""}</dd>
       </dl>
       ${ev.performers && ev.performers.length ? `
-        <div class="performers">${ev.performers.map(p => `<button type="button" class="chip" data-performer="${escapeHtml(p)}">${escapeHtml(p)} <span class="chip-video-icon">🎬</span></button>`).join("")}</div>
+        <div class="performers">${ev.performers.map(p => `<button type="button" class="chip" data-performer="${escapeHtml(p)}">${escapeHtml(p)}<span class="chip-video-icon hidden">🎬</span></button>`).join("")}</div>
         <div class="performers-hint">出演者名をクリックすると動画URLの閲覧・投稿ができます</div>
       ` : ""}
       <div class="video-slot"></div>
@@ -216,6 +216,15 @@
         videoSlot.scrollIntoView({ behavior: "smooth", block: "nearest" });
       });
     });
+    if (window.SixDogVideos && ev.performers && ev.performers.length) {
+      window.SixDogVideos.fetchVideoPerformers(ev.event_date).then(withVideo => {
+        detailCard.querySelectorAll(".chip[data-performer]").forEach(chip => {
+          if (withVideo.has(chip.dataset.performer)) {
+            chip.querySelector(".chip-video-icon").classList.remove("hidden");
+          }
+        });
+      });
+    }
     const editToggleBtn = detailCard.querySelector(".btn-edit-toggle");
     const editSlot = detailCard.querySelector(".edit-form-slot");
     editToggleBtn.addEventListener("click", () => {
@@ -228,6 +237,8 @@
           const idx = events.findIndex(e => e.event_date === ev.event_date);
           if (idx >= 0) events[idx] = updatedEv;
           renderCalendar();
+          editSlot.innerHTML = "";
+          editToggleBtn.classList.remove("hidden");
         },
       });
       editSlot.appendChild(form);

@@ -20,6 +20,18 @@
     }, extra || {});
   }
 
+  async function fetchVideoPerformers(eventDate) {
+    const params = new URLSearchParams({ select: "performer_name", event_date: `eq.${eventDate}` });
+    try {
+      const res = await fetch(`${CONFIG.url}/rest/v1/videos?${params.toString()}`, { headers: headers() });
+      if (!res.ok) return new Set();
+      const rows = await res.json();
+      return new Set(rows.map(r => r.performer_name));
+    } catch (e) {
+      return new Set();
+    }
+  }
+
   async function fetchVideos(eventDate, performerName) {
     const params = new URLSearchParams({
       select: "*",
@@ -156,5 +168,5 @@
     return wrap;
   }
 
-  global.SixDogVideos = { buildVideoPanel };
+  global.SixDogVideos = { buildVideoPanel, fetchVideoPerformers };
 })(window);
