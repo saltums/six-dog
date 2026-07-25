@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>SiX-DOG ARCHIVE — アーティスト名の統合</title>
-<meta name="description" content="表記ゆれのある出演者名(例: A / A(アコースティック))を、表示はそのまま残して集計上だけまとめる管理画面" />
+<title>SiX-DOG ARCHIVE — イベント名のグルーピング</title>
+<meta name="description" content="同じ企画シリーズの別回(例: Hello→vol.130 / Hello→vol.131)を、表示はそのまま残して集計・検索だけまとめる管理画面" />
 <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -12,12 +12,12 @@
 <header class="topbar">
   <div class="inner">
     <div class="brand">SiX-DOG <span class="sub">ARCHIVE</span></div>
-    <div class="tagline">アーティスト名の統合 — 表示はそのまま、集計・検索だけをまとめる</div>
+    <div class="tagline">イベント名のグルーピング — 表示はそのまま、集計・検索だけをまとめる</div>
     <nav class="nav-tabs">
       <a href="index.html">カレンダー</a>
       <a href="bi.html">BIダッシュボード</a>
-      <a href="artists.html" class="active" aria-current="page">アーティスト管理</a>
-      <a href="event-groups.html">イベント管理</a>
+      <a href="artists.html">アーティスト管理</a>
+      <a href="event-groups.html" class="active" aria-current="page">イベント管理</a>
     </nav>
   </div>
 </header>
@@ -29,9 +29,9 @@
       <div>
         <div class="panel-title">使い方</div>
         <div class="panel-sub">
-          下の一覧はデータ内に登場する出演者の表記すべて。同じアーティストの別表記(例: 「A」「A(アコースティック)」)に
-          チェックを入れて統合先の名前を指定すると、公演詳細では元の表記のまま表示しつつ、BIダッシュボードのランキングや
-          カレンダー検索では統合先の名前でまとめて集計・検索できるようになります。
+          下の一覧はデータ内に登場する公演タイトルすべて。同じ企画シリーズの別回(例: 「Hello→vol.130」「Hello→vol.131」)に
+          チェックを入れてグループ名を指定すると、公演詳細では元のタイトルのまま表示しつつ、カレンダー検索ではグループ名でも
+          まとめて見つけられるようになります。
         </div>
       </div>
     </div>
@@ -39,16 +39,16 @@
 
   <section class="panel">
     <div class="filter-row" style="flex-wrap:wrap">
-      <input type="text" id="artistSearch" placeholder="アーティスト名で絞り込み" autocomplete="off"
+      <input type="text" id="titleSearch" placeholder="イベント名で絞り込み" autocomplete="off"
              style="flex:1 1 240px; padding:10px 14px; border:1px solid var(--hairline); border-radius:6px; background:var(--paper-raised); color:var(--ink); font-family:inherit; font-size:14.5px;" />
-      <span class="filter-label" id="artistCount"></span>
+      <span class="filter-label" id="titleCount"></span>
     </div>
   </section>
 
   <section class="panel">
     <div class="panel-head">
       <div>
-        <div class="panel-title">統合済みグループ</div>
+        <div class="panel-title">グループ済み</div>
         <div class="panel-sub" id="groupedSub"></div>
       </div>
     </div>
@@ -58,7 +58,7 @@
   <section class="panel">
     <div class="panel-head">
       <div>
-        <div class="panel-title">未統合の表記</div>
+        <div class="panel-title">未グループのタイトル</div>
         <div class="panel-sub">1件チェックすると、表記が近いものが上位に並び替わります(🔍で基準を変更可)</div>
       </div>
     </div>
@@ -66,8 +66,8 @@
     <div id="ungroupedList" class="artist-list"></div>
     <div class="merge-bar" id="mergeBar">
       <span id="mergeCount">0件選択中</span>
-      <input type="text" id="mergeCanonical" placeholder="統合先の名前(例: A)" autocomplete="off" />
-      <button type="button" id="mergeBtn">統合する</button>
+      <input type="text" id="mergeCanonical" placeholder="グループ名(例: Hello→)" autocomplete="off" />
+      <button type="button" id="mergeBtn">グループにする</button>
       <span class="edit-status" id="mergeStatus"></span>
     </div>
   </section>
@@ -77,6 +77,6 @@
 <footer>SiX-DOG Archive — 個人アーカイブプロジェクト — データは Wayback Machine のアーカイブに基づき復元</footer>
 
 <script src="editor.js"></script>
-<script src="artists.js"></script>
+<script src="event-groups.js"></script>
 </body>
 </html>

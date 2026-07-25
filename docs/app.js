@@ -17,6 +17,7 @@
   /** @type {any[]} */
   let events = [];
   let aliases = {};
+  let eventGroups = {};
   let eventsByDate = new Map();
   let months = []; // [{year, month, key, label}]
   let currentMonthIndex = 0;
@@ -153,7 +154,9 @@
       const performerNames = ev.performers || [];
       // 表示名だけでなく統合先の名前(例: "A(アコースティック)" → "A")でも検索できるようにする
       const canonicalNames = performerNames.map(p => aliases[p]).filter(Boolean);
-      const hay = [ev.title, ...performerNames, ...canonicalNames].filter(Boolean).join(" ").toLowerCase();
+      // イベント名も同様に、グループ名(例: "Hello→vol.130" → "Hello→")でも検索できるようにする
+      const titleGroup = ev.title ? eventGroups[ev.title] : null;
+      const hay = [ev.title, titleGroup, ...performerNames, ...canonicalNames].filter(Boolean).join(" ").toLowerCase();
       return hay.includes(q);
     });
 
@@ -308,6 +311,7 @@
     const overrides = await (window.SixDogEditor ? window.SixDogEditor.fetchOverridesPublic() : Promise.resolve({}));
     events = window.SixDogEditor ? window.SixDogEditor.applyOverrides(data, overrides) : data;
     aliases = window.SixDogEditor ? await window.SixDogEditor.fetchAliasesPublic() : {};
+    eventGroups = window.SixDogEditor ? await window.SixDogEditor.fetchEventGroupsPublic() : {};
     if (window.SixDogTweets) await window.SixDogTweets.loadTweetIndex();
     eventsByDate = new Map(events.map(ev => [ev.event_date, ev]));
 
