@@ -90,19 +90,17 @@ notebooklm/
 
 ## 公開サイトからの編集機能
 
-カレンダー画面の公演詳細から「✎ この公演情報を編集」で、タイトル・時間・料金・出演者・備考をその場で修正できる。
+カレンダー画面の公演詳細から「✎ この公演情報を編集」で、タイトル・時間・料金・出演者・備考をその場で修正できる。**ログイン・トークン不要、誰でもすぐに保存できる**(「荒らしはいない」という前提で運用する方針)。
 
-- 修正内容は `docs/data/manual-overrides.json`(公演日をキーにした差分)に GitHub Contents API 経由でコミットされ、Pages再ビルド後に全訪問者へ反映される
-- 保存にはこのリポジトリへの**書き込み権限を持つ GitHub Personal Access Token**が必要(初回保存時にブラウザで入力を求められる)。トークンはそのブラウザの localStorage にのみ保存され、GitHub 以外には送信されない
-- トークンを持たない訪問者もフォームは開けるが保存はできない(=実質的にオーナーのみが編集可能)
-- Token作成手順: GitHub → Settings → Developer settings → Fine-grained tokens → このリポジトリを選択 → Permissions で **Contents: Read and write** を付与
-- `Parse-Events.ps1` を再実行しても `manual-overrides.json` 自体は残るが、`data/events.json` 側には自動マージされない(現状はクライアント側での表示時マージのみ)。恒久的に取り込みたい場合は内容を確認して `data/corrections.json` や次回の `Import-Xlsx.ps1` 用スプレッドシートに反映すること
+- バックエンドは動画投稿と同じ Supabase プロジェクト。テーブル `event_overrides`(`event_date` がPK、他は編集可能なフィールド)に、Row Level Security で「閲覧・投稿・更新は誰でも可、削除は不可」を設定
+- 保存は即座に反映される(GitHubのコミット・Pages再ビルド待ちは不要)
+- `Parse-Events.ps1` を再実行しても `event_overrides` の内容には影響しない(自動マージはされないため、恒久的に取り込みたい修正は内容を確認して `data/corrections.json` や次回の `Import-Xlsx.ps1` 用スプレッドシートに反映すること)
 
 ## アーティスト名の統合(`docs/artists.html`)
 
 「A」「A(アコースティック)」のような表記ゆれを、**公演ごとの表示は元の表記のまま残しつつ**、BIダッシュボードのランキングやカレンダー検索でだけ1つの名前にまとめて集計できる管理画面。ナビの「アーティスト管理」から開く。
 
-- 一覧から複数の表記にチェックを入れ、統合先の名前を入力して「統合する」を押すとグループ化される(保存はイベント編集と同じくGitHub Personal Access Tokenが必要)
+- 一覧から複数の表記にチェックを入れ、統合先の名前を入力して「統合する」を押すとグループ化される(保存にはこのリポジトリへの**書き込み権限を持つGitHub Personal Access Token**が必要。ランキング集計に影響する操作のため、このサイトで唯一トークンが必要な機能として残している)
 - グループの各メンバーは「✕ 解除」でいつでも統合を解除できる
 - 統合先の名前(`docs/data/artist-aliases.json`、表記→統合先のフラットな対応表)は`data/corrections.json`の`renamePerformers`と違い、**元データの文字列自体は書き換えない**。公演詳細やNotebookLM出力には引き続き元の表記(例:「A(アコースティック)」)が表示される
 
@@ -111,8 +109,8 @@ notebooklm/
 カレンダー詳細モーダルの出演者チップをクリックすると、その公演でのその出演者に紐づく動画URL(YouTubeなど)を閲覧・投稿できるパネルが開く。ここだけは**ログイン・トークン不要で誰でもリアルタイムに投稿・編集できる**(他の編集機能とは仕組みが異なる)。
 
 - バックエンドは [Supabase](https://supabase.com)(Postgres + PostgREST)。`docs/videos.js` の `CONFIG` に Project URL と **anon public key** を直接埋め込んでいる(anon keyはクライアント側に公開する前提の鍵)
-- テーブル `videos`(列: `id`, `event_date`, `performer_name`, `video_url`, `submitted_by`, `submitted_at`, `notes`)に対して Row Level Security で「閲覧・投稿・更新は誰でも可、削除は不可」を設定している。ポリシーの変更はSupabaseダッシュボードのSQL Editorから行う
-- YouTubeのURLは自動でページ内埋め込み再生になる。それ以外のURLはリンク表示のみ
+- テーブル `videos`(列: `id`, `event_date`, `performer_name`, `video_url`, `video_title`, `submitted_by`, `submitted_at`, `notes`)に対して Row Level Security で「閲覧・投稿・更新は誰でも可、削除は不可」を設定している。ポリシーの変更はSupabaseダッシュボードのSQL Editorから行う
+- 埋め込み再生はせず、投稿時にYouTubeのoEmbed APIから動画タイトルを取得して `video_title` に保存し、一覧ではそのタイトルをリンク文字列として表示する(件数が増えても埋め込みプレイヤーで重くならないための判断)。タイトルが取得できない場合やYouTube以外のURLはURLそのものをリンク文字列として表示する
 - 認証が無いため、悪意ある投稿・書き換えのリスクは受け入れた上での運用(個人のファン向けアーカイブとしての判断)。投稿の削除が必要な場合はSupabaseダッシュボードのTable Editorから直接行う(anon keyには削除権限が無いため、サイト上からは削除できない)
 
 ## 公開しているデータについて
