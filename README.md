@@ -106,6 +106,15 @@ notebooklm/
 - グループの各メンバーは「✕ 解除」でいつでも統合を解除できる
 - 統合先の名前(`docs/data/artist-aliases.json`、表記→統合先のフラットな対応表)は`data/corrections.json`の`renamePerformers`と違い、**元データの文字列自体は書き換えない**。公演詳細やNotebookLM出力には引き続き元の表記(例:「A(アコースティック)」)が表示される
 
+## 動画URLの投稿(`docs/videos.js`)
+
+カレンダー詳細モーダルの出演者チップをクリックすると、その公演でのその出演者に紐づく動画URL(YouTubeなど)を閲覧・投稿できるパネルが開く。ここだけは**ログイン・トークン不要で誰でもリアルタイムに投稿・編集できる**(他の編集機能とは仕組みが異なる)。
+
+- バックエンドは [Supabase](https://supabase.com)(Postgres + PostgREST)。`docs/videos.js` の `CONFIG` に Project URL と **anon public key** を直接埋め込んでいる(anon keyはクライアント側に公開する前提の鍵)
+- テーブル `videos`(列: `id`, `event_date`, `performer_name`, `video_url`, `submitted_by`, `submitted_at`, `notes`)に対して Row Level Security で「閲覧・投稿・更新は誰でも可、削除は不可」を設定している。ポリシーの変更はSupabaseダッシュボードのSQL Editorから行う
+- YouTubeのURLは自動でページ内埋め込み再生になる。それ以外のURLはリンク表示のみ
+- 認証が無いため、悪意ある投稿・書き換えのリスクは受け入れた上での運用(個人のファン向けアーカイブとしての判断)。投稿の削除が必要な場合はSupabaseダッシュボードのTable Editorから直接行う(anon keyには削除権限が無いため、サイト上からは削除できない)
+
 ## 公開しているデータについて
 
 日付・出演者名・料金・時間などのテキスト情報のみを公開しており、フライヤー画像やサイトデザインなど元サイトの著作物は複製していません。各公演には Wayback Machine 上の元ページへのリンクを付けています。
