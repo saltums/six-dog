@@ -5,16 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>SiX-DOG ARCHIVE — イベント名のグルーピング</title>
 <meta name="description" content="同じ企画シリーズの別回(例: Hello→vol.130 / Hello→vol.131)を、表示はそのまま残して集計・検索だけまとめる管理画面" />
-<meta property="og:image" content="img/six-dog-logo.jpg" />
-<link rel="icon" href="img/six-dog-logo.jpg" type="image/jpeg" />
-<link rel="apple-touch-icon" href="img/six-dog-logo.jpg" />
 <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
 <header class="topbar">
   <div class="inner">
-    <div class="brand"><img src="img/six-dog-logo.jpg" alt="" class="brand-logo" />SiX-DOG <span class="sub">ARCHIVE</span></div>
+    <div class="brand"><img src="img/six-dog-wordmark.png" alt="SiX-DOG" class="brand-wordmark" /> <span class="sub">ARCHIVE</span></div>
     <div class="tagline">イベント名のグルーピング — 表示はそのまま、集計・検索だけをまとめる</div>
     <nav class="nav-tabs">
       <a href="index.html">カレンダー</a>
@@ -34,7 +31,7 @@
         <div class="panel-sub">
           下の一覧はデータ内に登場する公演タイトルすべて。同じ企画シリーズの別回(例: 「Hello→vol.130」「Hello→vol.131」)に
           チェックを入れてグループ名を指定すると、公演詳細では元のタイトルのまま表示しつつ、カレンダー検索ではグループ名でも
-          まとめて見つけられるようになります。
+          まとめて見つけられるようになります。ログイン・トークン不要で誰でもグループ化・解除できます。
         </div>
       </div>
     </div>
@@ -79,7 +76,7 @@
 
 <footer>SiX-DOG Archive — 個人アーカイブプロジェクト — データは Wayback Machine のアーカイブに基づき復元</footer>
 
-<script src="editor.js"></script>
 <script src="event-groups.js"></script>
+<script src="event-groups-admin.js"></script>
 </body>
 </html>

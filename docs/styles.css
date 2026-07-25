@@ -103,10 +103,8 @@ a { color: var(--venue); }
   align-items: center;
   gap: 10px;
 }
-.brand-logo {
-  height: 1em;
-  width: 1em;
-  border-radius: 50%;
+.brand-wordmark {
+  height: clamp(24px, 4.4vw, 32px);
   display: block;
   flex: none;
 }

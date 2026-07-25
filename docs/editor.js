@@ -5,11 +5,11 @@
  * - 公演情報の編集(event_overrides): 誰でもログイン不要でその場で保存できる。
  *   Supabase(videos機能と同じプロジェクト)に直接書き込む。「荒らしはいない」
  *   という前提で、公演データは誰でも編集可能にする方針(ユーザー指示)。
- * - アーティスト名の統合(artist-aliases.json)・イベント名のグルーピング
- *   (event-title-groups.json): こちらは従来通りGitHub Contents API経由で
- *   コミットする方式のまま(書き込みには書き込み権限を持つGitHub Personal
- *   Access Tokenが必要)。ランキング集計に影響する操作のため、オーナーのみが
- *   変更できるよう残している。
+ * - アーティスト名の統合(artist-aliases.json): こちらは従来通りGitHub Contents
+ *   API経由でコミットする方式のまま(書き込みには書き込み権限を持つGitHub
+ *   Personal Access Tokenが必要)。ランキング集計に影響する操作のため、
+ *   オーナーのみが変更できるよう残している。
+ *   (イベント名のグルーピングは別途Supabaseベースで実装、event-groups.js参照)
  */
 (function (global) {
   "use strict";
@@ -19,7 +19,6 @@
     repo: "six-dog",
     branch: "master",
     aliasesPath: "docs/data/artist-aliases.json",
-    eventGroupsPath: "docs/data/event-title-groups.json",
   };
   const SUPABASE = {
     url: "https://fzylksuomkqkrdujueym.supabase.co",
@@ -183,19 +182,6 @@
     await saveJsonFile(CONFIG.aliasesPath, aliases, "Update artist aliases via web UI");
   }
 
-  // ---------- event-title-groups.json (イベント名のグルーピング) ----------
-  // 表記ゆれではなく「同じ企画シリーズの別回」(例: "Hello→vol.130" "Hello→vol.131")を
-  // まとめるためのマッピング。仕組みはartist-aliases.jsonと同じ
-  // { "元のタイトル": "グループ名" } というフラットマップで、GitHub PAT必須。
-
-  async function fetchEventGroupsPublic() {
-    return fetchJsonFilePublic("data/event-title-groups.json");
-  }
-
-  async function saveEventGroups(groups) {
-    await saveJsonFile(CONFIG.eventGroupsPath, groups, "Update event title groups via web UI");
-  }
-
   // ---------- 編集フォームUI ----------
 
   function buildEditForm(ev, { onSave, onCancel }) {
@@ -280,7 +266,5 @@
     fetchAliasesPublic,
     resolveCanonicalName,
     saveAliases,
-    fetchEventGroupsPublic,
-    saveEventGroups,
   };
 })(window);

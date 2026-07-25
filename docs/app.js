@@ -311,7 +311,7 @@
     const overrides = await (window.SixDogEditor ? window.SixDogEditor.fetchOverridesPublic() : Promise.resolve({}));
     events = window.SixDogEditor ? window.SixDogEditor.applyOverrides(data, overrides) : data;
     aliases = window.SixDogEditor ? await window.SixDogEditor.fetchAliasesPublic() : {};
-    eventGroups = window.SixDogEditor ? await window.SixDogEditor.fetchEventGroupsPublic() : {};
+    eventGroups = window.SixDogEventGroups ? await window.SixDogEventGroups.fetchGroupsMap() : {};
     if (window.SixDogTweets) await window.SixDogTweets.loadTweetIndex();
     eventsByDate = new Map(events.map(ev => [ev.event_date, ev]));
 
