@@ -201,6 +201,7 @@
         出典: ${formatSnapshotTimestamp(ev.source_snapshot_timestamp)} 時点のスナップショット<br/>
         <a href="${ev.source_snapshot_url}" target="_blank" rel="noopener">Wayback Machine で元ページを見る ↗</a>
       </div>
+      <div class="tweet-slot"></div>
       <div class="detail-edit-toggle">
         <button type="button" class="btn-edit-toggle">✎ この公演情報を編集</button>
       </div>
@@ -216,6 +217,12 @@
         videoSlot.scrollIntoView({ behavior: "smooth", block: "nearest" });
       });
     });
+    const tweetSlot = detailCard.querySelector(".tweet-slot");
+    if (window.SixDogTweets) {
+      window.SixDogTweets.buildTweetPanel(ev.event_date).then(panel => {
+        if (panel) tweetSlot.appendChild(panel);
+      });
+    }
     if (window.SixDogVideos && ev.performers && ev.performers.length) {
       window.SixDogVideos.fetchVideoPerformers(ev.event_date).then(withVideo => {
         detailCard.querySelectorAll(".chip[data-performer]").forEach(chip => {

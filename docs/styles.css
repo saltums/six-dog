@@ -958,6 +958,25 @@ footer {
 }
 .merge-bar button:disabled { opacity: 0.5; cursor: not-allowed; }
 
+/* ---------- 当日ツイート埋め込み ---------- */
+.tweet-panel {
+  margin: 4px 0 14px;
+}
+.tweet-panel-title {
+  font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--venue);
+  margin-bottom: 6px;
+}
+.tweet-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.tweet-embed { max-width: 100%; overflow: hidden; }
+.tweet-embed .twitter-tweet { margin: 0 !important; }
+
 /* ---------- 動画URLパネル ---------- */
 .video-panel {
   margin: 4px 0 14px;
