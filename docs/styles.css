@@ -371,14 +371,24 @@ main {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin-bottom: 14px;
+  margin-bottom: 4px;
 }
 .performers .chip {
   background: var(--venue-soft);
   color: var(--venue);
+  border: none;
   border-radius: 999px;
   padding: 4px 11px;
   font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+}
+.performers .chip:hover { background: var(--stamp); color: var(--stamp-ink); }
+.performers .chip .chip-video-icon { font-size: 11px; opacity: 0.8; }
+.performers-hint {
+  font-size: 11px;
+  color: var(--ink-soft);
+  margin-bottom: 14px;
 }
 .detail-notes {
   font-size: 13px;
@@ -948,3 +958,84 @@ footer {
   cursor: pointer;
 }
 .merge-bar button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ---------- 動画URLパネル ---------- */
+.video-panel {
+  margin: 4px 0 14px;
+  border: 1px solid var(--venue);
+  border-radius: 8px;
+  background: var(--paper-raised);
+  overflow: hidden;
+}
+.video-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: var(--venue-soft);
+}
+.video-panel-title {
+  font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
+  font-weight: 700;
+  font-size: 13.5px;
+  color: var(--venue);
+}
+.video-panel-close {
+  border: none;
+  background: none;
+  color: var(--ink-soft);
+  font-size: 14px;
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+}
+.video-panel-close:hover { background: var(--paper); }
+.video-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 14px;
+  max-height: 360px;
+  overflow-y: auto;
+}
+.video-item {
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 12.5px;
+}
+.video-embed { position: relative; width: 100%; padding-top: 56.25%; margin-bottom: 8px; border-radius: 4px; overflow: hidden; background: #000; }
+.video-embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.video-link { display: block; color: var(--venue); word-break: break-all; font-size: 12.5px; }
+.video-meta { color: var(--ink-soft); font-size: 11px; margin-top: 4px; }
+.video-notes { color: var(--ink); font-size: 12px; margin-top: 4px; }
+.video-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px;
+  border-top: 1px dashed var(--hairline);
+}
+.video-form input, .video-form textarea {
+  font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
+  font-size: 13px;
+  padding: 7px 10px;
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+  background: var(--paper);
+  color: var(--ink);
+  resize: vertical;
+}
+.video-form input:focus, .video-form textarea:focus { outline: 2px solid var(--venue); outline-offset: 1px; }
+.video-form .v-submit {
+  align-self: flex-start;
+  background: var(--venue);
+  border: 1px solid var(--venue);
+  color: var(--stamp-ink);
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.video-status { font-size: 11.5px; color: var(--ink-soft); }

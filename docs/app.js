@@ -191,7 +191,11 @@
         <dt>TIME</dt><dd>${escapeHtml(timeLabel(ev.open_time, ev.start_time))}</dd>
         <dt>PRICE</dt><dd>${escapeHtml(priceLabel(ev.price_adv, ev.price_door))}${ev.price_note ? " " + escapeHtml(ev.price_note) : ""}</dd>
       </dl>
-      ${ev.performers && ev.performers.length ? `<div class="performers">${ev.performers.map(p => `<span class="chip">${escapeHtml(p)}</span>`).join("")}</div>` : ""}
+      ${ev.performers && ev.performers.length ? `
+        <div class="performers">${ev.performers.map(p => `<button type="button" class="chip" data-performer="${escapeHtml(p)}">${escapeHtml(p)} <span class="chip-video-icon">🎬</span></button>`).join("")}</div>
+        <div class="performers-hint">出演者名をクリックすると動画URLの閲覧・投稿ができます</div>
+      ` : ""}
+      <div class="video-slot"></div>
       ${ev.notes ? `<div class="detail-notes">${escapeHtml(ev.notes)}</div>` : ""}
       <div class="detail-source">
         出典: ${formatSnapshotTimestamp(ev.source_snapshot_timestamp)} 時点のスナップショット<br/>
@@ -203,6 +207,15 @@
       <div class="edit-form-slot"></div>
     `;
     detailCard.querySelector(".close").addEventListener("click", hideDetail);
+    const videoSlot = detailCard.querySelector(".video-slot");
+    detailCard.querySelectorAll(".chip[data-performer]").forEach(chip => {
+      chip.addEventListener("click", () => {
+        if (!window.SixDogVideos) return;
+        videoSlot.innerHTML = "";
+        videoSlot.appendChild(window.SixDogVideos.buildVideoPanel(ev.event_date, chip.dataset.performer));
+        videoSlot.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      });
+    });
     const editToggleBtn = detailCard.querySelector(".btn-edit-toggle");
     const editSlot = detailCard.querySelector(".edit-form-slot");
     editToggleBtn.addEventListener("click", () => {
