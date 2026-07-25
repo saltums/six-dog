@@ -216,10 +216,10 @@ function Parse-DayBlock([string[]]$lines, [int]$year, [int]$month, [hashtable]$s
         return $null
     }
 
-    # single-month世代(ページに月見出しが無くキャプチャ日時から月を推測している)は、
-    # 「年月」が確定情報ではなく推定である旨をデータ上明示する。日にちはページ本文に
-    # 明記されているため信頼できるが、月/年はページの更新停滞により実際とズレている
-    # 可能性がある。
+    # 月見出しが無いページのうち、自己参照サイドバーで年月を確定できたものは
+    # "single-month-confirmed"(信頼できる)、それでも分からずキャプチャ日時から
+    # 推測しただけのものは "single-month"(実際とズレている可能性がある)として
+    # 世代を分けている。
     $dateConfidence = if ($sourceInfo.era -eq 'single-month') { 'estimated' } else { 'confirmed' }
 
     return [pscustomobject]@{
@@ -266,6 +266,25 @@ function Split-DaySubBlocks([string[]]$lines) {
     return ,$groups
 }
 
+# サイトには <h3>Schedule</h3> / <h3>Month</h3> の下に
+# <a href="pgNNN.html">YYYY.MM</a> という月間ナビゲーションのサイドバーがあり、
+# ここに「自分自身へのリンク」が含まれる。月見出しを持たないページでも、
+# このサイドバーから自分の本当の年月を確定できる(キャプチャ日時からの
+# 推測より信頼できる — 実データで「2015年1月にキャプチャされたページの
+# 中身は実は2014年10月分だった」というズレが見つかったため)。
+$selfRefRe = [regex]'<a href="(pg\d+\.html)">\s*(\d{4})\s*\.\s*(\d{1,2})\s*</a>'
+function Get-SelfReferencedMonth([string]$html, [string]$originalUrl) {
+    $selfPage = [regex]::Match($originalUrl, 'pg\d+\.html')
+    if (-not $selfPage.Success) { return $null }
+    $selfName = $selfPage.Value
+    foreach ($m in $selfRefRe.Matches($html)) {
+        if ($m.Groups[1].Value -eq $selfName) {
+            return [pscustomobject]@{ year = [int]$m.Groups[2].Value; month = [int]$m.Groups[3].Value }
+        }
+    }
+    return $null
+}
+
 # ---------- メイン処理 ----------
 
 $allEvents = New-Object System.Collections.Generic.List[object]
@@ -309,10 +328,13 @@ foreach ($entry in $manifest) {
             }
         }
     } elseif ($dayLevelH2Matches.Count -gt 0) {
-        # ページ全体で年は共通(<h3>2016.11 SiX-DOG Schedule</h3>のような表記から取得、
-        # 無ければキャプチャのタイムスタンプの年で代用)。月と日は<h2>ごとに個別に持つ。
+        # ページ全体で年は共通。自己参照サイドバー(最も信頼できる)→
+        # <h3>2016.11 SiX-DOG Schedule</h3>のような表記→キャプチャ日時の順で代用する。
+        $selfRef = Get-SelfReferencedMonth $html $entry.original_url
         $pageYearMatch = [regex]::Match($html, '(\d{4})\s*\.\s*\d{1,2}\s*SiX-DOG\s*Schedule')
-        $pageYear = if ($pageYearMatch.Success) { [int]$pageYearMatch.Groups[1].Value } else { [int]$entry.timestamp.Substring(0, 4) }
+        $pageYear = if ($selfRef) { $selfRef.year }
+                    elseif ($pageYearMatch.Success) { [int]$pageYearMatch.Groups[1].Value }
+                    else { [int]$entry.timestamp.Substring(0, 4) }
         $sourceInfo = $sourceInfoBase.Clone()
         $sourceInfo.era = "day-heading"
         foreach ($hm in $dayLevelH2Matches) {
@@ -334,12 +356,21 @@ foreach ($entry in $manifest) {
             }
         }
     } else {
-        # 月見出しなし: キャプチャのタイムスタンプから年月を推定(その月の「現在の」スケジュールページである想定)
-        $ts = $entry.timestamp
-        $year = [int]$ts.Substring(0, 4)
-        $month = [int]$ts.Substring(4, 2)
+        # 月見出しなし: まず自己参照サイドバー(<a href="pgNNN.html">YYYY.MM</a>のうち
+        # 自分自身へのリンク)で本当の年月を確定させる。見つからない場合のみ、
+        # キャプチャのタイムスタンプから推測する(信頼度は低いため date_confidence で明示)。
+        $selfRef = Get-SelfReferencedMonth $html $entry.original_url
         $sourceInfo = $sourceInfoBase.Clone()
-        $sourceInfo.era = "single-month"
+        if ($selfRef) {
+            $year = $selfRef.year
+            $month = $selfRef.month
+            $sourceInfo.era = "single-month-confirmed"
+        } else {
+            $ts = $entry.timestamp
+            $year = [int]$ts.Substring(0, 4)
+            $month = [int]$ts.Substring(4, 2)
+            $sourceInfo.era = "single-month"
+        }
         foreach ($pInner in (Get-DayBlocks $html)) {
             $lines = ConvertTo-PlainLines $pInner
             foreach ($subLines in (Split-DaySubBlocks $lines)) {
@@ -354,15 +385,17 @@ Write-Output "スケジュールページと判定: $scannedSchedulePages 件"
 Write-Output "抽出した生イベント件数(重複含む): $($allEvents.Count)"
 
 # ---------- 重複排除(1): event_date ごとに field_count 最大 → タイムスタンプ最新 を採用 ----------
-# 同じ日付に複数の候補がある場合は、まず「その日に実際にあった公演として一番情報が
-# 充実している候補」を先に確定させる。ここを最初にやることで、後段の「使い回し
+# 同じ日付に複数の候補がある場合は、最も新しくキャプチャされたものを優先する
+# (「未定」だった時間・出演者が確定情報に更新されていくため、後から取得された
+# スナップショットほど正確という前提。field_countは同時刻キャプチャが複数ある
+# 場合のタイブレークとしてのみ使う)。ここを最初にやることで、後段の「使い回し
 # コンテンツ」除去が、たまたま同じ日付に居合わせた別の本物のイベントを誤って
 # 消してしまう事故を防ぐ(下記参照)。
 
 $grouped = $allEvents | Group-Object event_date
 $finalEvents = New-Object System.Collections.Generic.List[object]
 foreach ($g in $grouped) {
-    $best = $g.Group | Sort-Object -Property @{Expression = "field_count"; Descending = $true }, @{Expression = "source_snapshot_timestamp"; Descending = $true } | Select-Object -First 1
+    $best = $g.Group | Sort-Object -Property @{Expression = "source_snapshot_timestamp"; Descending = $true }, @{Expression = "field_count"; Descending = $true } | Select-Object -First 1
     $finalEvents.Add($best)
 }
 
