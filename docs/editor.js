@@ -138,13 +138,21 @@
 
   function applyOverrides(events, overrides) {
     if (!overrides || Object.keys(overrides).length === 0) return events;
-    return events.map(ev => {
+    const knownDates = new Set(events.map(ev => ev.event_date));
+    const patched = events.map(ev => {
       const patch = overrides[ev.event_date];
       if (!patch) return ev;
       const merged = Object.assign({}, ev, patch);
       merged._edited = true;
       return merged;
     });
+    // 元サイトのアーカイブに該当日の公演記録が無い(=Waybackの欠落)場合でも、
+    // ブログ等の一次資料からevent_overridesに新規登録されていれば、
+    // その日を新しい公演としてカレンダーに追加する。
+    const added = Object.keys(overrides)
+      .filter(date => !knownDates.has(date))
+      .map(date => Object.assign({ event_date: date, _edited: true, _synthetic: true }, overrides[date]));
+    return patched.concat(added);
   }
 
   async function saveOverride(originalDate, patch) {

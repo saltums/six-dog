@@ -128,6 +128,13 @@
           w.title = "この公演の月・年はページ更新日から推定したもので、実際とズレている可能性があります";
           cell.appendChild(w);
         }
+        if (ev._synthetic) {
+          const s = document.createElement("span");
+          s.className = "badge badge-warn";
+          s.textContent = "ブログより復元";
+          s.title = "元サイトのアーカイブに記録が無く、ブログ等の外部資料から復元した公演です";
+          cell.appendChild(s);
+        }
         if (window.SixDogTweets && window.SixDogTweets.hasTweet(dateStr)) {
           const x = document.createElement("span");
           x.className = "badge badge-x";
@@ -201,7 +208,7 @@
   function showDetail(ev) {
     detailCard.innerHTML = `
       <button class="close" aria-label="閉じる" type="button">×</button>
-      <div class="detail-eyebrow">${ev.event_date}${ev.weekday ? " (" + ev.weekday + ")" : ""}${ev._edited ? ' <span class="badge-warn" title="手動で修正済み">編集済み</span>' : ""}</div>
+      <div class="detail-eyebrow">${ev.event_date}${ev.weekday ? " (" + ev.weekday + ")" : ""}${ev._synthetic ? ' <span class="badge-warn" title="元サイトのアーカイブにこの公演の記録が無く、ブログ等の外部資料から復元しました">ブログより復元</span>' : ev._edited ? ' <span class="badge-warn" title="手動で修正済み">編集済み</span>' : ""}</div>
       <div class="detail-title">${escapeHtml(ev.title || "(タイトル不明)")}</div>
       ${ev.date_confidence === "estimated" ? `<div class="detail-notes">⚠ この日付の月・年は推定です。元ページに月の記載が無く、スナップショットが取得された時期から推測しているため、実際の公演日と異なる可能性があります。</div>` : ""}
       <dl class="detail-grid">
@@ -214,10 +221,14 @@
       ` : ""}
       <div class="video-slot"></div>
       ${ev.notes ? `<div class="detail-notes">${escapeHtml(ev.notes)}</div>` : ""}
-      <div class="detail-source">
-        出典: ${formatSnapshotTimestamp(ev.source_snapshot_timestamp)} 時点のスナップショット<br/>
-        <a href="${ev.source_snapshot_url}" target="_blank" rel="noopener">Wayback Machine で元ページを見る ↗</a>
-      </div>
+      ${ev._synthetic ? `
+        <div class="detail-source">出典: 元サイトのアーカイブにはこの日の公演記録がありません。下記の関連ブログ記事から日付・出演者を復元しています。</div>
+      ` : `
+        <div class="detail-source">
+          出典: ${formatSnapshotTimestamp(ev.source_snapshot_timestamp)} 時点のスナップショット<br/>
+          <a href="${ev.source_snapshot_url}" target="_blank" rel="noopener">Wayback Machine で元ページを見る ↗</a>
+        </div>
+      `}
       <div class="tweet-slot"></div>
       <div class="link-slot"></div>
       <div class="detail-edit-toggle">
