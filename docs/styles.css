@@ -100,8 +100,15 @@ a { color: var(--venue); }
   font-size: clamp(30px, 6vw, 40px);
   letter-spacing: 0.05em;
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 10px;
+}
+.brand-logo {
+  height: 1em;
+  width: 1em;
+  border-radius: 50%;
+  display: block;
+  flex: none;
 }
 .brand .sub {
   font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
@@ -116,8 +123,11 @@ a { color: var(--venue); }
 }
 .nav-tabs {
   display: flex;
+  flex-wrap: nowrap;
   gap: 4px;
   margin-top: 16px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 .nav-tabs a {
   font-family: "Bebas Neue", "Hiragino Sans", "Yu Gothic", sans-serif;
@@ -128,6 +138,8 @@ a { color: var(--venue); }
   padding: 7px 14px;
   border-radius: 999px;
   border: 1px solid transparent;
+  white-space: nowrap;
+  flex: none;
 }
 .nav-tabs a:hover { color: var(--ink); }
 .nav-tabs a.active {
