@@ -266,6 +266,13 @@ main {
   color: var(--stamp);
   margin-left: 4px;
 }
+.badge-x {
+  background: transparent;
+  border: 1px solid var(--ink-soft);
+  color: var(--ink);
+  margin-left: 4px;
+  font-weight: 700;
+}
 .cal-empty-month {
   grid-column: 1 / -1;
   text-align: center;

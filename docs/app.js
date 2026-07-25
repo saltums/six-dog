@@ -127,6 +127,13 @@
           w.title = "この公演の月・年はページ更新日から推定したもので、実際とズレている可能性があります";
           cell.appendChild(w);
         }
+        if (window.SixDogTweets && window.SixDogTweets.hasTweet(dateStr)) {
+          const x = document.createElement("span");
+          x.className = "badge badge-x";
+          x.title = "当日の告知ツイートあり";
+          x.textContent = "𝕏";
+          cell.appendChild(x);
+        }
         cell.addEventListener("click", () => showDetail(ev));
       }
       calGrid.appendChild(cell);
@@ -301,6 +308,7 @@
     const overrides = await (window.SixDogEditor ? window.SixDogEditor.fetchOverridesPublic() : Promise.resolve({}));
     events = window.SixDogEditor ? window.SixDogEditor.applyOverrides(data, overrides) : data;
     aliases = window.SixDogEditor ? await window.SixDogEditor.fetchAliasesPublic() : {};
+    if (window.SixDogTweets) await window.SixDogTweets.loadTweetIndex();
     eventsByDate = new Map(events.map(ev => [ev.event_date, ev]));
 
     if (!events.length) {

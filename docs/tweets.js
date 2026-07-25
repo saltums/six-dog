@@ -56,6 +56,10 @@
     });
   }
 
+  function hasTweet(eventDate) {
+    return !!(tweetsByDate && tweetsByDate.has(eventDate));
+  }
+
   async function buildTweetPanel(eventDate) {
     const byDate = await loadTweetIndex();
     const ids = byDate.get(eventDate);
@@ -86,5 +90,5 @@
     return wrap;
   }
 
-  global.SixDogTweets = { buildTweetPanel };
+  global.SixDogTweets = { buildTweetPanel, loadTweetIndex, hasTweet };
 })(window);
