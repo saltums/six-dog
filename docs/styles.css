@@ -1036,6 +1036,36 @@ footer {
   cursor: pointer;
 }
 .tweet-status { font-size: 11.5px; color: var(--ink-soft); flex-basis: 100%; }
+.link-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.link-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 7px 10px;
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+  background: var(--paper-raised);
+  font-size: 13px;
+}
+.link-item a { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.link-item .tweet-unlink { position: static; flex: none; }
+.tweet-form .lk-url, .tweet-form .lk-title {
+  font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
+  font-size: 13px;
+  padding: 7px 10px;
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+  background: var(--paper);
+  color: var(--ink);
+}
+.tweet-form .lk-url { flex: 2; min-width: 180px; }
+.tweet-form .lk-title { flex: 1; min-width: 140px; }
+.tweet-form .lk-url:focus, .tweet-form .lk-title:focus { outline: 2px solid var(--venue); outline-offset: 1px; }
 
 /* ---------- 動画URLパネル ---------- */
 .video-panel {

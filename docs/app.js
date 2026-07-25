@@ -135,6 +135,13 @@
           x.textContent = "𝕏";
           cell.appendChild(x);
         }
+        if (window.SixDogLinks && window.SixDogLinks.hasLink(dateStr)) {
+          const l = document.createElement("span");
+          l.className = "badge badge-x";
+          l.title = "関連ブログ記事あり";
+          l.textContent = "🔗";
+          cell.appendChild(l);
+        }
         cell.addEventListener("click", () => showDetail(ev));
       }
       calGrid.appendChild(cell);
@@ -212,6 +219,7 @@
         <a href="${ev.source_snapshot_url}" target="_blank" rel="noopener">Wayback Machine で元ページを見る ↗</a>
       </div>
       <div class="tweet-slot"></div>
+      <div class="link-slot"></div>
       <div class="detail-edit-toggle">
         <button type="button" class="btn-edit-toggle">✎ この公演情報を編集</button>
       </div>
@@ -231,6 +239,12 @@
     if (window.SixDogTweets) {
       window.SixDogTweets.buildTweetPanel(ev.event_date).then(panel => {
         if (panel) tweetSlot.appendChild(panel);
+      });
+    }
+    const linkSlot = detailCard.querySelector(".link-slot");
+    if (window.SixDogLinks) {
+      window.SixDogLinks.buildLinkPanel(ev.event_date).then(panel => {
+        if (panel) linkSlot.appendChild(panel);
       });
     }
     if (window.SixDogVideos && ev.performers && ev.performers.length) {
@@ -313,6 +327,7 @@
     aliases = window.SixDogEditor ? await window.SixDogEditor.fetchAliasesPublic() : {};
     eventGroups = window.SixDogEventGroups ? await window.SixDogEventGroups.fetchGroupsMap() : {};
     if (window.SixDogTweets) await window.SixDogTweets.loadTweetIndex();
+    if (window.SixDogLinks) await window.SixDogLinks.loadLinkIndex();
     eventsByDate = new Map(events.map(ev => [ev.event_date, ev]));
 
     if (!events.length) {
