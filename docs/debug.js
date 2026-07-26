@@ -4,6 +4,14 @@
   const PASSWORD = "1640925a";
   const SESSION_KEY = "sixdog_debug_unlocked";
 
+  const SUPABASE = {
+    url: "https://fzylksuomkqkrdujueym.supabase.co",
+    anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6eWxrc3VvbWtxa3JkdWp1ZXltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5NTU5ODcsImV4cCI6MjEwMDUzMTk4N30.D9eORdSj5zkmJDnz8zVDSmMR804PATbWOpDEPChetf0",
+  };
+  function supabaseHeaders() {
+    return { apikey: SUPABASE.anonKey, Authorization: `Bearer ${SUPABASE.anonKey}` };
+  }
+
   const gateWrap = document.getElementById("gateWrap");
   const gateForm = document.getElementById("gateForm");
   const gatePassword = document.getElementById("gatePassword");
@@ -14,6 +22,23 @@
   const debugList = document.getElementById("debugList");
 
   let rows = [];
+  let videosByDate = new Map();
+
+  async function fetchAllVideos() {
+    try {
+      const res = await fetch(`${SUPABASE.url}/rest/v1/videos?select=event_date,performer_name,video_url,video_title&order=event_date.asc`, { headers: supabaseHeaders() });
+      if (!res.ok) return new Map();
+      const data = await res.json();
+      const map = new Map();
+      data.forEach(v => {
+        if (!map.has(v.event_date)) map.set(v.event_date, []);
+        map.get(v.event_date).push(v);
+      });
+      return map;
+    } catch (e) {
+      return new Map();
+    }
+  }
 
   function formatSnapshotTimestamp(ts) {
     if (!ts || ts.length < 8) return ts || "";
@@ -41,8 +66,9 @@
 
     const table = document.createElement("table");
     table.className = "data-table";
-    table.innerHTML = `<thead><tr><th>日付</th><th>タイトル</th><th>種別</th><th>スナップショット日時</th><th>元ページ</th><th>編集済み</th></tr></thead><tbody></tbody>`;
+    table.innerHTML = `<thead><tr><th>日付</th><th>タイトル</th><th>種別</th><th>スナップショット日時</th><th>元ページ</th><th>関連URL</th><th>動画</th><th>編集済み</th><th>備考</th></tr></thead><tbody></tbody>`;
     const tbody = table.querySelector("tbody");
+    const getLinks = window.SixDogLinks ? window.SixDogLinks.getLinks : () => [];
     filtered.forEach(ev => {
       const tr = document.createElement("tr");
       tr.style.cursor = "default";
@@ -71,15 +97,55 @@
         urlTd.textContent = "—";
       }
 
+      const linksTd = document.createElement("td");
+      const links = getLinks(ev.event_date);
+      if (links.length) {
+        links.forEach((row, i) => {
+          if (i > 0) linksTd.appendChild(document.createElement("br"));
+          const a = document.createElement("a");
+          a.href = row.url;
+          a.target = "_blank";
+          a.rel = "noopener";
+          a.textContent = (row.title || row.url) + " ↗";
+          linksTd.appendChild(a);
+        });
+      } else {
+        linksTd.textContent = "—";
+      }
+
+      const videosTd = document.createElement("td");
+      const videos = videosByDate.get(ev.event_date) || [];
+      if (videos.length) {
+        videos.forEach((v, i) => {
+          if (i > 0) videosTd.appendChild(document.createElement("br"));
+          const a = document.createElement("a");
+          a.href = v.video_url;
+          a.target = "_blank";
+          a.rel = "noopener";
+          a.textContent = `${v.performer_name || "?"}: ${v.video_title || v.video_url} ↗`;
+          videosTd.appendChild(a);
+        });
+      } else {
+        videosTd.textContent = "—";
+      }
+
       const editedTd = document.createElement("td");
       editedTd.textContent = ev._edited ? "✓" : "";
+
+      const notesTd = document.createElement("td");
+      notesTd.textContent = ev.notes || "—";
+      notesTd.style.maxWidth = "260px";
+      notesTd.style.whiteSpace = "normal";
 
       tr.appendChild(dateTd);
       tr.appendChild(titleTd);
       tr.appendChild(kindTd);
       tr.appendChild(snapTd);
       tr.appendChild(urlTd);
+      tr.appendChild(linksTd);
+      tr.appendChild(videosTd);
       tr.appendChild(editedTd);
+      tr.appendChild(notesTd);
       tbody.appendChild(tr);
     });
     debugList.innerHTML = "";
@@ -93,6 +159,8 @@
     const overrides = window.SixDogEditor ? await window.SixDogEditor.fetchOverridesPublic() : {};
     const events = window.SixDogEditor ? window.SixDogEditor.applyOverrides(data, overrides) : data;
     rows = events.slice().sort((a, b) => a.event_date.localeCompare(b.event_date));
+    if (window.SixDogLinks) await window.SixDogLinks.loadLinkIndex();
+    videosByDate = await fetchAllVideos();
     renderTable(debugFilter.value);
   }
 
