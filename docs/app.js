@@ -58,11 +58,6 @@
     return `adv ${a} / door ${d}`;
   }
 
-  function formatSnapshotTimestamp(ts) {
-    if (!ts || ts.length < 8) return ts;
-    return `${ts.slice(0, 4)}-${ts.slice(4, 6)}-${ts.slice(6, 8)}`;
-  }
-
   function renderStats() {
     if (!events.length) {
       statsEl.textContent = "";
@@ -102,9 +97,9 @@
     for (let day = 1; day <= daysInMonth; day++) {
       const dateStr = `${year}-${pad2(month)}-${pad2(day)}`;
       const ev = eventsByDate.get(dateStr);
-      const cell = document.createElement(ev ? "button" : "div");
-      if (ev) { cell.type = "button"; }
-      cell.className = "cal-cell" + (ev ? " has-event" : "");
+      const cell = document.createElement("button");
+      cell.type = "button";
+      cell.className = "cal-cell" + (ev ? " has-event" : " cal-cell-empty");
       const dEl = document.createElement("div");
       dEl.className = "d";
       dEl.textContent = day;
@@ -118,7 +113,7 @@
         if (ev.performers && ev.performers.length) {
           const b = document.createElement("span");
           b.className = "badge";
-          b.textContent = `出演 ${ev.performers.length}`;
+          b.innerHTML = `<span class="badge-label">出演 </span>${ev.performers.length}`;
           cell.appendChild(b);
         }
         if (ev.date_confidence === "estimated") {
@@ -127,13 +122,6 @@
           w.textContent = "月不明";
           w.title = "この公演の月・年はページ更新日から推定したもので、実際とズレている可能性があります";
           cell.appendChild(w);
-        }
-        if (ev._synthetic) {
-          const s = document.createElement("span");
-          s.className = "badge badge-warn";
-          s.textContent = "ブログより復元";
-          s.title = "元サイトのアーカイブに記録が無く、ブログ等の外部資料から復元した公演です";
-          cell.appendChild(s);
         }
         if (window.SixDogTweets && window.SixDogTweets.hasTweet(dateStr)) {
           const x = document.createElement("span");
@@ -150,6 +138,13 @@
           cell.appendChild(l);
         }
         cell.addEventListener("click", () => showDetail(ev));
+      } else {
+        const plus = document.createElement("span");
+        plus.className = "cal-add-hint";
+        plus.textContent = "＋";
+        cell.appendChild(plus);
+        cell.title = "この日の公演情報を追加";
+        cell.addEventListener("click", () => showDetail({ event_date: dateStr }, { isNew: true }));
       }
       calGrid.appendChild(cell);
     }
@@ -205,10 +200,38 @@
     return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   }
 
-  function showDetail(ev) {
+  function showDetail(ev, opts) {
+    const isNew = !!(opts && opts.isNew);
+    if (isNew) {
+      detailCard.innerHTML = `
+        <button class="close" aria-label="閉じる" type="button">×</button>
+        <div class="detail-eyebrow">${ev.event_date}${ev.weekday ? " (" + ev.weekday + ")" : ""} <span class="badge-warn">新規追加</span></div>
+        <div class="detail-title">新しい公演情報を追加</div>
+        <div class="detail-notes">この日の公演記録がありません。わかる範囲で情報を入力してください(後から追記・修正できます)。</div>
+        <div class="edit-form-slot"></div>
+      `;
+      detailCard.querySelector(".close").addEventListener("click", hideDetail);
+      const editSlot = detailCard.querySelector(".edit-form-slot");
+      if (window.SixDogEditor) {
+        const form = window.SixDogEditor.buildEditForm(ev, {
+          onCancel: hideDetail,
+          onSave: (updatedEv) => {
+            eventsByDate.set(ev.event_date, updatedEv);
+            const idx = events.findIndex(e => e.event_date === ev.event_date);
+            if (idx >= 0) events[idx] = updatedEv; else events.push(updatedEv);
+            renderCalendar();
+            hideDetail();
+            showDetail(updatedEv);
+          },
+        });
+        editSlot.appendChild(form);
+      }
+      overlay.classList.remove("hidden");
+      return;
+    }
     detailCard.innerHTML = `
       <button class="close" aria-label="閉じる" type="button">×</button>
-      <div class="detail-eyebrow">${ev.event_date}${ev.weekday ? " (" + ev.weekday + ")" : ""}${ev._synthetic ? ' <span class="badge-warn" title="元サイトのアーカイブにこの公演の記録が無く、ブログ等の外部資料から復元しました">ブログより復元</span>' : ev._edited ? ' <span class="badge-warn" title="手動で修正済み">編集済み</span>' : ""}</div>
+      <div class="detail-eyebrow">${ev.event_date}${ev.weekday ? " (" + ev.weekday + ")" : ""}${ev._edited && !ev._synthetic ? ' <span class="badge-warn" title="手動で修正済み">編集済み</span>' : ""}</div>
       <div class="detail-title">${escapeHtml(ev.title || "(タイトル不明)")}</div>
       ${ev.date_confidence === "estimated" ? `<div class="detail-notes">⚠ この日付の月・年は推定です。元ページに月の記載が無く、スナップショットが取得された時期から推測しているため、実際の公演日と異なる可能性があります。</div>` : ""}
       <dl class="detail-grid">
@@ -221,14 +244,6 @@
       ` : ""}
       <div class="video-slot"></div>
       ${ev.notes ? `<div class="detail-notes">${escapeHtml(ev.notes)}</div>` : ""}
-      ${ev._synthetic ? `
-        <div class="detail-source">出典: 元サイトのアーカイブにはこの日の公演記録がありません。下記の関連ブログ記事から日付・出演者を復元しています。</div>
-      ` : `
-        <div class="detail-source">
-          出典: ${formatSnapshotTimestamp(ev.source_snapshot_timestamp)} 時点のスナップショット<br/>
-          <a href="${ev.source_snapshot_url}" target="_blank" rel="noopener">Wayback Machine で元ページを見る ↗</a>
-        </div>
-      `}
       <div class="tweet-slot"></div>
       <div class="link-slot"></div>
       <div class="detail-edit-toggle">
@@ -277,7 +292,7 @@
         onSave: (updatedEv) => {
           eventsByDate.set(ev.event_date, updatedEv);
           const idx = events.findIndex(e => e.event_date === ev.event_date);
-          if (idx >= 0) events[idx] = updatedEv;
+          if (idx >= 0) events[idx] = updatedEv; else events.push(updatedEv);
           renderCalendar();
           editSlot.innerHTML = "";
           editToggleBtn.classList.remove("hidden");
@@ -360,7 +375,16 @@
     for (const [k, c] of countByMonth) { if (c > bestCount) { bestCount = c; bestKey = k; } }
     const initialIndex = Math.max(0, months.findIndex(m => m.key === bestKey));
 
-    selectMonth(initialIndex);
+    // ?date=YYYY-MM-DD が付いている場合はその日の詳細を直接開く(BIダッシュボードの「要確認」一覧から遷移する用)
+    const deepLinkDate = new URLSearchParams(location.search).get("date");
+    const deepLinkEv = deepLinkDate ? eventsByDate.get(deepLinkDate) : null;
+    if (deepLinkEv) {
+      const idx = months.findIndex(m => m.key === deepLinkDate.slice(0, 7));
+      selectMonth(idx >= 0 ? idx : initialIndex);
+      showDetail(deepLinkEv);
+    } else {
+      selectMonth(initialIndex);
+    }
     updateView();
   }
 

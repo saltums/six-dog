@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SiX-DOG ARCHIVE — デバッグ</title>
+<meta name="robots" content="noindex, nofollow" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<div id="splash" class="splash" aria-hidden="true">
+  <img src="img/six-dog-icon.jpg" alt="" class="splash-logo" />
+</div>
+
+<header class="topbar">
+  <div class="inner">
+    <div class="brand"><img src="img/six-dog-wordmark.png" alt="SiX-DOG" class="brand-wordmark" /> <span class="sub">ARCHIVE</span></div>
+    <div class="tagline">各公演データの出典・取得元スナップショット情報(管理者向け)</div>
+    <nav class="nav-tabs">
+      <a href="index.html">カレンダー</a>
+      <a href="bi.html">BIダッシュボード</a>
+      <a href="artists.html">アーティスト管理</a>
+      <a href="event-groups.html">イベント管理</a>
+      <a href="debug.html" class="active" aria-current="page">デバッグ</a>
+    </nav>
+  </div>
+</header>
+
+<main class="bi-main">
+
+  <section class="panel" id="gateWrap">
+    <div class="panel-head">
+      <div>
+        <div class="panel-title">管理者用デバッグ画面</div>
+        <div class="panel-sub">各公演の出典(スナップショット日時・元ページURL・復元経路)を確認できます。パスワードを入力してください。</div>
+      </div>
+    </div>
+    <form id="gateForm" class="edit-form edit-row" style="max-width:320px;">
+      <label for="gatePassword">パスワード</label>
+      <input id="gatePassword" type="password" autocomplete="off" />
+      <div class="edit-actions" style="margin-top:10px;">
+        <button type="submit" class="btn-save">解除する</button>
+      </div>
+      <div class="edit-status" id="gateStatus"></div>
+    </form>
+  </section>
+
+  <section class="panel hidden" id="debugWrap">
+    <div class="panel-head">
+      <div>
+        <div class="panel-title">公演データ出典一覧</div>
+        <div class="panel-sub" id="debugSub"></div>
+      </div>
+    </div>
+    <div class="filter-row">
+      <input id="debugFilter" type="text" class="debug-filter-input" placeholder="日付・タイトルで絞り込み" autocomplete="off" />
+    </div>
+    <div id="debugList" class="table-wrap"></div>
+  </section>
+
+</main>
+
+<footer>SiX-DOG Archive — 個人アーカイブプロジェクト — データは Wayback Machine のアーカイブに基づき復元</footer>
+
+<script src="splash.js"></script>
+<script src="editor.js"></script>
+<script src="debug.js"></script>
+</body>
+</html>

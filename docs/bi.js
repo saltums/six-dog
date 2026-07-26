@@ -15,6 +15,8 @@
   const trendChartEl = document.getElementById("trendChart");
   const dowChartEl = document.getElementById("dowChart");
   const tooltipEl = document.getElementById("tooltip");
+  const needsReviewListEl = document.getElementById("needsReviewList");
+  const needsReviewSubEl = document.getElementById("needsReviewSub");
 
   let events = [];
   let aliases = {};
@@ -314,6 +316,59 @@
     });
   }
 
+  // ---------- 出典あり・出演者未登録 ----------
+  function renderNeedsReview(scoped) {
+    if (!needsReviewListEl) return;
+    const getLinks = window.SixDogLinks ? window.SixDogLinks.getLinks : () => [];
+    const rows = scoped
+      .filter(ev => (!ev.performers || !ev.performers.length) && getLinks(ev.event_date).length)
+      .sort((a, b) => a.event_date.localeCompare(b.event_date));
+
+    needsReviewSubEl.textContent = `関連リンクは登録済みだが出演者情報が空の公演 — ${rows.length}件。リンク先を確認して手動で入力できます`;
+
+    if (!rows.length) {
+      needsReviewListEl.innerHTML = `<div class="panel-sub">該当する公演はありません</div>`;
+      return;
+    }
+
+    const table = document.createElement("table");
+    table.className = "data-table";
+    table.innerHTML = `
+      <thead><tr><th>日付</th><th>タイトル</th><th>関連リンク</th><th></th></tr></thead>
+      <tbody></tbody>
+    `;
+    const tbody = table.querySelector("tbody");
+    rows.forEach(ev => {
+      const tr = document.createElement("tr");
+      const dateTd = document.createElement("td");
+      dateTd.textContent = ev.event_date;
+      const titleTd = document.createElement("td");
+      titleTd.textContent = ev.title || "(タイトル不明)";
+      const linksTd = document.createElement("td");
+      getLinks(ev.event_date).forEach((row, i) => {
+        if (i > 0) linksTd.appendChild(document.createTextNode(" "));
+        const a = document.createElement("a");
+        a.href = row.url;
+        a.target = "_blank";
+        a.rel = "noopener";
+        a.textContent = (row.title || row.url) + " ↗";
+        linksTd.appendChild(a);
+      });
+      const editTd = document.createElement("td");
+      const editLink = document.createElement("a");
+      editLink.href = `index.html?date=${encodeURIComponent(ev.event_date)}`;
+      editLink.textContent = "この日を開く ↗";
+      editTd.appendChild(editLink);
+      tr.appendChild(dateTd);
+      tr.appendChild(titleTd);
+      tr.appendChild(linksTd);
+      tr.appendChild(editTd);
+      tbody.appendChild(tr);
+    });
+    needsReviewListEl.innerHTML = "";
+    needsReviewListEl.appendChild(table);
+  }
+
   // ---------- ビュー切り替え ----------
   rankingToggleEl.addEventListener("click", e => {
     const btn = e.target.closest("button[data-view]");
@@ -334,6 +389,7 @@
     renderDrilldown();
     renderTrend(scoped);
     renderDow(scoped);
+    renderNeedsReview(scoped);
   }
 
   async function init() {
@@ -348,6 +404,7 @@
     const overrides = await (window.SixDogEditor ? window.SixDogEditor.fetchOverridesPublic() : Promise.resolve({}));
     events = window.SixDogEditor ? window.SixDogEditor.applyOverrides(data, overrides) : data;
     aliases = window.SixDogEditor ? await window.SixDogEditor.fetchAliasesPublic() : {};
+    if (window.SixDogLinks) await window.SixDogLinks.loadLinkIndex();
     if (!events.length) {
       kpiRowEl.innerHTML = `<div class="panel-sub">まだデータがありません</div>`;
       return;

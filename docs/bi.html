@@ -9,6 +9,10 @@
 </head>
 <body>
 
+<div id="splash" class="splash" aria-hidden="true">
+  <img src="img/six-dog-icon.jpg" alt="" class="splash-logo" />
+</div>
+
 <header class="topbar">
   <div class="inner">
     <div class="brand"><img src="img/six-dog-wordmark.png" alt="SiX-DOG" class="brand-wordmark" /> <span class="sub">ARCHIVE</span></div>
@@ -18,6 +22,7 @@
       <a href="bi.html" class="active" aria-current="page">BIダッシュボード</a>
       <a href="artists.html">アーティスト管理</a>
       <a href="event-groups.html">イベント管理</a>
+      <a href="debug.html">デバッグ</a>
     </nav>
   </div>
 </header>
@@ -69,13 +74,25 @@
     <div class="dow-chart" id="dowChart"></div>
   </section>
 
+  <section class="panel">
+    <div class="panel-head">
+      <div>
+        <div class="panel-title">出典あり・出演者未登録</div>
+        <div class="panel-sub" id="needsReviewSub">関連リンクは登録済みだが出演者情報が空の公演。リンク先を確認して手動で入力できます</div>
+      </div>
+    </div>
+    <div id="needsReviewList" class="table-wrap"></div>
+  </section>
+
 </main>
 
 <div class="tooltip hidden" id="tooltip"></div>
 
 <footer>SiX-DOG Archive — 個人アーカイブプロジェクト — データは Wayback Machine のアーカイブに基づき復元</footer>
 
+<script src="splash.js"></script>
 <script src="editor.js"></script>
+<script src="event-links.js"></script>
 <script src="bi.js"></script>
 </body>
 </html>

@@ -39,6 +39,10 @@
     return !!(linksByDate && linksByDate.get(eventDate) || []).length;
   }
 
+  function getLinks(eventDate) {
+    return (linksByDate && linksByDate.get(eventDate)) || [];
+  }
+
   async function fetchPageTitle(url) {
     // ブログ側にCORS制限があることが多く、ほぼ確実に失敗する。
     // その場合はURLホスト名をタイトル代わりに使う。
@@ -145,5 +149,5 @@
     return wrap;
   }
 
-  global.SixDogLinks = { buildLinkPanel, loadLinkIndex, hasLink };
+  global.SixDogLinks = { buildLinkPanel, loadLinkIndex, hasLink, getLinks };
 })(window);
