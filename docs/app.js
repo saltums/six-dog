@@ -113,7 +113,8 @@
         if (ev.performers && ev.performers.length) {
           const b = document.createElement("span");
           b.className = "badge";
-          b.innerHTML = `<span class="badge-label">出演 </span>${ev.performers.length}`;
+          b.textContent = ev.performers.length;
+          b.title = `出演 ${ev.performers.length}`;
           cell.appendChild(b);
         }
         if (ev.date_confidence === "estimated") {
