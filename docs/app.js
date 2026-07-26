@@ -126,21 +126,21 @@
         }
         if (window.SixDogTweets && window.SixDogTweets.hasTweet(dateStr)) {
           const x = document.createElement("span");
-          x.className = "badge badge-x";
+          x.className = "badge badge-x badge-tweet";
           x.title = "当日の告知ツイートあり";
           x.textContent = "𝕏";
           cell.appendChild(x);
         }
         if (window.SixDogLinks && window.SixDogLinks.hasLink(dateStr)) {
           const l = document.createElement("span");
-          l.className = "badge badge-x";
+          l.className = "badge badge-x badge-link";
           l.title = "関連URLあり";
           l.textContent = "🔗";
           cell.appendChild(l);
         }
         if (window.SixDogVideos && window.SixDogVideos.hasVideo(dateStr)) {
           const v = document.createElement("span");
-          v.className = "badge badge-x";
+          v.className = "badge badge-video";
           v.title = "動画のある出演者がいます";
           v.textContent = "🎬";
           cell.appendChild(v);
