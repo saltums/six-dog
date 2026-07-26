@@ -89,11 +89,11 @@
     const wrap = document.createElement("div");
     wrap.className = "tweet-panel";
     wrap.innerHTML = `
-      <div class="tweet-panel-title">🔗 関連ブログ記事</div>
+      <div class="tweet-panel-title">🔗 関連URL</div>
       <div class="link-list"></div>
       <div class="tweet-form">
-        <input type="text" class="lk-url" placeholder="ブログ記事のURL" autocomplete="off" />
-        <input type="text" class="lk-title" placeholder="記事タイトル(任意)" autocomplete="off" />
+        <input type="text" class="lk-url" placeholder="関連ページのURL" autocomplete="off" />
+        <input type="text" class="lk-title" placeholder="タイトル(任意)" autocomplete="off" />
         <button type="button" class="lk-submit">紐付ける</button>
         <span class="tweet-status"></span>
       </div>

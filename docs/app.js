@@ -134,7 +134,7 @@
         if (window.SixDogLinks && window.SixDogLinks.hasLink(dateStr)) {
           const l = document.createElement("span");
           l.className = "badge badge-x";
-          l.title = "関連ブログ記事あり";
+          l.title = "関連URLあり";
           l.textContent = "🔗";
           cell.appendChild(l);
         }
