@@ -20,6 +20,25 @@
     }, extra || {});
   }
 
+  let videoDates = null; // Set<event_date> — その日に動画が1件でも投稿されているか
+
+  async function loadVideoIndex() {
+    videoDates = new Set();
+    try {
+      const res = await fetch(`${CONFIG.url}/rest/v1/videos?select=event_date`, { headers: headers() });
+      if (!res.ok) return videoDates;
+      const rows = await res.json();
+      rows.forEach(row => videoDates.add(row.event_date));
+    } catch (e) {
+      // データが無くても他の機能に影響させない
+    }
+    return videoDates;
+  }
+
+  function hasVideo(eventDate) {
+    return !!(videoDates && videoDates.has(eventDate));
+  }
+
   async function fetchVideoPerformers(eventDate) {
     const params = new URLSearchParams({ select: "performer_name", event_date: `eq.${eventDate}` });
     try {
@@ -168,5 +187,5 @@
     return wrap;
   }
 
-  global.SixDogVideos = { buildVideoPanel, fetchVideoPerformers };
+  global.SixDogVideos = { buildVideoPanel, fetchVideoPerformers, loadVideoIndex, hasVideo };
 })(window);

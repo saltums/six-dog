@@ -138,6 +138,13 @@
           l.textContent = "🔗";
           cell.appendChild(l);
         }
+        if (window.SixDogVideos && window.SixDogVideos.hasVideo(dateStr)) {
+          const v = document.createElement("span");
+          v.className = "badge badge-x";
+          v.title = "動画のある出演者がいます";
+          v.textContent = "🎬";
+          cell.appendChild(v);
+        }
         cell.addEventListener("click", () => showDetail(ev));
       } else {
         const plus = document.createElement("span");
@@ -356,6 +363,7 @@
     eventGroups = window.SixDogEventGroups ? await window.SixDogEventGroups.fetchGroupsMap() : {};
     if (window.SixDogTweets) await window.SixDogTweets.loadTweetIndex();
     if (window.SixDogLinks) await window.SixDogLinks.loadLinkIndex();
+    if (window.SixDogVideos) await window.SixDogVideos.loadVideoIndex();
     eventsByDate = new Map(events.map(ev => [ev.event_date, ev]));
 
     if (!events.length) {
