@@ -169,6 +169,7 @@
       const hay = [ev.title, titleGroup, ...performerNames, ...canonicalNames].filter(Boolean).join(" ").toLowerCase();
       return hay.includes(q);
     });
+    matches.sort((a, b) => a.event_date.localeCompare(b.event_date));
 
     listView.innerHTML = "";
     if (!matches.length) {
