@@ -58,6 +58,9 @@ a { color: var(--venue); }
   display: flex;
   align-items: center;
   gap: 10px;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
 }
 .brand-wordmark {
   height: clamp(24px, 4.4vw, 32px);
