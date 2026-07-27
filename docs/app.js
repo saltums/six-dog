@@ -13,6 +13,11 @@
   const statsEl = document.getElementById("stats");
   const overlay = document.getElementById("detailOverlay");
   const detailCard = document.getElementById("detailCard");
+  const yearHub = document.getElementById("yearHub");
+  const yearHubGrid = document.getElementById("yearHubGrid");
+  const controlsEl = document.getElementById("controls");
+  const mainView = document.getElementById("mainView");
+  const backToYearsBtn = document.getElementById("backToYears");
 
   /** @type {any[]} */
   let events = [];
@@ -339,6 +344,46 @@
     renderCalendar();
   }
 
+  function showCalendarUI() {
+    yearHub.classList.add("hidden");
+    controlsEl.classList.remove("hidden");
+    mainView.classList.remove("hidden");
+  }
+
+  function showYearHub() {
+    mainView.classList.add("hidden");
+    controlsEl.classList.add("hidden");
+    yearHub.classList.remove("hidden");
+  }
+
+  function enterYear(year) {
+    const idx = months.findIndex(m => m.year === year);
+    showCalendarUI();
+    selectMonth(idx >= 0 ? idx : 0);
+    updateView();
+  }
+
+  function renderYearHub() {
+    const countByYear = new Map();
+    events.forEach(ev => {
+      const y = Number(ev.event_date.slice(0, 4));
+      countByYear.set(y, (countByYear.get(y) || 0) + 1);
+    });
+    const years = Array.from(countByYear.keys()).sort((a, b) => a - b);
+    const tilt = [-2.5, 1.5, -1, 2, -1.5, 1, -2, 0.5, -0.5, 2.5, -1.5, 1.5, -1];
+    yearHubGrid.innerHTML = years.map((y, i) => `
+      <button type="button" class="year-tile" data-year="${y}" style="--i:${i}; --tilt:${tilt[i % tilt.length]}deg;">
+        <span class="year-tile-num">${y}</span>
+        <span class="year-tile-count">${countByYear.get(y)}件</span>
+      </button>
+    `).join("");
+    yearHubGrid.querySelectorAll(".year-tile").forEach(btn => {
+      btn.addEventListener("click", () => enterYear(Number(btn.dataset.year)));
+    });
+  }
+
+  backToYearsBtn.addEventListener("click", showYearHub);
+
   searchInput.addEventListener("input", updateView);
   prevMonthBtn.addEventListener("click", () => selectMonth(currentMonthIndex - 1));
   nextMonthBtn.addEventListener("click", () => selectMonth(currentMonthIndex + 1));
@@ -384,17 +429,20 @@
     for (const [k, c] of countByMonth) { if (c > bestCount) { bestCount = c; bestKey = k; } }
     const initialIndex = Math.max(0, months.findIndex(m => m.key === bestKey));
 
+    renderYearHub();
+
     // ?date=YYYY-MM-DD が付いている場合はその日の詳細を直接開く(BIダッシュボードの「要確認」一覧から遷移する用)
     const deepLinkDate = new URLSearchParams(location.search).get("date");
     const deepLinkEv = deepLinkDate ? eventsByDate.get(deepLinkDate) : null;
     if (deepLinkEv) {
       const idx = months.findIndex(m => m.key === deepLinkDate.slice(0, 7));
+      showCalendarUI();
       selectMonth(idx >= 0 ? idx : initialIndex);
       showDetail(deepLinkEv);
+      updateView();
     } else {
-      selectMonth(initialIndex);
+      showYearHub();
     }
-    updateView();
   }
 
   init();

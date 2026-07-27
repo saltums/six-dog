@@ -528,6 +528,109 @@ footer {
   .stats { width: 100%; margin-left: 0; order: 3; }
 }
 
+/* ================= 年選択ハブ ================= */
+
+@keyframes yearTileIn {
+  from { opacity: 0; transform: translateY(14px) rotate(0deg) scale(0.94); }
+  to { opacity: 1; transform: translateY(0) rotate(var(--tilt)) scale(1); }
+}
+
+.year-hub {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 48px 20px 90px;
+  text-align: center;
+}
+.year-hub-lead {
+  font-family: "Bebas Neue", "Hiragino Sans", "Yu Gothic", sans-serif;
+  letter-spacing: 0.08em;
+  font-size: 15px;
+  color: var(--ink-soft);
+  margin: 0 0 34px;
+}
+.year-hub-lead::before {
+  content: "";
+  display: block;
+  width: 30px;
+  height: 2px;
+  background: var(--stamp);
+  margin: 0 auto 14px;
+}
+.year-hub-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px 14px;
+}
+.year-tile {
+  font: inherit;
+  cursor: pointer;
+  width: 118px;
+  padding: 18px 8px 14px;
+  background: var(--paper-raised);
+  border: 1px solid var(--hairline);
+  border-radius: 10px;
+  box-shadow: 0 2px 0 var(--shadow);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  opacity: 0;
+  transform: translateY(14px) rotate(var(--tilt)) scale(0.94);
+  animation: yearTileIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: calc(var(--i) * 45ms);
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.28s ease, border-color 0.2s ease;
+}
+.year-tile:hover, .year-tile:focus-visible {
+  transform: translateY(-4px) rotate(0deg) scale(1.05);
+  border-color: var(--stamp);
+  box-shadow: 0 10px 20px var(--shadow);
+  outline: none;
+  z-index: 1;
+}
+.year-tile:active {
+  transform: translateY(-1px) rotate(0deg) scale(1.01);
+  transition-duration: 0.08s;
+}
+.year-tile-num {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 34px;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.year-tile-count {
+  font-family: "Bebas Neue", "Hiragino Sans", "Yu Gothic", sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--stamp);
+}
+@media (prefers-reduced-motion: reduce) {
+  .year-tile { animation: none; opacity: 1; transform: rotate(var(--tilt)); }
+  .year-tile:hover, .year-tile:focus-visible, .year-tile:active { transform: rotate(0deg); }
+}
+@media (max-width: 560px) {
+  .year-hub { padding: 34px 16px 70px; }
+  .year-tile { width: 30.5%; padding: 14px 4px 10px; }
+  .year-tile-num { font-size: 26px; }
+  .year-tile-count { font-size: 10.5px; }
+}
+
+.back-to-years {
+  font-family: "Bebas Neue", "Hiragino Sans", "Yu Gothic", sans-serif;
+  letter-spacing: 0.05em;
+  font-size: 13px;
+  background: none;
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+  padding: 7px 12px;
+  color: var(--ink-soft);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.back-to-years:hover { border-color: var(--venue); color: var(--venue); }
+
 /* ================= BIダッシュボード ================= */
 
 .bi-main {

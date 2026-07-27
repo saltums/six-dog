@@ -4,8 +4,8 @@
     {
       "name": "docs-static",
       "runtimeExecutable": "powershell",
-      "runtimeArgs": ["-ExecutionPolicy", "Bypass", "-File", "scripts/Serve-Docs.ps1", "-Port", "8080"],
-      "port": 8080
+      "runtimeArgs": ["-ExecutionPolicy", "Bypass", "-File", "scripts/Serve-Docs.ps1", "-Port", "8234"],
+      "port": 8234
     }
   ]
 }

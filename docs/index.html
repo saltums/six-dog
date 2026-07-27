@@ -27,7 +27,13 @@
   </div>
 </header>
 
-<div class="controls">
+<section id="yearHub" class="year-hub hidden">
+  <p class="year-hub-lead">見たい年を選んでください</p>
+  <div class="year-hub-grid" id="yearHubGrid"></div>
+</section>
+
+<div class="controls hidden" id="controls">
+  <button type="button" class="back-to-years" id="backToYears">‹ 年を選び直す</button>
   <div class="search-wrap">
     <input id="search" type="text" placeholder="バンド名・イベント名で検索" autocomplete="off" />
   </div>
@@ -39,7 +45,7 @@
   <div class="stats" id="stats"></div>
 </div>
 
-<main>
+<main id="mainView" class="hidden">
   <section id="calendarView">
     <div class="cal-grid" id="calGrid"></div>
   </section>
