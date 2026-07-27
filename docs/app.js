@@ -252,7 +252,6 @@
         <div class="performers-hint">出演者名をクリックすると動画URLの閲覧・投稿ができます</div>
       ` : ""}
       <div class="video-slot"></div>
-      ${ev.notes ? `<div class="detail-notes">${escapeHtml(ev.notes)}</div>` : ""}
       <div class="tweet-slot"></div>
       <div class="link-slot"></div>
       <div class="detail-edit-toggle">
