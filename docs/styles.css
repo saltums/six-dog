@@ -482,7 +482,8 @@ main {
   min-width: 12px;
   text-align: left;
 }
-.share-wrap { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.share-wrap { display: flex; flex-direction: column; gap: 8px; }
+.share-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .share-label { font-size: 11px; color: var(--ink-soft); }
 .share-btn {
   font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
@@ -500,6 +501,46 @@ button.share-btn {
   font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
 }
 button.share-btn.copied {
+  background: var(--stamp);
+  border-color: var(--stamp);
+  color: var(--stamp-ink);
+}
+.share-x-panel {
+  background: var(--paper);
+  border: 1px dashed var(--hairline);
+  border-radius: 6px;
+  padding: 10px 12px;
+}
+.share-x-hint {
+  font-size: 11px;
+  color: var(--ink-soft);
+  margin: 0 0 6px;
+}
+.share-x-text {
+  width: 100%;
+  resize: none;
+  font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
+  font-size: 12px;
+  color: var(--ink);
+  background: var(--paper-raised);
+  border: 1px solid var(--hairline);
+  border-radius: 4px;
+  padding: 8px;
+  margin-bottom: 8px;
+  box-sizing: border-box;
+}
+.share-x-copy {
+  font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
+  font-size: 12px;
+  background: var(--paper-raised);
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  padding: 5px 12px;
+  color: var(--ink);
+  cursor: pointer;
+}
+.share-x-copy:hover { border-color: var(--venue); color: var(--venue); }
+.share-x-copy.copied {
   background: var(--stamp);
   border-color: var(--stamp);
   color: var(--stamp-ink);
