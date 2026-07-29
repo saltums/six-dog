@@ -18,6 +18,10 @@
 
   // Xアプリが入っている端末では twitter:// スキームでアプリを直接開き、
   // 一定時間たっても画面が切り替わらなければ(=アプリが無い)ブラウザ版にフォールバックする。
+  // フォールバックは window.open ではなく location.href で行う。
+  // setTimeout 経由の window.open はユーザー操作から切り離されたとみなされ、
+  // ブラウザのポップアップブロックに何の警告もなく握りつぶされるため
+  // (「Xへの投稿が何も出てこない」という不具合の原因だった)。
   function openXShare(text, url) {
     const appUrl = `twitter://post?message=${encodeURIComponent(text + " " + url)}`;
     const webUrl = `https://x.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
@@ -27,7 +31,7 @@
     window.location.href = appUrl;
     setTimeout(() => {
       document.removeEventListener("visibilitychange", onHide);
-      if (!switched) window.open(webUrl, "_blank", "noopener,noreferrer");
+      if (!switched) window.location.href = webUrl;
     }, 800);
   }
 
