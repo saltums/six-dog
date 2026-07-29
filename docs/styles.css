@@ -494,6 +494,16 @@ main {
   color: var(--ink);
 }
 .share-btn:hover { border-color: var(--venue); color: var(--venue); }
+button.share-btn {
+  background: var(--paper-raised);
+  cursor: pointer;
+  font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
+}
+button.share-btn.copied {
+  background: var(--stamp);
+  border-color: var(--stamp);
+  color: var(--stamp-ink);
+}
 .detail-notes {
   font-size: 13px;
   color: var(--ink-soft);
