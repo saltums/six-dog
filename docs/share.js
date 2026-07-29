@@ -16,18 +16,33 @@
     return `${SITE_BASE}index.html?date=${encodeURIComponent(eventDate)}`;
   }
 
+  // Xアプリが入っている端末では twitter:// スキームでアプリを直接開き、
+  // 一定時間たっても画面が切り替わらなければ(=アプリが無い)ブラウザ版にフォールバックする。
+  function openXShare(text, url) {
+    const appUrl = `twitter://post?message=${encodeURIComponent(text + " " + url)}`;
+    const webUrl = `https://x.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+    let switched = false;
+    const onHide = () => { switched = true; };
+    document.addEventListener("visibilitychange", onHide);
+    window.location.href = appUrl;
+    setTimeout(() => {
+      document.removeEventListener("visibilitychange", onHide);
+      if (!switched) window.open(webUrl, "_blank", "noopener,noreferrer");
+    }, 800);
+  }
+
   function buildShareButtons(ev) {
     const wrap = document.createElement("div");
     wrap.className = "share-wrap";
     const url = buildShareUrl(ev.event_date);
     const text = buildShareText(ev);
-    const xHref = `https://x.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
     const lineHref = `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`;
     wrap.innerHTML = `
       <span class="share-label">この公演をシェア</span>
-      <a class="share-btn share-x" href="${xHref}" target="_blank" rel="noopener noreferrer">𝕏で共有</a>
+      <button type="button" class="share-btn share-x">𝕏で共有</button>
       <a class="share-btn share-line" href="${lineHref}" target="_blank" rel="noopener noreferrer">LINEで共有</a>
     `;
+    wrap.querySelector(".share-x").addEventListener("click", () => openXShare(text, url));
     return wrap;
   }
 
