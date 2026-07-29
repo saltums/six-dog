@@ -247,6 +247,10 @@
       <button class="close" aria-label="閉じる" type="button">×</button>
       <div class="detail-eyebrow">${ev.event_date}${ev.weekday ? " (" + ev.weekday + ")" : ""}${ev._edited && !ev._synthetic ? ' <span class="badge-warn" title="手動で修正済み">編集済み</span>' : ""}</div>
       <div class="detail-title">${escapeHtml(ev.title || "(タイトル不明)")}</div>
+      <div class="detail-actions">
+        <div class="hype-slot"></div>
+        <div class="share-slot"></div>
+      </div>
       ${ev.date_confidence === "estimated" ? `<div class="detail-notes">⚠ この日付の月・年は推定です。元ページに月の記載が無く、スナップショットが取得された時期から推測しているため、実際の公演日と異なる可能性があります。</div>` : ""}
       <dl class="detail-grid">
         <dt>TIME</dt><dd>${escapeHtml(timeLabel(ev.open_time, ev.start_time))}</dd>
@@ -265,6 +269,12 @@
       <div class="edit-form-slot"></div>
     `;
     detailCard.querySelector(".close").addEventListener("click", hideDetail);
+    if (window.SixDogHype) {
+      detailCard.querySelector(".hype-slot").appendChild(window.SixDogHype.buildHypeButton(ev.event_date));
+    }
+    if (window.SixDogShare) {
+      detailCard.querySelector(".share-slot").appendChild(window.SixDogShare.buildShareButtons(ev));
+    }
     const videoSlot = detailCard.querySelector(".video-slot");
     detailCard.querySelectorAll(".chip[data-performer]").forEach(chip => {
       chip.addEventListener("click", () => {
@@ -408,6 +418,7 @@
     if (window.SixDogTweets) await window.SixDogTweets.loadTweetIndex();
     if (window.SixDogLinks) await window.SixDogLinks.loadLinkIndex();
     if (window.SixDogVideos) await window.SixDogVideos.loadVideoIndex();
+    if (window.SixDogHype) await window.SixDogHype.loadHypeIndex();
     eventsByDate = new Map(events.map(ev => [ev.event_date, ev]));
 
     if (!events.length) {
