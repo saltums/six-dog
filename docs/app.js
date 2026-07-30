@@ -150,6 +150,20 @@
           v.textContent = "🎬";
           cell.appendChild(v);
         }
+        if (window.SixDogHype && window.SixDogHype.getCount(dateStr) > 0) {
+          const h = document.createElement("span");
+          h.className = "badge badge-hype";
+          h.title = `アツかった ${window.SixDogHype.getCount(dateStr)}件`;
+          h.textContent = "🔥";
+          cell.appendChild(h);
+        }
+        if (window.SixDogEmoi && window.SixDogEmoi.getCount(dateStr) > 0) {
+          const em = document.createElement("span");
+          em.className = "badge badge-emoi";
+          em.title = `エモい ${window.SixDogEmoi.getCount(dateStr)}件`;
+          em.textContent = "🥹";
+          cell.appendChild(em);
+        }
         cell.addEventListener("click", () => showDetail(ev));
       } else {
         const plus = document.createElement("span");
