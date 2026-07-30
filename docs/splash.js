@@ -37,9 +37,8 @@
     img.classList.add("splash-photo");
     img.style.setProperty("--splash-zoom", computeZoomScale());
     showClass = "splash-photo-show";
-    // 全体フェードイン(2s) → 2.5s地点からゆっくりズーム(4s) = 6.5s。
-    // ズームが終わった状態を少し見せてから消えるよう余裕を持たせる。
-    holdMs = 7000;
+    // 全体フェードイン(2s) → 2.5s地点からズーム(1.5s) = 4s。ズームが終わったらすぐフェードアウト。
+    holdMs = 4000;
     try { sessionStorage.setItem(SESSION_KEY, "1"); } catch (e) {}
   } else {
     showClass = "splash-logo-show";

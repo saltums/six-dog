@@ -109,8 +109,8 @@ a { color: var(--venue); }
   opacity: 0;
   transform: scale(1);
   filter: grayscale(1);
-  /* 全体を2秒でフェードイン+カラー化 → 2.5秒地点からゆっくりズーム開始(4s) */
-  transition: opacity 2s ease, filter 2s ease, transform 4s ease 2.5s;
+  /* 全体を2秒でフェードイン+カラー化 → 2.5秒地点からズーム(1.5s)→終わったらすぐフェードアウト */
+  transition: opacity 2s ease, filter 2s ease, transform 1.5s ease 2.5s;
 }
 .splash-photo.splash-photo-show {
   opacity: 1;
