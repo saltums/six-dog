@@ -16,13 +16,18 @@
   const gateForm = document.getElementById("gateForm");
   const gatePassword = document.getElementById("gatePassword");
   const gateStatus = document.getElementById("gateStatus");
+  const debugTabs = document.getElementById("debugTabs");
   const debugWrap = document.getElementById("debugWrap");
   const debugSub = document.getElementById("debugSub");
   const debugFilter = document.getElementById("debugFilter");
   const debugList = document.getElementById("debugList");
+  const changelogWrap = document.getElementById("changelogWrap");
+  const changelogFilter = document.getElementById("changelogFilter");
+  const changelogList = document.getElementById("changelogList");
 
   let rows = [];
   let videosByDate = new Map();
+  let changelogEntries = [];
 
   async function fetchAllVideos() {
     try {
@@ -164,8 +169,141 @@
     renderTable(debugFilter.value);
   }
 
+  function summarizePerformers(performers) {
+    if (!Array.isArray(performers) || !performers.length) return "(出演者未登録)";
+    return performers.length > 4 ? performers.slice(0, 4).join("、") + ` 他${performers.length - 4}組` : performers.join("、");
+  }
+
+  async function fetchChangelogEntries() {
+    const [overridesRes, linksRes, videosRes] = await Promise.all([
+      fetch(`${SUPABASE.url}/rest/v1/event_overrides?select=event_date,title,performers,notes,updated_at&order=updated_at.desc`, { headers: supabaseHeaders() }),
+      fetch(`${SUPABASE.url}/rest/v1/event_links?select=event_date,title,url,submitted_at&order=submitted_at.desc`, { headers: supabaseHeaders() }),
+      fetch(`${SUPABASE.url}/rest/v1/videos?select=event_date,performer_name,video_title,video_url,submitted_at&order=submitted_at.desc`, { headers: supabaseHeaders() }),
+    ]);
+    const overrides = overridesRes.ok ? await overridesRes.json() : [];
+    const links = linksRes.ok ? await linksRes.json() : [];
+    const videos = videosRes.ok ? await videosRes.json() : [];
+
+    const entries = [];
+    overrides.forEach(o => {
+      entries.push({
+        type: "override",
+        typeLabel: "公演情報",
+        timestamp: o.updated_at,
+        eventDate: o.event_date,
+        summary: o.title || summarizePerformers(o.performers),
+        detail: summarizePerformers(o.performers),
+      });
+    });
+    links.forEach(l => {
+      entries.push({
+        type: "link",
+        typeLabel: "関連リンク",
+        timestamp: l.submitted_at,
+        eventDate: l.event_date,
+        summary: l.title || l.url,
+        detail: l.url,
+      });
+    });
+    videos.forEach(v => {
+      entries.push({
+        type: "video",
+        typeLabel: "動画",
+        timestamp: v.submitted_at,
+        eventDate: v.event_date,
+        summary: v.video_title || v.video_url,
+        detail: v.performer_name || "",
+      });
+    });
+    entries.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    return entries;
+  }
+
+  function formatTimestamp(ts) {
+    if (!ts) return "—";
+    const d = new Date(ts);
+    if (isNaN(d)) return ts;
+    const pad = n => String(n).padStart(2, "0");
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  }
+
+  function renderChangelog(filterText) {
+    const q = (filterText || "").trim().toLowerCase();
+    const filtered = q
+      ? changelogEntries.filter(e =>
+          e.eventDate.includes(q) ||
+          (e.summary || "").toLowerCase().includes(q) ||
+          (e.detail || "").toLowerCase().includes(q))
+      : changelogEntries;
+
+    if (!filtered.length) {
+      changelogList.innerHTML = `<div class="panel-sub">該当する変更履歴はありません</div>`;
+      return;
+    }
+
+    const table = document.createElement("table");
+    table.className = "data-table";
+    table.innerHTML = `<thead><tr><th>登録日時</th><th>種別</th><th>公演日</th><th>内容</th><th>詳細</th></tr></thead><tbody></tbody>`;
+    const tbody = table.querySelector("tbody");
+    filtered.forEach(e => {
+      const tr = document.createElement("tr");
+      tr.style.cursor = "default";
+
+      const tsTd = document.createElement("td");
+      tsTd.textContent = formatTimestamp(e.timestamp);
+      tsTd.style.whiteSpace = "nowrap";
+
+      const typeTd = document.createElement("td");
+      const badge = document.createElement("span");
+      badge.className = `changelog-type type-${e.type}`;
+      badge.textContent = e.typeLabel;
+      typeTd.appendChild(badge);
+
+      const dateTd = document.createElement("td");
+      dateTd.textContent = e.eventDate;
+      dateTd.style.whiteSpace = "nowrap";
+
+      const summaryTd = document.createElement("td");
+      summaryTd.textContent = e.summary || "—";
+
+      const detailTd = document.createElement("td");
+      detailTd.textContent = e.detail || "—";
+      detailTd.style.maxWidth = "300px";
+      detailTd.style.whiteSpace = "normal";
+      detailTd.style.color = "var(--ink-soft)";
+
+      tr.appendChild(tsTd);
+      tr.appendChild(typeTd);
+      tr.appendChild(dateTd);
+      tr.appendChild(summaryTd);
+      tr.appendChild(detailTd);
+      tbody.appendChild(tr);
+    });
+    changelogList.innerHTML = "";
+    changelogList.appendChild(table);
+  }
+
+  async function loadChangelog() {
+    changelogList.innerHTML = `<div class="panel-sub">読み込み中...</div>`;
+    changelogEntries = await fetchChangelogEntries();
+    renderChangelog(changelogFilter.value);
+  }
+
+  function switchTab(tabId) {
+    document.querySelectorAll(".debug-tab").forEach(btn => btn.classList.toggle("active", btn.dataset.tab === tabId));
+    debugWrap.classList.toggle("hidden", tabId !== "debugWrap");
+    changelogWrap.classList.toggle("hidden", tabId !== "changelogWrap");
+    if (tabId === "changelogWrap" && !changelogEntries.length) loadChangelog();
+  }
+
+  debugTabs.addEventListener("click", e => {
+    const btn = e.target.closest(".debug-tab");
+    if (btn) switchTab(btn.dataset.tab);
+  });
+
   function unlock() {
     gateWrap.classList.add("hidden");
+    debugTabs.classList.remove("hidden");
     debugWrap.classList.remove("hidden");
     loadData();
   }
@@ -183,6 +321,7 @@
   });
 
   debugFilter.addEventListener("input", () => renderTable(debugFilter.value));
+  changelogFilter.addEventListener("input", () => renderChangelog(changelogFilter.value));
 
   if (sessionStorage.getItem(SESSION_KEY) === "1") {
     unlock();

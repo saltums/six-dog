@@ -46,6 +46,11 @@
     </form>
   </section>
 
+  <div class="debug-tabs hidden" id="debugTabs">
+    <button type="button" class="debug-tab active" data-tab="debugWrap">出典一覧</button>
+    <button type="button" class="debug-tab" data-tab="changelogWrap">変更履歴</button>
+  </div>
+
   <section class="panel hidden" id="debugWrap">
     <div class="panel-head">
       <div>
@@ -57,6 +62,19 @@
       <input id="debugFilter" type="text" class="debug-filter-input" placeholder="日付・タイトルで絞り込み" autocomplete="off" />
     </div>
     <div id="debugList" class="table-wrap"></div>
+  </section>
+
+  <section class="panel hidden" id="changelogWrap">
+    <div class="panel-head">
+      <div>
+        <div class="panel-title">追加情報の変更履歴</div>
+        <div class="panel-sub" id="changelogSub">event_overrides / event_links / videos への追加・更新を、登録した時系列(新しい順)で一覧表示します。</div>
+      </div>
+    </div>
+    <div class="filter-row">
+      <input id="changelogFilter" type="text" class="debug-filter-input" placeholder="日付・タイトル・内容で絞り込み" autocomplete="off" />
+    </div>
+    <div id="changelogList" class="table-wrap"></div>
   </section>
 
 </main>
