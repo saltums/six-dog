@@ -291,8 +291,10 @@
 
   function switchTab(tabId) {
     document.querySelectorAll(".debug-tab").forEach(btn => btn.classList.toggle("active", btn.dataset.tab === tabId));
-    debugWrap.classList.toggle("hidden", tabId !== "debugWrap");
-    changelogWrap.classList.toggle("hidden", tabId !== "changelogWrap");
+    document.querySelectorAll(".debug-tab").forEach(btn => {
+      const wrap = document.getElementById(btn.dataset.tab);
+      if (wrap) wrap.classList.toggle("hidden", btn.dataset.tab !== tabId);
+    });
     if (tabId === "changelogWrap" && !changelogEntries.length) loadChangelog();
   }
 

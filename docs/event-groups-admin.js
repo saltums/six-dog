@@ -3,13 +3,13 @@
 
   const searchInput = document.getElementById("titleSearch");
   const titleCountEl = document.getElementById("titleCount");
-  const groupedListEl = document.getElementById("groupedList");
-  const groupedSubEl = document.getElementById("groupedSub");
-  const ungroupedListEl = document.getElementById("ungroupedList");
-  const mergeCountEl = document.getElementById("mergeCount");
-  const mergeCanonicalInput = document.getElementById("mergeCanonical");
-  const mergeBtn = document.getElementById("mergeBtn");
-  const mergeStatus = document.getElementById("mergeStatus");
+  const groupedListEl = document.getElementById("evgGroupedList");
+  const groupedSubEl = document.getElementById("evgGroupedSub");
+  const ungroupedListEl = document.getElementById("evgUngroupedList");
+  const mergeCountEl = document.getElementById("evgMergeCount");
+  const mergeCanonicalInput = document.getElementById("evgMergeCanonical");
+  const mergeBtn = document.getElementById("evgMergeBtn");
+  const mergeStatus = document.getElementById("evgMergeStatus");
 
   let counts = new Map();     // タイトル -> 出現回数
   let rows = [];              // Supabaseの生の行 [{id, variant_title, group_name}]
@@ -163,11 +163,11 @@
     }
 
     // ---------- 類似度の基準を示すバー ----------
-    const anchorBar = document.getElementById("anchorBar");
+    const anchorBar = document.getElementById("evgAnchorBar");
     if (sortAnchor && counts.has(sortAnchor)) {
       anchorBar.classList.remove("hidden");
-      anchorBar.innerHTML = `類似度の基準: <b>${escapeHtml(sortAnchor)}</b> に近い順で表示中 <button type="button" id="clearAnchorBtn">基準を解除</button>`;
-      document.getElementById("clearAnchorBtn").addEventListener("click", () => { sortAnchor = null; render(); });
+      anchorBar.innerHTML = `類似度の基準: <b>${escapeHtml(sortAnchor)}</b> に近い順で表示中 <button type="button" id="evgClearAnchorBtn">基準を解除</button>`;
+      document.getElementById("evgClearAnchorBtn").addEventListener("click", () => { sortAnchor = null; render(); });
     } else {
       anchorBar.classList.add("hidden");
       anchorBar.innerHTML = "";

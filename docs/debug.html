@@ -18,11 +18,9 @@
     <a href="index.html" class="brand"><img src="img/six-dog-wordmark.png" alt="SiX-DOG" class="brand-wordmark" /> <span class="sub">ARCHIVE</span></a>
     <div class="tagline">各公演データの出典・取得元スナップショット情報(管理者向け)</div>
     <nav class="nav-tabs">
-      <a href="index.html">カレンダー</a>
-      <a href="bi.html">BIダッシュボード</a>
-      <a href="artists.html">アーティスト管理</a>
-      <a href="event-groups.html">イベント管理</a>
-      <a href="debug.html" class="active" aria-current="page">デバッグ</a>
+      <a href="index.html" class="icon" title="カレンダー" aria-label="カレンダー">📅</a>
+      <a href="bi.html" class="icon" title="BIダッシュボード" aria-label="BIダッシュボード">📊</a>
+      <a href="debug.html" class="icon active" aria-current="page" title="デバッグ" aria-label="デバッグ">⚙️</a>
     </nav>
   </div>
 </header>
@@ -49,6 +47,8 @@
   <div class="debug-tabs hidden" id="debugTabs">
     <button type="button" class="debug-tab active" data-tab="debugWrap">出典一覧</button>
     <button type="button" class="debug-tab" data-tab="changelogWrap">変更履歴</button>
+    <button type="button" class="debug-tab" data-tab="artistsWrap">アーティスト管理</button>
+    <button type="button" class="debug-tab" data-tab="eventGroupsWrap">イベント管理</button>
   </div>
 
   <section class="panel hidden" id="debugWrap">
@@ -77,6 +77,82 @@
     <div id="changelogList" class="table-wrap"></div>
   </section>
 
+  <section class="panel hidden" id="artistsWrap">
+    <div class="panel-head">
+      <div>
+        <div class="panel-title">アーティスト名の統合</div>
+        <div class="panel-sub">
+          下の一覧はデータ内に登場する出演者の表記すべて。同じアーティストの別表記(例: 「A」「A(アコースティック)」)に
+          チェックを入れて統合先の名前を指定すると、公演詳細では元の表記のまま表示しつつ、BIダッシュボードのランキングや
+          カレンダー検索では統合先の名前でまとめて集計・検索できるようになります。
+        </div>
+      </div>
+    </div>
+    <div class="filter-row" style="flex-wrap:wrap">
+      <input type="text" id="artistSearch" placeholder="アーティスト名で絞り込み" autocomplete="off" class="debug-filter-input" style="flex:1 1 240px;" />
+      <span class="filter-label" id="artistCount"></span>
+    </div>
+    <div class="panel-head" style="margin-top:16px;">
+      <div>
+        <div class="panel-title">統合済みグループ</div>
+        <div class="panel-sub" id="groupedSub"></div>
+      </div>
+    </div>
+    <div id="groupedList" class="artist-groups"></div>
+    <div class="panel-head" style="margin-top:16px;">
+      <div>
+        <div class="panel-title">未統合の表記</div>
+        <div class="panel-sub">1件チェックすると、表記が近いものが上位に並び替わります(🔍で基準を変更可)</div>
+      </div>
+    </div>
+    <div id="anchorBar" class="anchor-bar hidden"></div>
+    <div id="ungroupedList" class="artist-list"></div>
+    <div class="merge-bar" id="mergeBar">
+      <span id="mergeCount">0件選択中</span>
+      <input type="text" id="mergeCanonical" placeholder="統合先の名前(例: A)" autocomplete="off" />
+      <button type="button" id="mergeBtn">統合する</button>
+      <span class="edit-status" id="mergeStatus"></span>
+    </div>
+  </section>
+
+  <section class="panel hidden" id="eventGroupsWrap">
+    <div class="panel-head">
+      <div>
+        <div class="panel-title">イベント名のグルーピング</div>
+        <div class="panel-sub">
+          下の一覧はデータ内に登場する公演タイトルすべて。同じ企画シリーズの別回(例: 「Hello→vol.130」「Hello→vol.131」)に
+          チェックを入れてグループ名を指定すると、公演詳細では元のタイトルのまま表示しつつ、カレンダー検索ではグループ名でも
+          まとめて見つけられるようになります。
+        </div>
+      </div>
+    </div>
+    <div class="filter-row" style="flex-wrap:wrap">
+      <input type="text" id="titleSearch" placeholder="イベント名で絞り込み" autocomplete="off" class="debug-filter-input" style="flex:1 1 240px;" />
+      <span class="filter-label" id="titleCount"></span>
+    </div>
+    <div class="panel-head" style="margin-top:16px;">
+      <div>
+        <div class="panel-title">グループ済み</div>
+        <div class="panel-sub" id="evgGroupedSub"></div>
+      </div>
+    </div>
+    <div id="evgGroupedList" class="artist-groups"></div>
+    <div class="panel-head" style="margin-top:16px;">
+      <div>
+        <div class="panel-title">未グループのタイトル</div>
+        <div class="panel-sub">1件チェックすると、表記が近いものが上位に並び替わります(🔍で基準を変更可)</div>
+      </div>
+    </div>
+    <div id="evgAnchorBar" class="anchor-bar hidden"></div>
+    <div id="evgUngroupedList" class="artist-list"></div>
+    <div class="merge-bar" id="evgMergeBar">
+      <span id="evgMergeCount">0件選択中</span>
+      <input type="text" id="evgMergeCanonical" placeholder="グループ名(例: Hello→)" autocomplete="off" />
+      <button type="button" id="evgMergeBtn">グループにする</button>
+      <span class="edit-status" id="evgMergeStatus"></span>
+    </div>
+  </section>
+
 </main>
 
 <footer>SiX-DOG Archive — 個人アーカイブプロジェクト — データは Wayback Machine のアーカイブに基づき復元</footer>
@@ -84,6 +160,9 @@
 <script src="splash.js"></script>
 <script src="editor.js"></script>
 <script src="event-links.js"></script>
+<script src="artists.js"></script>
+<script src="event-groups.js"></script>
+<script src="event-groups-admin.js"></script>
 <script src="debug.js"></script>
 </body>
 </html>

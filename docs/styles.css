@@ -152,6 +152,11 @@ a { color: var(--venue); }
   background: var(--paper);
   border-color: var(--hairline);
 }
+.nav-tabs a.icon {
+  font-size: 19px;
+  padding: 6px 13px;
+  line-height: 1;
+}
 
 /* ---------- controls ---------- */
 .controls {
