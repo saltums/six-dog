@@ -101,7 +101,7 @@ a { color: var(--venue); }
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
   transform-origin: center center;
   border-radius: 0;
@@ -113,7 +113,8 @@ a { color: var(--venue); }
 }
 .splash-photo.splash-photo-show {
   opacity: 1;
-  transform: scale(1.4);
+  /* splash.js が実際のビューポート/画像比率から必要なズーム量を計算してこの変数に設定する */
+  transform: scale(var(--splash-zoom, 1.4));
   filter: grayscale(0);
 }
 @media (prefers-reduced-motion: reduce) {

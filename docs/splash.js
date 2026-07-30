@@ -13,12 +13,29 @@
   let isFirstOpen = false;
   try { isFirstOpen = !sessionStorage.getItem(SESSION_KEY); } catch (e) {}
 
+  // 入口写真(entrance-memory.jpg)の実サイズ。object-fit:contain で全体を
+  // 欠けずに表示した状態から、レターボックスの余白が画面外に出るまで
+  // 中央にズームインさせるための倍率をビューポート実寸から逆算する。
+  const PHOTO_W = 640;
+  const PHOTO_H = 480;
+  function computeZoomScale() {
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const imgAspect = PHOTO_W / PHOTO_H;
+    const boxAspect = vw / vh;
+    const dispW = imgAspect > boxAspect ? vw : vh * imgAspect;
+    const dispH = imgAspect > boxAspect ? vw / imgAspect : vh;
+    const needed = Math.max(vw / dispW, vh / dispH);
+    return Math.max(needed * 1.06, 1.15);
+  }
+
   let showClass;
   let holdMs;
   if (isFirstOpen) {
     img.src = "img/entrance-memory.jpg";
     img.classList.remove("splash-logo");
     img.classList.add("splash-photo");
+    img.style.setProperty("--splash-zoom", computeZoomScale());
     showClass = "splash-photo-show";
     holdMs = 2900;
     try { sessionStorage.setItem(SESSION_KEY, "1"); } catch (e) {}
