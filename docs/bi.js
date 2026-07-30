@@ -357,7 +357,10 @@
       const editTd = document.createElement("td");
       const editLink = document.createElement("a");
       editLink.href = `index.html?date=${encodeURIComponent(ev.event_date)}`;
-      editLink.textContent = "この日を開く ↗";
+      editLink.className = "open-day-icon";
+      editLink.title = "この日を開く";
+      editLink.setAttribute("aria-label", "この日を開く");
+      editLink.textContent = "📅";
       editTd.appendChild(editLink);
       tr.appendChild(dateTd);
       tr.appendChild(titleTd);

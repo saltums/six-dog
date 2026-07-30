@@ -1166,6 +1166,19 @@ footer {
 .data-table tbody tr { cursor: pointer; }
 .data-table tbody tr:hover { background: var(--paper-raised); }
 .table-wrap { overflow-x: auto; }
+.open-day-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  font-size: 15px;
+  text-decoration: none;
+  background: var(--paper-raised);
+  border: 1px solid var(--hairline);
+}
+.open-day-icon:hover { border-color: var(--venue); }
 
 /* --- ドリルダウン(選択中の出演者の履歴) --- */
 .drilldown {
