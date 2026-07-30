@@ -1,22 +1,22 @@
 /*
  * 公演詳細をX/LINEで簡単共有するためのボタン。バックエンド不要。
  *
- * Xの「投稿文を事前に埋め込んで開く」機能(Web Intents, x.com/intent/tweet)は
- * 2026-07時点で動作確認したところX側で機能しておらず(text/urlパラメータを
- * 渡してもホームタイムラインが表示されるだけで投稿欄には何も反映されない、
- * twitter.com/intent/tweet 経由でも同様)、こちら側では直せない。
- * twitter://post?message= のカスタムスキームも、Xアプリの投稿画面は開くが
- * 本文が反映されない(こちらもX側アプリの仕様/不具合)。
+ * Xへの「投稿文を自動で入れて開く」は、以下すべてを実機検証した結果
+ * X側アプリ/Webの不具合で本文が反映されないことを確認済み(2026-07時点):
+ *   1. x.com/intent/tweet(旧twitter.com): text/urlを渡してもホーム
+ *      タイムラインが表示されるだけで投稿欄には何も反映されない
+ *   2. twitter://post?message= カスタムスキーム: 投稿画面は開くが空
+ *   3. Web Share API(navigator.share)でtext/urlを別々に渡す: 投稿欄が空
+ *   4. Web Share APIでtextに1つにまとめて渡す: それでも投稿欄が空
+ * どれもXアプリ/Web側の共有受信処理が原因で、こちら側のコードでは
+ * これ以上直しようがないと判断した。
  *
- * そのため以下の優先順で本文を確実に届ける:
- * 1. Web Share API (navigator.share): 対応端末(主にスマホ)では、OSの共有
- *    シート経由でXアプリの「共有」拡張機能に本文を渡す。これはx.com側の
- *    不具合とは無関係な別経路(OS標準の共有インテント)なので、本文が
- *    正しく入った状態でXの投稿画面が開く。
- * 2. 上記が使えない環境(主にPCブラウザ)向けのフォールバック: 投稿文を
- *    その場に見せて選択状態にしておく共有パネル。ボタンを押した瞬間に
- *    裏でクリップボードコピー+X起動も試みるが、失敗してもパネルの中身を
- *    選択してコピーすれば確実に同じ内容を使える。
+ * そのため「自動で入れる」のは諦め、確実性を最優先する方針にする:
+ * クリップボードへの自動コピーを最初に行ってから(Xの投稿欄が空でも
+ * そのまま貼り付けできるように)Xを開き、さらに保険として投稿文を
+ * その場に見せて選択状態にしておく共有パネルも必ず表示する
+ * (自動コピーがブラウザの権限で失敗しても、パネルの中身を選択して
+ * 手動コピーすれば確実に同じ内容を使える)。
  */
 (function (global) {
   "use strict";
@@ -85,24 +85,24 @@
     wrap.appendChild(panel);
 
     wrap.querySelector(".share-x").addEventListener("click", async () => {
-      // 端末のOS共有シート(Web Share API)経由でXアプリに渡せる場合、
-      // アプリ側の共有拡張機能を使うのでx.com/intent/tweetの不具合を回避でき、
-      // 本文が確実に入った状態でXの投稿画面が開く。対応環境ではこちらを優先する。
+      // 1. まずクリップボードにコピー(Xの投稿欄が結局空でも、そのまま
+      //    貼り付けられるようにするための保険。これを一番先にやる)
+      try { await navigator.clipboard.writeText(combined); } catch (e) {}
+
+      // 2. Xを開く(対応環境ではOS共有シート経由、それ以外は直接投稿画面へ)
       if (navigator.share) {
         try {
-          // text/urlを別々に渡すと受け取り側アプリがどちらか片方(主にurl)
-          // しか使わないことがあるため、urlをtextに含めて1つにまとめる
           await navigator.share({ text: combined });
-          return; // 共有シートが開けた(完了/キャンセルいずれも成功扱い)
         } catch (e) {
-          if (e && e.name === "AbortError") return; // ユーザーがキャンセルしただけ
-          // それ以外のエラーは下のフォールバックへ
+          if (!e || e.name !== "AbortError") {
+            window.open("https://x.com/compose/post", "_blank", "noopener,noreferrer");
+          }
         }
+      } else {
+        window.open("https://x.com/compose/post", "_blank", "noopener,noreferrer");
       }
-      // Web Share API が無い(主にPCブラウザ)場合のフォールバック:
-      // ダメ元でクリップボードへの自動コピーとX起動を試みる(成功すれば貼り付けるだけで済む)
-      try { await navigator.clipboard.writeText(combined); } catch (e) {}
-      window.open("https://x.com/compose/post", "_blank", "noopener,noreferrer");
+
+      // 3. 自動で入らなかった場合の保険として、常にパネルも表示する
       panel.classList.remove("hidden");
       const ta = panel.querySelector(".share-x-text");
       ta.focus();
