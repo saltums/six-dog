@@ -96,6 +96,25 @@ a { color: var(--venue); }
   opacity: 1;
   transform: scale(1);
 }
+.splash-photo {
+  width: min(92vw, 640px);
+  max-height: 78vh;
+  object-fit: cover;
+  border-radius: 6px;
+  box-shadow: 0 14px 44px var(--shadow);
+  opacity: 0;
+  transform: scale(1.035);
+  filter: grayscale(1);
+  transition: opacity 1s ease, transform 1.6s ease, filter 1.8s ease 0.25s;
+}
+.splash-photo.splash-photo-show {
+  opacity: 1;
+  transform: scale(1);
+  filter: grayscale(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .splash-photo { transition: opacity 0.3s ease; }
+}
 .brand .sub {
   font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
   font-size: 13px;
