@@ -90,7 +90,9 @@
       // 本文が確実に入った状態でXの投稿画面が開く。対応環境ではこちらを優先する。
       if (navigator.share) {
         try {
-          await navigator.share({ text, url });
+          // text/urlを別々に渡すと受け取り側アプリがどちらか片方(主にurl)
+          // しか使わないことがあるため、urlをtextに含めて1つにまとめる
+          await navigator.share({ text: combined });
           return; // 共有シートが開けた(完了/キャンセルいずれも成功扱い)
         } catch (e) {
           if (e && e.name === "AbortError") return; // ユーザーがキャンセルしただけ
