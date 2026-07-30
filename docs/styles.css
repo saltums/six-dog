@@ -62,10 +62,24 @@ a { color: var(--venue); }
   color: inherit;
   cursor: pointer;
 }
-.brand-wordmark {
-  height: clamp(24px, 4.4vw, 32px);
+/*
+ * ロゴ画像(six-dog-wordmark.png)はキャンバス全体(1536x493)を保持したまま
+ * 元々あった「ARCHIVE」の文字部分(y=233以降)だけを透明化したもの。
+ * そのため画像全体をそのまま高さ指定すると下半分の空白ごと縮小されて
+ * ロゴが小さく表示されてしまう。ラッパーで見せたい高さぶんだけ
+ * overflow:hiddenで切り取り、画像自体は上端(SIX-DOGの行)が
+ * ちょうどそのサイズになるよう逆算した倍率(1 / (233/493))で拡大する。
+ */
+.brand-wordmark-wrap {
   display: block;
+  height: clamp(24px, 4.4vw, 32px);
+  overflow: hidden;
   flex: none;
+}
+.brand-wordmark {
+  display: block;
+  height: calc(100% / 0.4726);
+  width: auto;
 }
 
 .splash {
