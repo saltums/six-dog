@@ -97,15 +97,17 @@ a { color: var(--venue); }
   transform: scale(1);
 }
 .splash-photo {
-  width: min(92vw, 640px);
-  max-height: 78vh;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  border-radius: 6px;
-  box-shadow: 0 14px 44px var(--shadow);
+  border-radius: 0;
+  box-shadow: none;
   opacity: 0;
-  transform: scale(1.035);
+  transform: scale(1.12);
   filter: grayscale(1);
-  transition: opacity 1s ease, transform 1.6s ease, filter 1.8s ease 0.25s;
+  transition: opacity 1s ease, transform 2.4s ease, filter 1.9s ease 0.25s;
 }
 .splash-photo.splash-photo-show {
   opacity: 1;

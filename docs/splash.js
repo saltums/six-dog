@@ -20,7 +20,7 @@
     img.classList.remove("splash-logo");
     img.classList.add("splash-photo");
     showClass = "splash-photo-show";
-    holdMs = 1900;
+    holdMs = 2500;
     try { sessionStorage.setItem(SESSION_KEY, "1"); } catch (e) {}
   } else {
     showClass = "splash-logo-show";
