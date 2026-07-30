@@ -83,6 +83,7 @@ a { color: var(--venue); }
   opacity: 0;
   pointer-events: none;
 }
+.splash.splash-photo-mode { transition: opacity 1.2s ease; }
 .splash-logo {
   width: clamp(64px, 16vw, 96px);
   height: clamp(64px, 16vw, 96px);
@@ -109,8 +110,9 @@ a { color: var(--venue); }
   opacity: 0;
   transform: scale(1);
   filter: grayscale(1);
-  /* 全体を2秒でフェードイン+カラー化 → 2.5秒地点からズーム(1.5s)→終わったらすぐフェードアウト */
-  transition: opacity 2s ease, filter 2s ease, transform 1.5s ease 2.5s;
+  /* 全体を1秒でフェードイン+カラー化 → 1秒地点でズーム開始(1.2s、フェードアウトと同時)。
+     合計2.2秒で完了 */
+  transition: opacity 1s ease, filter 1s ease, transform 1.2s ease 1s;
 }
 .splash-photo.splash-photo-show {
   opacity: 1;

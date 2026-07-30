@@ -31,19 +31,23 @@
 
   let showClass;
   let holdMs;
+  let hideMs;
   if (isFirstOpen) {
     img.src = "img/entrance-memory.jpg";
     img.classList.remove("splash-logo");
     img.classList.add("splash-photo");
     img.style.setProperty("--splash-zoom", computeZoomScale());
+    splash.classList.add("splash-photo-mode");
     showClass = "splash-photo-show";
-    // 全体フェードイン(2s) → 2.5s地点でズーム開始。ズームの完了を待たず、
-    // ズームと同時にフェードアウトを始める(体感の長さを削るため)。
-    holdMs = 2500;
+    // 全体フェードイン(1s) → 1s地点でズームとフェードアウトを同時に開始(1.2s)。
+    // 合計2.2秒で完了。
+    holdMs = 1000;
+    hideMs = 1200;
     try { sessionStorage.setItem(SESSION_KEY, "1"); } catch (e) {}
   } else {
     showClass = "splash-logo-show";
     holdMs = 500;
+    hideMs = 750;
   }
 
   requestAnimationFrame(() => {
@@ -52,7 +56,7 @@
   window.addEventListener("load", () => {
     setTimeout(() => {
       splash.classList.add("splash-hide");
-      setTimeout(() => splash.remove(), 750);
+      setTimeout(() => splash.remove(), hideMs);
     }, holdMs);
   });
 })();
