@@ -249,6 +249,7 @@
       <div class="detail-title">${escapeHtml(ev.title || "(タイトル不明)")}</div>
       <div class="detail-actions">
         <div class="hype-slot"></div>
+        <div class="emoi-slot"></div>
         <div class="share-slot"></div>
       </div>
       ${ev.date_confidence === "estimated" ? `<div class="detail-notes">⚠ この日付の月・年は推定です。元ページに月の記載が無く、スナップショットが取得された時期から推測しているため、実際の公演日と異なる可能性があります。</div>` : ""}
@@ -271,6 +272,9 @@
     detailCard.querySelector(".close").addEventListener("click", hideDetail);
     if (window.SixDogHype) {
       detailCard.querySelector(".hype-slot").appendChild(window.SixDogHype.buildHypeButton(ev.event_date));
+    }
+    if (window.SixDogEmoi) {
+      detailCard.querySelector(".emoi-slot").appendChild(window.SixDogEmoi.buildEmoiButton(ev.event_date));
     }
     if (window.SixDogShare) {
       detailCard.querySelector(".share-slot").appendChild(window.SixDogShare.buildShareButtons(ev));
@@ -419,6 +423,7 @@
     if (window.SixDogLinks) await window.SixDogLinks.loadLinkIndex();
     if (window.SixDogVideos) await window.SixDogVideos.loadVideoIndex();
     if (window.SixDogHype) await window.SixDogHype.loadHypeIndex();
+    if (window.SixDogEmoi) await window.SixDogEmoi.loadEmoiIndex();
     eventsByDate = new Map(events.map(ev => [ev.event_date, ev]));
 
     if (!events.length) {

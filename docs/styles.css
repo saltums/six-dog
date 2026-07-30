@@ -539,6 +539,32 @@ main {
   min-width: 12px;
   text-align: left;
 }
+.emoi-btn {
+  font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
+  font-size: 13px;
+  background: var(--paper-raised);
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  padding: 6px 13px;
+  cursor: pointer;
+  color: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.emoi-btn:hover:not(:disabled) { border-color: var(--venue); }
+.emoi-btn:disabled { cursor: default; }
+.emoi-btn.emoid {
+  background: var(--venue);
+  border-color: var(--venue);
+  color: #fff;
+}
+.emoi-count {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 13px;
+  min-width: 12px;
+  text-align: left;
+}
 .share-wrap { display: flex; flex-direction: column; gap: 8px; }
 .share-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .share-label { font-size: 11px; color: var(--ink-soft); }
