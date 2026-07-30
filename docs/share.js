@@ -1,14 +1,22 @@
 /*
- * 公演詳細をX/LINEで簡単共有するためのボタン。バックエンド不要、URLを組み立てて新規タブで開くだけ。
+ * 公演詳細をX/LINEで簡単共有するためのボタン。バックエンド不要。
  *
  * Xの「投稿文を事前に埋め込んで開く」機能(Web Intents, x.com/intent/tweet)は
  * 2026-07時点で動作確認したところX側で機能しておらず(text/urlパラメータを
  * 渡してもホームタイムラインが表示されるだけで投稿欄には何も反映されない、
  * twitter.com/intent/tweet 経由でも同様)、こちら側では直せない。
- * そのため投稿文を確実に手元に届ける手段として、コピー用のテキストを
- * その場で見せて選択状態にしておく共有パネル方式にしている
- * (ボタンを押した瞬間に裏でクリップボードコピー+X起動も試みるが、
- * それが失敗してもパネルの中身を選択してコピーすれば必ず同じ内容が使える)。
+ * twitter://post?message= のカスタムスキームも、Xアプリの投稿画面は開くが
+ * 本文が反映されない(こちらもX側アプリの仕様/不具合)。
+ *
+ * そのため以下の優先順で本文を確実に届ける:
+ * 1. Web Share API (navigator.share): 対応端末(主にスマホ)では、OSの共有
+ *    シート経由でXアプリの「共有」拡張機能に本文を渡す。これはx.com側の
+ *    不具合とは無関係な別経路(OS標準の共有インテント)なので、本文が
+ *    正しく入った状態でXの投稿画面が開く。
+ * 2. 上記が使えない環境(主にPCブラウザ)向けのフォールバック: 投稿文を
+ *    その場に見せて選択状態にしておく共有パネル。ボタンを押した瞬間に
+ *    裏でクリップボードコピー+X起動も試みるが、失敗してもパネルの中身を
+ *    選択してコピーすれば確実に同じ内容を使える。
  */
 (function (global) {
   "use strict";
@@ -77,6 +85,19 @@
     wrap.appendChild(panel);
 
     wrap.querySelector(".share-x").addEventListener("click", async () => {
+      // 端末のOS共有シート(Web Share API)経由でXアプリに渡せる場合、
+      // アプリ側の共有拡張機能を使うのでx.com/intent/tweetの不具合を回避でき、
+      // 本文が確実に入った状態でXの投稿画面が開く。対応環境ではこちらを優先する。
+      if (navigator.share) {
+        try {
+          await navigator.share({ text, url });
+          return; // 共有シートが開けた(完了/キャンセルいずれも成功扱い)
+        } catch (e) {
+          if (e && e.name === "AbortError") return; // ユーザーがキャンセルしただけ
+          // それ以外のエラーは下のフォールバックへ
+        }
+      }
+      // Web Share API が無い(主にPCブラウザ)場合のフォールバック:
       // ダメ元でクリップボードへの自動コピーとX起動を試みる(成功すれば貼り付けるだけで済む)
       try { await navigator.clipboard.writeText(combined); } catch (e) {}
       window.open("https://x.com/compose/post", "_blank", "noopener,noreferrer");
