@@ -13,6 +13,9 @@
   const statsEl = document.getElementById("stats");
   const overlay = document.getElementById("detailOverlay");
   const detailCard = document.getElementById("detailCard");
+  const helpBtn = document.getElementById("helpBtn");
+  const helpOverlay = document.getElementById("helpOverlay");
+  const helpClose = document.getElementById("helpClose");
   const yearHub = document.getElementById("yearHub");
   const yearHubGrid = document.getElementById("yearHubGrid");
   const controlsEl = document.getElementById("controls");
@@ -350,7 +353,17 @@
   }
 
   overlay.addEventListener("click", e => { if (e.target === overlay) hideDetail(); });
-  document.addEventListener("keydown", e => { if (e.key === "Escape") hideDetail(); });
+  document.addEventListener("keydown", e => {
+    if (e.key !== "Escape") return;
+    hideDetail();
+    if (helpOverlay) helpOverlay.classList.add("hidden");
+  });
+
+  if (helpBtn && helpOverlay) {
+    helpBtn.addEventListener("click", () => helpOverlay.classList.remove("hidden"));
+    helpClose.addEventListener("click", () => helpOverlay.classList.add("hidden"));
+    helpOverlay.addEventListener("click", e => { if (e.target === helpOverlay) helpOverlay.classList.add("hidden"); });
+  }
 
   function updateView() {
     const q = searchInput.value.trim();

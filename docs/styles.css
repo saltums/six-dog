@@ -196,6 +196,19 @@ a { color: var(--venue); }
   border-color: var(--hairline);
 }
 .gear-btn.active { opacity: 0.7; }
+.help-btn {
+  right: 56px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.help-list {
+  margin: 12px 0 0;
+  padding-left: 20px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink);
+}
+.help-list li + li { margin-top: 8px; }
 
 /* ---------- controls ---------- */
 .controls {
