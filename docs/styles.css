@@ -1261,8 +1261,9 @@ footer {
   gap: 10px;
 }
 .edit-row { display: flex; flex-direction: column; gap: 4px; }
-.edit-row-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.edit-row-2col > div { display: flex; flex-direction: column; gap: 4px; }
+.edit-row-2col { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
+.edit-row-2col > div { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.edit-row-2col input { width: 100%; min-width: 0; box-sizing: border-box; }
 .edit-form label {
   font-family: "Bebas Neue", sans-serif;
   font-size: 11px;
