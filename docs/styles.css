@@ -56,6 +56,9 @@ a { color: var(--venue); }
 
 /* ---------- header ---------- */
 .topbar {
+  position: sticky;
+  top: 0;
+  z-index: 9;
   padding: 22px 20px 16px;
   border-bottom: 1px solid var(--hairline);
   background-color: var(--paper-raised);
