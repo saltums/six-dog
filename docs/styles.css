@@ -63,7 +63,7 @@ a { color: var(--venue); }
   cursor: pointer;
 }
 .brand-wordmark {
-  height: clamp(40px, 8vw, 56px);
+  height: clamp(30px, 5.5vw, 38px);
   display: block;
   flex: none;
 }
