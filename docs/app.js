@@ -18,6 +18,7 @@
   const helpClose = document.getElementById("helpClose");
   const yearHub = document.getElementById("yearHub");
   const yearHubGrid = document.getElementById("yearHubGrid");
+  const recentFeedSlot = document.getElementById("recentFeedSlot");
   const controlsEl = document.getElementById("controls");
   const mainView = document.getElementById("mainView");
   const backToYearsBtn = document.getElementById("backToYears");
@@ -423,6 +424,13 @@
     });
   }
 
+  async function renderRecentFeed() {
+    if (!recentFeedSlot || !window.SixDogRecentFeed) return;
+    const entries = await window.SixDogRecentFeed.fetchRecent(6);
+    recentFeedSlot.innerHTML = "";
+    recentFeedSlot.appendChild(window.SixDogRecentFeed.buildFeed(entries));
+  }
+
   backToYearsBtn.addEventListener("click", showYearHub);
 
   searchInput.addEventListener("input", updateView);
@@ -473,6 +481,7 @@
     const initialIndex = Math.max(0, months.findIndex(m => m.key === bestKey));
 
     renderYearHub();
+    renderRecentFeed();
 
     // ?date=YYYY-MM-DD が付いている場合はその日の詳細を直接開く(BIダッシュボードの「要確認」一覧から遷移する用)
     const deepLinkDate = new URLSearchParams(location.search).get("date");
