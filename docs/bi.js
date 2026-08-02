@@ -17,6 +17,8 @@
   const tooltipEl = document.getElementById("tooltip");
   const needsReviewListEl = document.getElementById("needsReviewList");
   const needsReviewSubEl = document.getElementById("needsReviewSub");
+  const reactionSubEl = document.getElementById("reactionSub");
+  const reactionChartEl = document.getElementById("reactionChart");
 
   let events = [];
   let aliases = {};
@@ -317,6 +319,50 @@
   }
 
   // ---------- 出典あり・出演者未登録 ----------
+  function renderReactions(scoped) {
+    if (!reactionChartEl) return;
+    const scopeLabel = selectedYear === "all" ? "全期間" : `${selectedYear}年`;
+
+    const ranked = scoped
+      .map(ev => {
+        const hype = window.SixDogHype ? window.SixDogHype.getCount(ev.event_date) : 0;
+        const emoi = window.SixDogEmoi ? window.SixDogEmoi.getCount(ev.event_date) : 0;
+        return { ev, hype, emoi, total: hype + emoi };
+      })
+      .filter(r => r.total > 0)
+      .sort((a, b) => b.total - a.total)
+      .slice(0, 15);
+
+    reactionSubEl.textContent = `${scopeLabel} — 🔥アツかった/🥹エモいの反応が多い公演(上位15件)`;
+
+    reactionChartEl.innerHTML = "";
+    if (!ranked.length) {
+      reactionChartEl.innerHTML = `<div class="panel-sub">この期間はまだ反応がありません</div>`;
+      return;
+    }
+    const maxTotal = ranked[0].total;
+    ranked.forEach((r, i) => {
+      const row = document.createElement("a");
+      row.href = `index.html?date=${encodeURIComponent(r.ev.event_date)}`;
+      row.className = "bar-row-h" + (i === 0 ? " top1" : "");
+      const valueText = [r.hype ? `🔥${r.hype}` : "", r.emoi ? `🥹${r.emoi}` : ""].filter(Boolean).join(" ");
+      row.innerHTML = `
+        <span class="name"></span>
+        <span class="track"><span class="fill" style="width:${(r.total / maxTotal * 100).toFixed(1)}%"></span></span>
+        <span class="value"></span>
+      `;
+      row.querySelector(".name").textContent = `${r.ev.event_date} ${r.ev.title || "(タイトル不明)"}`;
+      row.querySelector(".value").textContent = valueText;
+      row.addEventListener("pointermove", e => showTooltip(e.clientX, e.clientY, [
+        { value: r.ev.title || "(タイトル不明)", strong: false },
+        { label: "アツかった", value: `${r.hype}`, strong: false },
+        { label: "エモい", value: `${r.emoi}`, strong: false },
+      ]));
+      row.addEventListener("pointerleave", hideTooltip);
+      reactionChartEl.appendChild(row);
+    });
+  }
+
   function renderNeedsReview(scoped) {
     if (!needsReviewListEl) return;
     const getLinks = window.SixDogLinks ? window.SixDogLinks.getLinks : () => [];
@@ -392,6 +438,7 @@
     renderDrilldown();
     renderTrend(scoped);
     renderDow(scoped);
+    renderReactions(scoped);
     renderNeedsReview(scoped);
   }
 
@@ -408,6 +455,8 @@
     events = window.SixDogEditor ? window.SixDogEditor.applyOverrides(data, overrides) : data;
     aliases = window.SixDogEditor ? await window.SixDogEditor.fetchAliasesPublic() : {};
     if (window.SixDogLinks) await window.SixDogLinks.loadLinkIndex();
+    if (window.SixDogHype) await window.SixDogHype.loadHypeIndex();
+    if (window.SixDogEmoi) await window.SixDogEmoi.loadEmoiIndex();
     if (!events.length) {
       kpiRowEl.innerHTML = `<div class="panel-sub">まだデータがありません</div>`;
       return;

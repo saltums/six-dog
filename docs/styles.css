@@ -1122,6 +1122,7 @@ footer {
   cursor: pointer;
   font: inherit;
   text-align: left;
+  text-decoration: none;
   color: inherit;
   background: transparent;
   border: none;
