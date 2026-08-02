@@ -1,8 +1,6 @@
 (() => {
   "use strict";
 
-  const DOW_ORDER = ["日", "月", "火", "水", "木", "金", "土"];
-
   const yearFilterEl = document.getElementById("yearFilter");
   const kpiRowEl = document.getElementById("kpiRow");
   const rankingSubEl = document.getElementById("rankingSub");
@@ -13,7 +11,6 @@
   const trendTitleEl = document.getElementById("trendTitle");
   const trendSubEl = document.getElementById("trendSub");
   const trendChartEl = document.getElementById("trendChart");
-  const dowChartEl = document.getElementById("dowChart");
   const tooltipEl = document.getElementById("tooltip");
   const needsReviewListEl = document.getElementById("needsReviewList");
   const needsReviewSubEl = document.getElementById("needsReviewSub");
@@ -298,26 +295,6 @@
     });
   }
 
-  // ---------- 曜日別 ----------
-  function renderDow(scoped) {
-    const counts = Object.fromEntries(DOW_ORDER.map(d => [d, 0]));
-    scoped.forEach(ev => { if (ev.weekday && counts.hasOwnProperty(ev.weekday)) counts[ev.weekday]++; });
-    const max = Math.max(1, ...Object.values(counts));
-
-    dowChartEl.innerHTML = "";
-    DOW_ORDER.forEach(d => {
-      const c = counts[d];
-      const row = document.createElement("div");
-      row.className = "dow-row";
-      row.innerHTML = `
-        <span class="dlabel">${d}</span>
-        <span class="track"><span class="fill" style="width:${(c / max * 100).toFixed(1)}%"></span></span>
-        <span class="value">${c}</span>
-      `;
-      dowChartEl.appendChild(row);
-    });
-  }
-
   // ---------- 出典あり・出演者未登録 ----------
   function renderReactions(scoped) {
     if (!reactionChartEl) return;
@@ -437,7 +414,6 @@
     renderRanking(scoped, performerIndex);
     renderDrilldown();
     renderTrend(scoped);
-    renderDow(scoped);
     renderReactions(scoped);
     renderNeedsReview(scoped);
   }

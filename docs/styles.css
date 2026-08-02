@@ -1207,32 +1207,6 @@ footer {
 .axis-row .axis-cell { flex: 1; text-align: center; }
 
 /* --- 曜日チャート(横) --- */
-.dow-chart { display: flex; flex-direction: column; gap: 6px; }
-.dow-row {
-  display: grid;
-  grid-template-columns: 28px 1fr 40px;
-  align-items: center;
-  gap: 10px;
-}
-.dow-row .dlabel {
-  font-family: "Bebas Neue", sans-serif;
-  font-size: 13px;
-  color: var(--ink-soft);
-  text-align: center;
-}
-.dow-row .track {
-  height: 14px;
-  background: var(--chart-track);
-  border-radius: 3px;
-  overflow: hidden;
-}
-.dow-row .fill { height: 100%; background: var(--chart-data); border-radius: 3px; }
-.dow-row .value {
-  font-family: "Bebas Neue", sans-serif;
-  font-size: 13px;
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
 
 /* --- テーブルビュー --- */
 .data-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
