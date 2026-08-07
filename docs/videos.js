@@ -1,9 +1,10 @@
 /*
- * 出演者(公演ごと)に動画URLを紐づけて、誰でもリアルタイムに閲覧・投稿できる機能。
- * バックエンドは Supabase(Postgres + PostgREST)。ここで使う anon key は
+ * 出演者(公演ごと)に動画URLを紐づけて、誰でもリアルタイムに閲覧・投稿・解除(削除)
+ * できる機能。バックエンドは Supabase(Postgres + PostgREST)。ここで使う anon key は
  * クライアント側に埋め込む前提の公開鍵で、Row Level Security により
- * 「閲覧・投稿・更新は誰でも可、削除は不可」に制限されている
- * (Supabase側の videos テーブルのポリシー参照)。
+ * 「閲覧・投稿・削除は誰でも可」に設定されている(2026-08-08、動画の誤投稿・URL間違い
+ * を本人が直せるようにするため削除を解禁した。anon keyは全訪問者共通のため、
+ * 理論上は他人が投稿した動画も削除できてしまう点は把握した上での判断)。
  */
 (function (global) {
   "use strict";
@@ -61,6 +62,16 @@
     const res = await fetch(`${CONFIG.url}/rest/v1/videos?${params.toString()}`, { headers: headers() });
     if (!res.ok) return [];
     return res.json();
+  }
+
+  async function deleteVideo(id) {
+    const res = await fetch(`${CONFIG.url}/rest/v1/videos?id=eq.${id}`, {
+      method: "DELETE",
+      headers: headers(),
+    });
+    if (!res.ok) {
+      throw new Error(`解除に失敗しました (${res.status})`);
+    }
   }
 
   async function submitVideo(row) {
@@ -144,10 +155,23 @@
         item.className = "video-item";
         const linkText = v.video_title || v.video_url;
         item.innerHTML = `
-          <a class="video-link" href="${encodeURI(v.video_url)}" target="_blank" rel="noopener noreferrer nofollow">${escapeHtml(linkText)} ↗</a>
+          <div class="video-item-row">
+            <a class="video-link" href="${encodeURI(v.video_url)}" target="_blank" rel="noopener noreferrer nofollow">${escapeHtml(linkText)} ↗</a>
+            <button type="button" class="video-remove" title="この動画を解除">✕ 解除</button>
+          </div>
           <div class="video-meta">${v.submitted_by ? escapeHtml(v.submitted_by) + " — " : ""}${formatDate(v.submitted_at)}</div>
           ${v.notes ? `<div class="video-notes">${escapeHtml(v.notes)}</div>` : ""}
         `;
+        item.querySelector(".video-remove").addEventListener("click", async () => {
+          const ok = window.confirm(`この動画を解除してもいいですか?\n\n${linkText}`);
+          if (!ok) return;
+          try {
+            await deleteVideo(v.id);
+            reload();
+          } catch (e) {
+            statusEl.textContent = e.message;
+          }
+        });
         listEl.appendChild(item);
       });
     }

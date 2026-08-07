@@ -1698,7 +1698,21 @@ footer {
   padding: 10px;
   font-size: 12.5px;
 }
+.video-item-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
 .video-link { display: block; color: var(--venue); word-break: break-all; font-size: 12.5px; }
+.video-remove {
+  flex: none;
+  font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
+  font-size: 11px;
+  background: none;
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  padding: 2px 8px;
+  color: var(--ink-soft);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.video-remove:hover { border-color: var(--stamp); color: var(--stamp); }
 .video-meta { color: var(--ink-soft); font-size: 11px; margin-top: 4px; }
 .video-notes { color: var(--ink); font-size: 12px; margin-top: 4px; }
 .video-form {
