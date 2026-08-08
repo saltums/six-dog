@@ -1700,7 +1700,8 @@ footer {
 }
 .video-item-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
 .video-link { display: block; color: var(--venue); word-break: break-all; font-size: 12.5px; }
-.video-remove {
+.video-item-actions { flex: none; display: flex; gap: 6px; }
+.video-remove, .video-edit {
   flex: none;
   font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
   font-size: 11px;
@@ -1713,8 +1714,39 @@ footer {
   white-space: nowrap;
 }
 .video-remove:hover { border-color: var(--stamp); color: var(--stamp); }
+.video-edit:hover { border-color: var(--venue); color: var(--venue); }
 .video-meta { color: var(--ink-soft); font-size: 11px; margin-top: 4px; }
 .video-notes { color: var(--ink); font-size: 12px; margin-top: 4px; }
+.video-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--hairline);
+}
+.video-edit-form.hidden { display: none; }
+.video-edit-form input {
+  font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
+  font-size: 12.5px;
+  padding: 6px 9px;
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+  background: var(--paper);
+  color: var(--ink);
+}
+.video-edit-form input:focus { outline: 2px solid var(--venue); outline-offset: 1px; }
+.video-edit-actions { display: flex; gap: 8px; }
+.ve-save, .ve-cancel {
+  font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
+  font-size: 12px;
+  border-radius: 6px;
+  padding: 6px 14px;
+  cursor: pointer;
+}
+.ve-save { background: var(--venue); border: 1px solid var(--venue); color: var(--stamp-ink); }
+.ve-cancel { background: none; border: 1px solid var(--hairline); color: var(--ink-soft); }
+.video-edit-status { font-size: 11px; color: var(--ink-soft); }
 .video-form {
   display: flex;
   flex-direction: column;

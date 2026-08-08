@@ -1,10 +1,11 @@
 /*
- * 出演者(公演ごと)に動画URLを紐づけて、誰でもリアルタイムに閲覧・投稿・解除(削除)
+ * 出演者(公演ごと)に動画URLを紐づけて、誰でもリアルタイムに閲覧・投稿・編集・解除(削除)
  * できる機能。バックエンドは Supabase(Postgres + PostgREST)。ここで使う anon key は
  * クライアント側に埋め込む前提の公開鍵で、Row Level Security により
- * 「閲覧・投稿・削除は誰でも可」に設定されている(2026-08-08、動画の誤投稿・URL間違い
- * を本人が直せるようにするため削除を解禁した。anon keyは全訪問者共通のため、
- * 理論上は他人が投稿した動画も削除できてしまう点は把握した上での判断)。
+ * 「閲覧・投稿・編集・削除は誰でも可」に設定されている(2026-08-08、動画の誤投稿・URL間違い
+ * を本人が直せるようにするため削除を解禁、続けて名前(タイトル)・URLの編集も解禁した。
+ * anon keyは全訪問者共通のため、理論上は他人が投稿した動画も編集・削除できてしまう点は
+ * 把握した上での判断)。
  */
 (function (global) {
   "use strict";
@@ -72,6 +73,19 @@
     if (!res.ok) {
       throw new Error(`解除に失敗しました (${res.status})`);
     }
+  }
+
+  async function updateVideo(id, patch) {
+    const res = await fetch(`${CONFIG.url}/rest/v1/videos?id=eq.${id}`, {
+      method: "PATCH",
+      headers: headers({ "Content-Type": "application/json", Prefer: "return=representation" }),
+      body: JSON.stringify(patch),
+    });
+    if (!res.ok) {
+      throw new Error(`更新に失敗しました (${res.status})`);
+    }
+    const data = await res.json();
+    return data[0];
   }
 
   async function submitVideo(row) {
@@ -157,11 +171,46 @@
         item.innerHTML = `
           <div class="video-item-row">
             <a class="video-link" href="${encodeURI(v.video_url)}" target="_blank" rel="noopener noreferrer nofollow">${escapeHtml(linkText)} ↗</a>
-            <button type="button" class="video-remove" title="この動画を解除">✕ 解除</button>
+            <div class="video-item-actions">
+              <button type="button" class="video-edit" title="名前・URLを編集">✎ 編集</button>
+              <button type="button" class="video-remove" title="この動画を解除">✕ 解除</button>
+            </div>
           </div>
           <div class="video-meta">${v.submitted_by ? escapeHtml(v.submitted_by) + " — " : ""}${formatDate(v.submitted_at)}</div>
           ${v.notes ? `<div class="video-notes">${escapeHtml(v.notes)}</div>` : ""}
+          <div class="video-edit-form hidden">
+            <input type="text" class="ve-title" placeholder="名前" value="${escapeHtml(v.video_title || "")}" autocomplete="off" />
+            <input type="text" class="ve-url" placeholder="URL" value="${escapeHtml(v.video_url || "")}" autocomplete="off" />
+            <div class="video-edit-actions">
+              <button type="button" class="ve-save">保存</button>
+              <button type="button" class="ve-cancel">キャンセル</button>
+            </div>
+            <span class="video-edit-status"></span>
+          </div>
         `;
+        const editForm = item.querySelector(".video-edit-form");
+        item.querySelector(".video-edit").addEventListener("click", () => {
+          editForm.classList.toggle("hidden");
+        });
+        item.querySelector(".ve-cancel").addEventListener("click", () => {
+          editForm.classList.add("hidden");
+        });
+        const editStatusEl = item.querySelector(".video-edit-status");
+        item.querySelector(".ve-save").addEventListener("click", async () => {
+          const titleInput = item.querySelector(".ve-title");
+          const urlInput = item.querySelector(".ve-url");
+          const newTitle = titleInput.value.trim();
+          const newUrl = urlInput.value.trim();
+          if (!newUrl) { editStatusEl.textContent = "URLを入力してください"; return; }
+          if (!/^https?:\/\//i.test(newUrl)) { editStatusEl.textContent = "http(s):// から始まるURLを入力してください"; return; }
+          editStatusEl.textContent = "保存中...";
+          try {
+            await updateVideo(v.id, { video_title: newTitle || null, video_url: newUrl });
+            reload();
+          } catch (e) {
+            editStatusEl.textContent = e.message;
+          }
+        });
         item.querySelector(".video-remove").addEventListener("click", async () => {
           const ok = window.confirm(`この動画を解除してもいいですか?\n\n${linkText}`);
           if (!ok) return;
