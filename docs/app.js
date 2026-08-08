@@ -339,8 +339,9 @@
           const idx = events.findIndex(e => e.event_date === ev.event_date);
           if (idx >= 0) events[idx] = updatedEv; else events.push(updatedEv);
           renderCalendar();
-          editSlot.innerHTML = "";
-          editToggleBtn.classList.remove("hidden");
+          // 保存後は詳細カード自体(タイトル・出演者チップなど)が古い表示のまま
+          // 残ってしまうため、更新後のデータで詳細カードごと描き直す
+          showDetail(updatedEv);
         },
       });
       editSlot.appendChild(form);
