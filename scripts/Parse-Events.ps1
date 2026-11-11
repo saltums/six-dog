@@ -297,15 +297,149 @@ function Get-SelfReferencedMonth([string]$html, [string]$originalUrl) {
     return $null
 }
 
+# ---------- 旧PCサイト(2008〜2010年頃、/pc/sche6/sche6.cgi)用パーサー ----------
+# 当時のサイトはレンタルCGIの月間スケジュール表で、他の世代とは書式がまったく違う:
+#   - 文字コードが Shift_JIS
+#   - 「2008年」「8月」の見出し + 1日1行の<table>(1列目が「<b>日</b> (曜)」、2列目が自由記述)
+#   - 自由記述のため「OPEN/START」「adv/door」の決まった行が無く、
+#     「17:00/17:30 前売1,500円 当日1,800円」「出演：A/B/C」「●A●B」などが混在する
+# 2列目の自由記述は改行を含むため Singleline で照合する
+$sche6RowRe = New-Object System.Text.RegularExpressions.Regex('<tr[^>]*>\s*<td width="60">\s*<font[^>]*>\s*<b>(\d{1,2})</b>\s*[\(（]([^\)）]{1,3})[\)）]\s*</font>\s*</td>\s*<td>(.*?)</td>\s*</tr>', $ROpt)
+
+function ConvertTo-Sche6Event([int]$year, [int]$month, [int]$day, [string]$weekday, [string]$cellHtml, [hashtable]$sourceInfo) {
+    $lines = @(ConvertTo-PlainLines $cellHtml | ForEach-Object { Convert-ZenkakuDigits $_ })
+    if ($lines.Count -eq 0) { return $null }
+
+    $openTime = $null; $startTime = $null; $priceAdv = $null; $priceDoor = $null; $priceNote = $null
+    $titleParts = New-Object System.Collections.Generic.List[string]
+    $performers = New-Object System.Collections.Generic.List[string]
+    $notes = New-Object System.Collections.Generic.List[string]
+
+    foreach ($rawLine in $lines) {
+        $line = $rawLine -replace '：', ':'
+        $handled = $false
+        # 時刻: "17:00/17:30"、"OPEN18:00 START18:30"、"open 15:30 / start 16:00"
+        $t1 = [regex]::Match($line, '(\d{1,2}:\d{2})\s*/\s*(\d{1,2}:\d{2})')
+        $t2 = [regex]::Match($line, '(?i)(?:OPEN|開場)\s*(\d{1,2}:\d{2}).*?(?:START|開演)\s*(\d{1,2}:\d{2})')
+        $timeMatch = $null
+        if ($t2.Success -and -not $openTime) { $openTime = $t2.Groups[1].Value; $startTime = $t2.Groups[2].Value; $handled = $true; $timeMatch = $t2 }
+        elseif ($t1.Success -and -not $openTime) { $openTime = $t1.Groups[1].Value; $startTime = $t1.Groups[2].Value; $handled = $true; $timeMatch = $t1 }
+        # 「『企画名』 OPEN13:00 START13:30」のようにタイトルと時刻が同じ行にある場合、
+        # 時刻より前の部分をタイトルとして拾う
+        if ($timeMatch -and $titleParts.Count -eq 0) {
+            $pre = $line.Substring(0, $timeMatch.Index).Trim()
+            if ($pre) { $titleParts.Add($pre) }
+        }
+        # 2008年前半の書式: 時刻と同じ行に「￥1,500/1,800（D別）」のように前売/当日が並ぶ
+        if ($t1.Success -and -not $priceAdv) {
+            $afterTime = $line.Substring($t1.Index + $t1.Length)
+            $pair = [regex]::Match($afterTime, '[￥\\]?\s*([\d,]{3,})\s*/\s*[￥\\]?\s*([\d,]{3,})')
+            $one = [regex]::Match($afterTime, '[￥\\]\s*([\d,]{3,})')
+            if ($pair.Success) { $priceAdv = [int]($pair.Groups[1].Value -replace ',', ''); $priceDoor = [int]($pair.Groups[2].Value -replace ',', '') }
+            elseif ($one.Success) { $priceAdv = [int]($one.Groups[1].Value -replace ',', '') }
+            if ($afterTime -match '[（(][DＤ]別[）)]') { $priceNote = "(D別)" }
+        }
+        # 料金: "前売1,500円 当日1,800円" / "前売り・当日共に1,000円" / "850円"
+        $both = [regex]::Match($line, '前売り?・?当日(?:共に)?\s*[￥\\]?\s*([\d,]{3,})\s*円?')
+        $adv = [regex]::Match($line, '前売り?\s*([\d,]+)\s*円')
+        $door = [regex]::Match($line, '当日\s*([\d,]+)\s*円')
+        if ($both.Success) { $priceAdv = [int]($both.Groups[1].Value -replace ',', ''); $priceDoor = $priceAdv; $handled = $true }
+        else {
+            if ($adv.Success -and -not $priceAdv) { $priceAdv = [int]($adv.Groups[1].Value -replace ',', ''); $handled = $true }
+            if ($door.Success -and -not $priceDoor) { $priceDoor = [int]($door.Groups[1].Value -replace ',', ''); $handled = $true }
+        }
+        if (-not $priceAdv -and -not $both.Success) {
+            $single = [regex]::Match($line, '^\D{0,3}([\d,]{3,})\s*円')
+            if ($single.Success -and $line -match '\d{1,2}:\d{2}') { $priceAdv = [int]($single.Groups[1].Value -replace ',', ''); $handled = $true }
+        }
+        if ($line -match '[DＤ]代別\s*([\d,]+)円' -or $line -match 'ドリンク代\s*([\d,]+)円') {
+            if (-not $priceNote) { $priceNote = "(D代別$($Matches[1])円)" }
+            $handled = $true
+        }
+        if ($handled) { continue }
+
+        # 出演者: "出演：A/B/C"、"●A●B"、"★A ★B"、"・A・B"
+        if ($line -match '^:?\s*出演\s*:?\s*(.*)$' -or ($line -match '^:\s*(.*[①②③].*)$')) {
+            # 「出演:A/B/C」のほか「出演:①A ②B」のような丸数字区切りもある
+            $Matches[1] -split '\s*[/／]\s*|\s*[①-⑳]\s*' | ForEach-Object { if ($_.Trim()) { $performers.Add($_.Trim()) } }
+            continue
+        }
+        if ($performers.Count -gt 0 -and $line -match '^[/／]') {
+            # 「出演：」行の折り返し(先頭が"/")
+            $line -split '\s*[/／]\s*' | ForEach-Object { if ($_.Trim()) { $performers.Add($_.Trim()) } }
+            continue
+        }
+        if ($line -match '詳細未定|詳細は後日|後日発表') { $notes.Add($line.TrimStart('●', '★', '・', ' ')); continue }
+        if ($line -match '^([●★・])') {
+            # 区切りに使われている記号だけで分割する(「ザ・バニーガール」のような
+            # バンド名中の「・」を誤って区切らないため)
+            $sep = [regex]::Escape($Matches[1])
+            $line -split $sep | ForEach-Object {
+                $n = ($_ -replace '[［\[][^］\]]*[］\]]', '').Trim()
+                if ($n -and $n -ne 'Coming soon') { $performers.Add($n) }
+            }
+            continue
+        }
+        if ($line -match '詳細未定|※|が必要です|飲み放題') { $notes.Add($line); continue }
+        if ($performers.Count -eq 0 -and $titleParts.Count -lt 2) { $titleParts.Add($line) } else { $notes.Add($line) }
+    }
+
+    $title = (($titleParts -join ' ') -replace '^[「『]', '' -replace '[」』]$', '' -replace '\s*新栄SiX-DOG\s*$', '').Trim()
+    if (-not $title) { $title = $null }
+
+    $fieldCount = 0
+    if ($title) { $fieldCount++ }
+    if ($openTime) { $fieldCount++ }
+    if ($startTime) { $fieldCount++ }
+    if ($priceAdv) { $fieldCount++ }
+    if ($priceDoor) { $fieldCount++ }
+    $fieldCount += $performers.Count
+    if ($fieldCount -eq 0) { return $null }
+
+    return [pscustomobject]@{
+        event_date                = "{0:D4}-{1:D2}-{2:D2}" -f $year, $month, $day
+        weekday                   = $weekday
+        title                     = $title
+        open_time                 = $openTime
+        start_time                = $startTime
+        price_adv                 = $priceAdv
+        price_door                = $priceDoor
+        price_note                = $priceNote
+        performers                = @($performers)
+        notes                     = if ($notes.Count -gt 0) { ($notes -join '; ') } else { $null }
+        source_snapshot_url       = $sourceInfo.wayback_url
+        source_snapshot_timestamp = $sourceInfo.timestamp
+        source_era                = "pc-cgi"
+        date_confidence           = "confirmed"
+        field_count               = $fieldCount
+    }
+}
+
 # ---------- メイン処理 ----------
 
 $allEvents = New-Object System.Collections.Generic.List[object]
 $errorLog = New-Object System.Collections.Generic.List[string]
 $scannedSchedulePages = 0
+$sjis = [System.Text.Encoding]::GetEncoding(932)
 
 foreach ($entry in $manifest) {
     $filePath = Join-Path $rawDir $entry.file
     if (-not (Test-Path $filePath)) { continue }
+
+    if ($entry.original_url -match 'sche6\.cgi' -and $entry.original_url -notmatch 'mode=') {
+        $html = [System.IO.File]::ReadAllText($filePath, $sjis)
+        $ym = [regex]::Match($html, '<b>(\d{4})年</b>.*?<b>(\d{1,2})月</b>', $ROpt)
+        if (-not $ym.Success) { $errorLog.Add("[$($entry.file)] sche6: 年月見出しが見つからない"); continue }
+        $scannedSchedulePages++
+        $sourceInfo = @{ file = $entry.file; wayback_url = $entry.wayback_url; timestamp = $entry.timestamp }
+        foreach ($rm in $sche6RowRe.Matches($html)) {
+            $ev = ConvertTo-Sche6Event -year ([int]$ym.Groups[1].Value) -month ([int]$ym.Groups[2].Value) `
+                -day ([int]$rm.Groups[1].Value) -weekday $rm.Groups[2].Value -cellHtml $rm.Groups[3].Value -sourceInfo $sourceInfo
+            if ($ev) { $allEvents.Add($ev) }
+        }
+        continue
+    }
+
     $html = Get-Content $filePath -Raw -Encoding UTF8
 
     $hasAdvDoor = $html -match 'adv\s*/\s*door' -or $html -match '前売\s*/\s*当日'
