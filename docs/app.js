@@ -85,9 +85,9 @@
     calGrid.innerHTML = "";
     if (!months.length) return;
 
-    DOW.forEach(d => {
+    DOW.forEach((d, i) => {
       const el = document.createElement("div");
-      el.className = "cal-dow";
+      el.className = "cal-dow" + (i === 0 ? " dow-sun" : i === 6 ? " dow-sat" : "");
       el.textContent = d;
       calGrid.appendChild(el);
     });
@@ -109,6 +109,10 @@
       const cell = document.createElement("button");
       cell.type = "button";
       cell.className = "cal-cell" + (ev ? " has-event" : " cal-cell-empty");
+      // 土日の色分け(旧サイト風表示で、当時のスケジュール表と同じ配色にするのに使う)
+      const dow = (firstDow + day - 1) % 7;
+      if (dow === 0) cell.classList.add("dow-sun");
+      if (dow === 6) cell.classList.add("dow-sat");
       const dEl = document.createElement("div");
       dEl.className = "d";
       dEl.textContent = day;

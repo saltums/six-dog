@@ -6,6 +6,7 @@
 <title>SiX-DOG ARCHIVE — 出演者BIダッシュボード</title>
 <meta name="description" content="SiX-DOG の公演データを出演者・頻度・時系列で分析するダッシュボード" />
 <link rel="stylesheet" href="styles.css" />
+<script src="legacy-theme.js"></script>
 </head>
 <body>
 
@@ -17,12 +18,13 @@
 
 <header class="topbar">
   <div class="inner">
-    <a href="index.html" class="brand"><img src="img/six-dog-wordmark.png" alt="SiX-DOG ARCHIVE" class="brand-wordmark" /></a>
+    <a href="index.html" class="brand"><img src="img/six-dog-wordmark.png" alt="SiX-DOG ARCHIVE" class="brand-wordmark" /><img src="img/legacy/logo.jpg" alt="SiX-DOG" class="brand-legacy" width="152" height="48" /></a>
     <div class="tagline">出演者BI — 公演データを頻度/時系列分析</div>
     <div class="bi-disclaimer">📝 出典が乏しい公演の情報は推定・不確定な部分を含みます。ランキングや推移は参考程度に楽しんでください。</div>
     <nav class="nav-tabs">
-      <a href="index.html" class="icon" title="カレンダー" aria-label="カレンダー">📅</a>
-      <a href="bi.html" class="icon active" aria-current="page" title="BIダッシュボード" aria-label="BIダッシュボード">📊</a>
+      <a href="index.html" class="icon" title="カレンダー" aria-label="カレンダー"><span class="nav-icon">📅</span><span class="nav-legacy-label">schedule</span></a>
+      <a href="bi.html" class="icon active" aria-current="page" title="BIダッシュボード" aria-label="BIダッシュボード"><span class="nav-icon">📊</span><span class="nav-legacy-label">analysis</span></a>
+      <button type="button" class="theme-toggle" data-theme-toggle>旧サイト風</button>
     </nav>
   </div>
 </header>
