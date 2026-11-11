@@ -13,10 +13,7 @@
 (function (global) {
   "use strict";
 
-  const SUPABASE = {
-    url: "https://fzylksuomkqkrdujueym.supabase.co",
-    anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6eWxrc3VvbWtxa3JkdWp1ZXltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5NTU5ODcsImV4cCI6MjEwMDUzMTk4N30.D9eORdSj5zkmJDnz8zVDSmMR804PATbWOpDEPChetf0",
-  };
+  const SUPABASE = global.SixDogSupabase;
   function headers(extra) {
     return Object.assign({ apikey: SUPABASE.anonKey, Authorization: `Bearer ${SUPABASE.anonKey}` }, extra || {});
   }
@@ -26,7 +23,7 @@
   async function loadTweetIndex() {
     tweetsByDate = new Map();
     try {
-      const res = await fetch(`${SUPABASE.url}/rest/v1/event_tweets?select=id,event_date,tweet_id&order=submitted_at.asc`, { headers: headers() });
+      const res = await fetch(`${SUPABASE.rest("event_tweets")}?select=id,event_date,tweet_id&order=submitted_at.asc`, { headers: headers() });
       if (!res.ok) return tweetsByDate;
       const rows = await res.json();
       rows.forEach(row => {
@@ -49,7 +46,7 @@
   }
 
   async function linkTweet(eventDate, tweetId) {
-    const res = await fetch(`${SUPABASE.url}/rest/v1/event_tweets`, {
+    const res = await fetch(`${SUPABASE.rest("event_tweets")}`, {
       method: "POST",
       headers: headers({ "Content-Type": "application/json", Prefer: "return=representation" }),
       body: JSON.stringify({ event_date: eventDate, tweet_id: tweetId }),
@@ -63,7 +60,7 @@
   }
 
   async function unlinkTweet(rowId) {
-    const res = await fetch(`${SUPABASE.url}/rest/v1/event_tweets?id=eq.${rowId}`, {
+    const res = await fetch(`${SUPABASE.rest("event_tweets")}?id=eq.${rowId}`, {
       method: "DELETE",
       headers: headers(),
     });

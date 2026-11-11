@@ -16,6 +16,12 @@ $mime = @{
     ".css"  = "text/css; charset=utf-8"
     ".json" = "application/json; charset=utf-8"
     ".woff2" = "font/woff2"
+    ".png"   = "image/png"
+    ".jpg"   = "image/jpeg"
+    ".jpeg"  = "image/jpeg"
+    ".gif"   = "image/gif"
+    ".svg"   = "image/svg+xml"
+    ".ico"   = "image/x-icon"
 }
 
 $listener = New-Object System.Net.HttpListener
@@ -44,14 +50,18 @@ try {
                 $res.Headers.Add("Cache-Control", "no-store, no-cache, must-revalidate")
                 $bytes = [System.IO.File]::ReadAllBytes($filePath)
                 $res.ContentLength64 = $bytes.Length
-                $res.OutputStream.Write($bytes, 0, $bytes.Length)
+                # HEAD リクエスト(起動確認などで来る)に本文を書くと例外でサーバーごと落ちる
+                if ($req.HttpMethod -ne "HEAD") { $res.OutputStream.Write($bytes, 0, $bytes.Length) }
             } else {
                 $res.StatusCode = 404
                 $msg = [System.Text.Encoding]::UTF8.GetBytes("Not Found")
-                $res.OutputStream.Write($msg, 0, $msg.Length)
+                if ($req.HttpMethod -ne "HEAD") { $res.OutputStream.Write($msg, 0, $msg.Length) }
             }
+        } catch {
+            # 1件のリクエストの失敗(切断など)でサーバー全体を止めない
+            Write-Warning "リクエスト処理に失敗: $($req.Url) $($_.Exception.Message)"
         } finally {
-            $res.OutputStream.Close()
+            try { $res.OutputStream.Close() } catch {}
         }
     }
 } finally {

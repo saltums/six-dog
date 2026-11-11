@@ -8,10 +8,7 @@
 (function (global) {
   "use strict";
 
-  const SUPABASE = {
-    url: "https://fzylksuomkqkrdujueym.supabase.co",
-    anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6eWxrc3VvbWtxa3JkdWp1ZXltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5NTU5ODcsImV4cCI6MjEwMDUzMTk4N30.D9eORdSj5zkmJDnz8zVDSmMR804PATbWOpDEPChetf0",
-  };
+  const SUPABASE = global.SixDogSupabase;
   function headers(extra) {
     return Object.assign({ apikey: SUPABASE.anonKey, Authorization: `Bearer ${SUPABASE.anonKey}` }, extra || {});
   }
@@ -21,7 +18,7 @@
   async function loadLinkIndex() {
     linksByDate = new Map();
     try {
-      const res = await fetch(`${SUPABASE.url}/rest/v1/event_links?select=id,event_date,url,title&order=submitted_at.asc`, { headers: headers() });
+      const res = await fetch(`${SUPABASE.rest("event_links")}?select=id,event_date,url,title&order=submitted_at.asc`, { headers: headers() });
       if (!res.ok) return linksByDate;
       const rows = await res.json();
       rows.forEach(row => {
@@ -58,7 +55,7 @@
   }
 
   async function linkArticle(eventDate, url, title) {
-    const res = await fetch(`${SUPABASE.url}/rest/v1/event_links`, {
+    const res = await fetch(`${SUPABASE.rest("event_links")}`, {
       method: "POST",
       headers: headers({ "Content-Type": "application/json", Prefer: "return=representation" }),
       body: JSON.stringify({ event_date: eventDate, url, title: title || null }),
@@ -72,7 +69,7 @@
   }
 
   async function unlinkArticle(rowId) {
-    const res = await fetch(`${SUPABASE.url}/rest/v1/event_links?id=eq.${rowId}`, {
+    const res = await fetch(`${SUPABASE.rest("event_links")}?id=eq.${rowId}`, {
       method: "DELETE",
       headers: headers(),
     });

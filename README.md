@@ -9,20 +9,30 @@
 ```
 scripts/
   Fetch-Snapshots.ps1     CDX APIでスナップショット一覧を取得し、data/raw/ にHTMLをキャッシュ
+  Fetch-Images.ps1        同じくドメイン全体の画像(フライヤー・写真・ロゴ等)を data/raw-images/ に保存
   Parse-Events.ps1        data/raw/ のHTMLを解析し、data/events.json を生成(docs/data/にもコピー)
+  Export-Supabase.ps1     Supabase上の手作業・投稿データを data/supabase/*.json に書き出す
+  Import-Supabase.ps1     data/supabase/*.json を Supabase に書き戻す(DB作り直し・引っ越し用)
   Export-NotebookLM.ps1   data/events.json から NotebookLM 投入用Markdownを生成
   Export-Xlsx.ps1         data/events.json を data/six-dog-data.xlsx (Events/Performers/Videosの3シート)に書き出す
   Import-Xlsx.ps1         レビュー・修正したdata/six-dog-data.xlsxをdata/events.jsonに取り込み直す
+  Serve-Docs.ps1          docs/ をローカルで確認するための簡易Webサーバー
 data/
   raw/                    取得済みHTMLスナップショット(キャッシュ、再現性のため)
   raw-manifest.json       取得したスナップショットの一覧(URL・タイムスタンプ・保存先)
-  events.json             正規化済みイベントデータ(唯一のソース)
+  raw-images/             取得済み画像(300点、約16MB)
+  raw-images-manifest.json 取得した画像の一覧(元URL・キャプチャ日時・保存先)
+  events.json             Wayback由来の正規化済みイベントデータ
+  supabase/               Supabaseのスナップショット(手作業で追加した公演・関連URL・動画・反応など)
   parse-errors.log        パースできなかった行のログ
   corrections.json        パーサーを直さずに後から手動で直すための補正リスト(下記参照)
   six-dog-data.xlsx        目視レビュー用スプレッドシート(下記参照)
+supabase/
+  schema.sql              Supabaseのテーブル定義と権限(Row Level Security)
 docs/                     GitHub Pages 公開ルート(素のHTML/CSS/JS、ビルド不要)
   index.html / styles.css / app.js   カレンダー・検索画面
   bi.html / bi.js                    出演者BIダッシュボード
+  supabase-config.js                 Supabaseの接続先(引っ越し時はここだけ書き換える)
   data/events.json
 notebooklm/
   six-dog-schedule.md     NotebookLM にアップロードする用のMarkdown
@@ -43,13 +53,45 @@ notebooklm/
 
 `Fetch-Snapshots.ps1` は取得済みのHTMLを `data/raw/` にキャッシュするため、2回目以降の実行は未取得分のみダウンロードします。
 
+## ゼロからの完全再現手順
+
+サイトのデータは2層構造になっています。
+
+| 層 | 中身 | 作り方 | 保存場所 |
+|---|---|---|---|
+| 元データ | 旧公式サイトのスケジュール(Wayback Machine) | スクリプトで機械的に再生成できる | `data/raw/` → `data/events.json` |
+| 追加データ | X・YouTube・mixi・ブログ等から手作業で集めた公演、利用者の投稿(動画・関連URL・反応など) | 再スクレイピングでは再現できない(投稿の削除・ログイン必須のため) | Supabase(スナップショットを `data/supabase/` に保存) |
+
+サイト上では、同じ日付に追加データがあればそちらが元データより優先して表示されます。
+
+```powershell
+# 1. 元データを作る(data/raw と data/raw-images はgitに入っているので、通常は再取得不要)
+.\scripts\Fetch-Snapshots.ps1    # HTML(任意。未取得分のみ取りにいく)
+.\scripts\Fetch-Images.ps1       # 画像(任意。未取得分のみ取りにいく)
+.\scripts\Parse-Events.ps1       # data/events.json と docs/data/events.json を生成
+
+# 2. 追加データ用のDBを作る(新しいSupabaseプロジェクトに作り直す場合)
+#    a. supabase/schema.sql を SQL Editor で実行
+#    b. docs/supabase-config.js の url / anonKey / tablePrefix を新しいプロジェクトの値にする
+#    c. data/supabase/*.json を流し込む(service_role key は絶対にコミットしない)
+.\scripts\Import-Supabase.ps1 -Key "<service_role key>"
+#    d. schema.sql 末尾の「連番の再同期」を SQL Editor で実行
+
+# 3. 確認
+.\scripts\Serve-Docs.ps1 -Port 8235   # http://localhost:8235/
+```
+
+**定期バックアップ**: Supabaseのデータは利用者の投稿で日々増えるため、ときどき `.\scripts\Export-Supabase.ps1` を実行して `data/supabase/` をコミットしてください。差分は行単位で見られます。
+
+**Supabaseの無料枠について**: 無料プロジェクトは一定期間アクセスがないと自動停止され、組織あたり稼働できるのは2つまでです。2026-11-11に元のプロジェクトが停止したため、テーブル名に `sixdog_` 接頭辞を付けて、他アプリと同居する `various_apps` プロジェクトへ引っ越しました。
+
 ## データの復元方法について
 
 サイトは運営期間中にURL構造が複数回変わっており(スケジュールページが月ごとに別URLになる時期もある)、固定URLを追いかける方式では全期間をカバーできません。そのため `Fetch-Snapshots.ps1` はドメイン全体のユニークコンテンツHTMLを網羅的に取得し、`Parse-Events.ps1` 側で `OPEN/START` / `adv/door` という共通パターンを持つページだけをスケジュールページとして判定・解析します。
 
 同じ日付の公演情報が複数スナップショットに重複して現れる場合は、**最も新しくキャプチャされたもの**を優先して採用しています(「未定」だった時間・出演者は後から確定情報に更新される前提)。出演者名は大文字小文字・空白の表記ゆれ(例: `the adonis` / `THE ADONIS`)を自動で1つの表記に統合しています。
 
-サイトは2011年頃・2013〜2016年頃・2016〜2018年頃で構造が異なりますが、いずれも `Parse-Events.ps1` が自動判別して解析します(2019年以降はサイト自体の更新が止まっているため対象外)。
+サイトは2008〜2010年頃(旧PCサイト)・2011年頃・2013〜2016年頃・2016〜2018年頃で構造が異なりますが、いずれも `Parse-Events.ps1` が自動判別して解析します(2019年以降はサイト自体の更新が止まっているため対象外)。旧PCサイト(`/pc/sche6/sche6.cgi`)は文字コードがShift_JISで、1日1行の表に自由記述で書かれているため、専用の解析処理を持っています(`source_era: "pc-cgi"`)。
 
 **月の特定方法について**: 月見出しの無いページ(2014〜2015年頃に多い、1ページ=1ヶ月分の形式)は、サイト自身が持つ「Schedule」/「Month」サイドバー(`<a href="pgNNN.html">YYYY.MM</a>` という月間ナビゲーションで、自分自身へのリンクも含む)から本当の年月を確定しています。これはキャプチャされた日時から推測するより信頼できます(例: `pg187.html` は2015年1月〜10月にかけて複数回キャプチャされていますが、サイドバー上は一貫して「2014.10」を指しており、これが正しい月です)。サイドバーが見つからないページのみ、キャプチャ日時からの推測にフォールバックし、`date_confidence: "estimated"` として明示しています。
 

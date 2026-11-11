@@ -20,10 +20,7 @@
     branch: "master",
     aliasesPath: "docs/data/artist-aliases.json",
   };
-  const SUPABASE = {
-    url: "https://fzylksuomkqkrdujueym.supabase.co",
-    anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6eWxrc3VvbWtxa3JkdWp1ZXltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5NTU5ODcsImV4cCI6MjEwMDUzMTk4N30.D9eORdSj5zkmJDnz8zVDSmMR804PATbWOpDEPChetf0",
-  };
+  const SUPABASE = global.SixDogSupabase;
   function supabaseHeaders(extra) {
     return Object.assign({ apikey: SUPABASE.anonKey, Authorization: `Bearer ${SUPABASE.anonKey}` }, extra || {});
   }
@@ -119,7 +116,7 @@
 
   async function fetchOverridesPublic() {
     try {
-      const res = await fetch(`${SUPABASE.url}/rest/v1/event_overrides?select=*`, { headers: supabaseHeaders() });
+      const res = await fetch(`${SUPABASE.rest("event_overrides")}?select=*`, { headers: supabaseHeaders() });
       if (!res.ok) return {};
       const rows = await res.json();
       const overrides = {};
@@ -157,7 +154,7 @@
 
   async function saveOverride(originalDate, patch) {
     const row = Object.assign({ event_date: originalDate, updated_at: new Date().toISOString() }, patch);
-    const res = await fetch(`${SUPABASE.url}/rest/v1/event_overrides?on_conflict=event_date`, {
+    const res = await fetch(`${SUPABASE.rest("event_overrides")}?on_conflict=event_date`, {
       method: "POST",
       headers: supabaseHeaders({
         "Content-Type": "application/json",

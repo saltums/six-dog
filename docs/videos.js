@@ -10,10 +10,7 @@
 (function (global) {
   "use strict";
 
-  const CONFIG = {
-    url: "https://fzylksuomkqkrdujueym.supabase.co",
-    anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6eWxrc3VvbWtxa3JkdWp1ZXltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5NTU5ODcsImV4cCI6MjEwMDUzMTk4N30.D9eORdSj5zkmJDnz8zVDSmMR804PATbWOpDEPChetf0",
-  };
+  const CONFIG = global.SixDogSupabase;
 
   function headers(extra) {
     return Object.assign({
@@ -27,7 +24,7 @@
   async function loadVideoIndex() {
     videoDates = new Set();
     try {
-      const res = await fetch(`${CONFIG.url}/rest/v1/videos?select=event_date`, { headers: headers() });
+      const res = await fetch(`${CONFIG.rest("videos")}?select=event_date`, { headers: headers() });
       if (!res.ok) return videoDates;
       const rows = await res.json();
       rows.forEach(row => videoDates.add(row.event_date));
@@ -44,7 +41,7 @@
   async function fetchVideoPerformers(eventDate) {
     const params = new URLSearchParams({ select: "performer_name", event_date: `eq.${eventDate}` });
     try {
-      const res = await fetch(`${CONFIG.url}/rest/v1/videos?${params.toString()}`, { headers: headers() });
+      const res = await fetch(`${CONFIG.rest("videos")}?${params.toString()}`, { headers: headers() });
       if (!res.ok) return new Set();
       const rows = await res.json();
       return new Set(rows.map(r => r.performer_name));
@@ -60,13 +57,13 @@
       performer_name: `eq.${performerName}`,
       order: "submitted_at.desc",
     });
-    const res = await fetch(`${CONFIG.url}/rest/v1/videos?${params.toString()}`, { headers: headers() });
+    const res = await fetch(`${CONFIG.rest("videos")}?${params.toString()}`, { headers: headers() });
     if (!res.ok) return [];
     return res.json();
   }
 
   async function deleteVideo(id) {
-    const res = await fetch(`${CONFIG.url}/rest/v1/videos?id=eq.${id}`, {
+    const res = await fetch(`${CONFIG.rest("videos")}?id=eq.${id}`, {
       method: "DELETE",
       headers: headers(),
     });
@@ -76,7 +73,7 @@
   }
 
   async function updateVideo(id, patch) {
-    const res = await fetch(`${CONFIG.url}/rest/v1/videos?id=eq.${id}`, {
+    const res = await fetch(`${CONFIG.rest("videos")}?id=eq.${id}`, {
       method: "PATCH",
       headers: headers({ "Content-Type": "application/json", Prefer: "return=representation" }),
       body: JSON.stringify(patch),
@@ -89,7 +86,7 @@
   }
 
   async function submitVideo(row) {
-    const res = await fetch(`${CONFIG.url}/rest/v1/videos`, {
+    const res = await fetch(`${CONFIG.rest("videos")}`, {
       method: "POST",
       headers: headers({ "Content-Type": "application/json", Prefer: "return=representation" }),
       body: JSON.stringify(row),

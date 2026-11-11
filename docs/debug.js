@@ -4,10 +4,7 @@
   const PASSWORD = "1640925a";
   const SESSION_KEY = "sixdog_debug_unlocked";
 
-  const SUPABASE = {
-    url: "https://fzylksuomkqkrdujueym.supabase.co",
-    anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6eWxrc3VvbWtxa3JkdWp1ZXltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5NTU5ODcsImV4cCI6MjEwMDUzMTk4N30.D9eORdSj5zkmJDnz8zVDSmMR804PATbWOpDEPChetf0",
-  };
+  const SUPABASE = window.SixDogSupabase;
   function supabaseHeaders() {
     return { apikey: SUPABASE.anonKey, Authorization: `Bearer ${SUPABASE.anonKey}` };
   }
@@ -31,7 +28,7 @@
 
   async function fetchAllVideos() {
     try {
-      const res = await fetch(`${SUPABASE.url}/rest/v1/videos?select=event_date,performer_name,video_url,video_title&order=event_date.asc`, { headers: supabaseHeaders() });
+      const res = await fetch(`${SUPABASE.rest("videos")}?select=event_date,performer_name,video_url,video_title&order=event_date.asc`, { headers: supabaseHeaders() });
       if (!res.ok) return new Map();
       const data = await res.json();
       const map = new Map();
@@ -176,9 +173,9 @@
 
   async function fetchChangelogEntries() {
     const [overridesRes, linksRes, videosRes] = await Promise.all([
-      fetch(`${SUPABASE.url}/rest/v1/event_overrides?select=event_date,title,performers,notes,updated_at&order=updated_at.desc`, { headers: supabaseHeaders() }),
-      fetch(`${SUPABASE.url}/rest/v1/event_links?select=event_date,title,url,submitted_at&order=submitted_at.desc`, { headers: supabaseHeaders() }),
-      fetch(`${SUPABASE.url}/rest/v1/videos?select=event_date,performer_name,video_title,video_url,submitted_at&order=submitted_at.desc`, { headers: supabaseHeaders() }),
+      fetch(`${SUPABASE.rest("event_overrides")}?select=event_date,title,performers,notes,updated_at&order=updated_at.desc`, { headers: supabaseHeaders() }),
+      fetch(`${SUPABASE.rest("event_links")}?select=event_date,title,url,submitted_at&order=submitted_at.desc`, { headers: supabaseHeaders() }),
+      fetch(`${SUPABASE.rest("videos")}?select=event_date,performer_name,video_title,video_url,submitted_at&order=submitted_at.desc`, { headers: supabaseHeaders() }),
     ]);
     const overrides = overridesRes.ok ? await overridesRes.json() : [];
     const links = linksRes.ok ? await linksRes.json() : [];

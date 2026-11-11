@@ -7,10 +7,7 @@
 (function (global) {
   "use strict";
 
-  const CONFIG = {
-    url: "https://fzylksuomkqkrdujueym.supabase.co",
-    anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6eWxrc3VvbWtxa3JkdWp1ZXltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5NTU5ODcsImV4cCI6MjEwMDUzMTk4N30.D9eORdSj5zkmJDnz8zVDSmMR804PATbWOpDEPChetf0",
-  };
+  const CONFIG = global.SixDogSupabase;
 
   function headers(extra) {
     return Object.assign({
@@ -24,7 +21,7 @@
   async function loadHypeIndex() {
     countsByDate = new Map();
     try {
-      const res = await fetch(`${CONFIG.url}/rest/v1/event_hype?select=event_date`, { headers: headers() });
+      const res = await fetch(`${CONFIG.rest("event_hype")}?select=event_date`, { headers: headers() });
       if (!res.ok) return countsByDate;
       const rows = await res.json();
       rows.forEach(row => countsByDate.set(row.event_date, (countsByDate.get(row.event_date) || 0) + 1));
@@ -51,7 +48,7 @@
   }
 
   async function tap(eventDate) {
-    const res = await fetch(`${CONFIG.url}/rest/v1/event_hype`, {
+    const res = await fetch(`${CONFIG.rest("event_hype")}`, {
       method: "POST",
       headers: headers({ "Content-Type": "application/json", Prefer: "return=minimal" }),
       body: JSON.stringify({ event_date: eventDate }),

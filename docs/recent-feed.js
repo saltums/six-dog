@@ -7,10 +7,7 @@
 (function (global) {
   "use strict";
 
-  const CONFIG = {
-    url: "https://fzylksuomkqkrdujueym.supabase.co",
-    anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6eWxrc3VvbWtxa3JkdWp1ZXltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5NTU5ODcsImV4cCI6MjEwMDUzMTk4N30.D9eORdSj5zkmJDnz8zVDSmMR804PATbWOpDEPChetf0",
-  };
+  const CONFIG = global.SixDogSupabase;
   function headers() {
     return { apikey: CONFIG.anonKey, Authorization: `Bearer ${CONFIG.anonKey}` };
   }
@@ -36,9 +33,9 @@
     let overrides = [], links = [], videos = [];
     try {
       const [overridesRes, linksRes, videosRes] = await Promise.all([
-        fetch(`${CONFIG.url}/rest/v1/event_overrides?select=event_date,title,performers,updated_at&order=updated_at.desc&limit=${perSource}`, { headers: headers() }),
-        fetch(`${CONFIG.url}/rest/v1/event_links?select=event_date,title,submitted_at&order=submitted_at.desc&limit=${perSource}`, { headers: headers() }),
-        fetch(`${CONFIG.url}/rest/v1/videos?select=event_date,performer_name,video_title,submitted_at&order=submitted_at.desc&limit=${perSource}`, { headers: headers() }),
+        fetch(`${CONFIG.rest("event_overrides")}?select=event_date,title,performers,updated_at&order=updated_at.desc&limit=${perSource}`, { headers: headers() }),
+        fetch(`${CONFIG.rest("event_links")}?select=event_date,title,submitted_at&order=submitted_at.desc&limit=${perSource}`, { headers: headers() }),
+        fetch(`${CONFIG.rest("videos")}?select=event_date,performer_name,video_title,submitted_at&order=submitted_at.desc&limit=${perSource}`, { headers: headers() }),
       ]);
       overrides = overridesRes.ok ? await overridesRes.json() : [];
       links = linksRes.ok ? await linksRes.json() : [];
