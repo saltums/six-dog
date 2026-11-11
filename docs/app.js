@@ -7,6 +7,8 @@
   const calendarView = document.getElementById("calendarView");
   const listView = document.getElementById("listView");
   const searchInput = document.getElementById("search");
+  const searchClear = document.getElementById("searchClear");
+  const monthList = document.getElementById("monthList");
   const monthSelect = document.getElementById("monthSelect");
   const prevMonthBtn = document.getElementById("prevMonth");
   const nextMonthBtn = document.getElementById("nextMonth");
@@ -30,6 +32,8 @@
   let eventsByDate = new Map();
   let months = []; // [{year, month, key, label}]
   let currentMonthIndex = 0;
+  // 検索を消したときに戻る先。"hub" = 年選択、"calendar" = カレンダー
+  let viewMode = "hub";
 
   function pad2(n) { return String(n).padStart(2, "0"); }
 
@@ -72,13 +76,54 @@
       statsEl.textContent = "";
       return;
     }
-    const q = searchInput.value.trim();
-    if (q) {
-      const n = listView.querySelectorAll(".list-item").length;
-      statsEl.innerHTML = `検索結果 <b>${n}</b> 件`;
-    } else {
-      statsEl.innerHTML = `全 <b>${events.length}</b> 件`;
-    }
+    statsEl.innerHTML = `全 <b>${events.length}</b> 件`;
+  }
+
+  function weekdayOf(dateStr) {
+    const [y, m, d] = dateStr.split("-").map(Number);
+    return DOW[new Date(y, m - 1, d).getDay()];
+  }
+
+  // 公演1件ぶんの行(検索結果と、スマホ幅の「その月の公演リスト」で共用)。
+  // compact のときは日付を「日+曜日」だけにする(年月はカレンダーの見出しで分かるため)。
+  function buildEventRow(ev, compact) {
+    const d = ev.event_date;
+    const marks = [];
+    if (ev.performers && ev.performers.length) marks.push(`出演 ${ev.performers.length}組`);
+    if (window.SixDogVideos && window.SixDogVideos.hasVideo(d)) marks.push("🎬 動画");
+    if (window.SixDogTweets && window.SixDogTweets.hasTweet(d)) marks.push("𝕏 告知");
+    if (window.SixDogLinks && window.SixDogLinks.hasLink(d)) marks.push("🔗 関連URL");
+    const hype = window.SixDogHype ? window.SixDogHype.getCount(d) : 0;
+    const emoi = window.SixDogEmoi ? window.SixDogEmoi.getCount(d) : 0;
+    if (hype > 0) marks.push(`🔥 ${hype}`);
+    if (emoi > 0) marks.push(`🥹 ${emoi}`);
+    const warn = ev.date_confidence === "estimated" ? ' <span class="badge badge-warn" title="月・年は推定です">月不明</span>' : "";
+    const dateHtml = compact
+      ? `${Number(d.slice(8, 10))}<span class="wd">${ev.weekday || weekdayOf(d)}</span>`
+      : `${d}${warn}`;
+    const item = document.createElement("button");
+    item.type = "button";
+    item.className = "list-item";
+    item.innerHTML = `
+      <div class="date">${dateHtml}</div>
+      <div class="body">
+        <div class="t">${escapeHtml(ev.title || "(タイトル不明)")}${compact ? warn : ""}</div>
+        <div class="p">${escapeHtml((ev.performers || []).join(" / "))}</div>
+        ${compact && marks.length ? `<div class="marks">${marks.map(m => `<span>${escapeHtml(m)}</span>`).join("")}</div>` : ""}
+      </div>
+    `;
+    item.addEventListener("click", () => showDetail(ev));
+    return item;
+  }
+
+  function renderMonthList() {
+    monthList.innerHTML = "";
+    if (!months.length) return;
+    const key = months[currentMonthIndex].key;
+    events
+      .filter(ev => ev.event_date.startsWith(key))
+      .sort((a, b) => a.event_date.localeCompare(b.event_date))
+      .forEach(ev => monthList.appendChild(buildEventRow(ev, true)));
   }
 
   function renderCalendar() {
@@ -190,6 +235,7 @@
       msg.textContent = "この月に記録された公演はありません";
       calGrid.appendChild(msg);
     }
+    renderMonthList();
   }
 
   function renderList(query) {
@@ -209,27 +255,16 @@
     if (!matches.length) {
       const empty = document.createElement("div");
       empty.className = "list-empty";
-      empty.textContent = "該当する公演が見つかりませんでした";
+      empty.textContent = `「${query}」に一致する公演が見つかりませんでした`;
       listView.appendChild(empty);
-      renderStats();
       return;
     }
 
-    matches.forEach(ev => {
-      const item = document.createElement("button");
-      item.type = "button";
-      item.className = "list-item";
-      item.innerHTML = `
-        <div class="date">${ev.event_date}${ev.date_confidence === "estimated" ? ' <span class="badge badge-warn" title="月・年は推定です">月不明</span>' : ""}</div>
-        <div class="body">
-          <div class="t">${escapeHtml(ev.title || "(タイトル不明)")}</div>
-          <div class="p">${escapeHtml((ev.performers || []).join(" / "))}</div>
-        </div>
-      `;
-      item.addEventListener("click", () => showDetail(ev));
-      listView.appendChild(item);
-    });
-    renderStats();
+    const count = document.createElement("div");
+    count.className = "list-count";
+    count.innerHTML = `「${escapeHtml(query)}」の検索結果 <b>${matches.length}</b> 件`;
+    listView.appendChild(count);
+    matches.forEach(ev => listView.appendChild(buildEventRow(ev, false)));
   }
 
   function escapeHtml(s) {
@@ -265,6 +300,7 @@
       overlay.classList.remove("hidden");
       return;
     }
+    detailCard.classList.remove("is-adding");
     detailCard.innerHTML = `
       <button class="close" aria-label="閉じる" type="button">×</button>
       <div class="detail-eyebrow">${ev.event_date}${ev.weekday ? " (" + ev.weekday + ")" : ""}${ev._edited && !ev._synthetic ? ' <span class="badge-warn" title="手動で修正済み">編集済み</span>' : ""}</div>
@@ -287,6 +323,7 @@
       <div class="tweet-slot"></div>
       <div class="link-slot"></div>
       <div class="detail-edit-toggle">
+        <button type="button" class="btn-add-toggle" aria-expanded="false">＋ 告知ポスト・関連URLを追加</button>
         <button type="button" class="btn-edit-toggle">✎ この公演情報を編集</button>
       </div>
       <div class="edit-form-slot"></div>
@@ -331,6 +368,15 @@
         });
       });
     }
+    // 入力欄・解除ボタンは普段は隠しておき、このボタンを押したときだけ出す
+    // (見るだけの人にとって、カードの3分の1が入力欄で埋まるのを避けるため)
+    const addToggleBtn = detailCard.querySelector(".btn-add-toggle");
+    addToggleBtn.addEventListener("click", () => {
+      const adding = detailCard.classList.toggle("is-adding");
+      addToggleBtn.setAttribute("aria-expanded", adding ? "true" : "false");
+      addToggleBtn.textContent = adding ? "－ 追加・解除の欄を閉じる" : "＋ 告知ポスト・関連URLを追加";
+      if (adding) tweetSlot.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    });
     const editToggleBtn = detailCard.querySelector(".btn-edit-toggle");
     const editSlot = detailCard.querySelector(".edit-form-slot");
     editToggleBtn.addEventListener("click", () => {
@@ -355,6 +401,7 @@
 
   function hideDetail() {
     overlay.classList.add("hidden");
+    detailCard.classList.remove("is-adding");
     detailCard.innerHTML = "";
   }
 
@@ -373,12 +420,26 @@
 
   function updateView() {
     const q = searchInput.value.trim();
+    searchClear.classList.toggle("hidden", !q);
     if (q) {
+      // 検索中は年選択・月送りを隠して結果だけを見せる
+      yearHub.classList.add("hidden");
+      controlsEl.classList.add("hidden");
+      mainView.classList.remove("hidden");
       calendarView.classList.add("hidden");
       listView.classList.remove("hidden");
       renderList(q);
+      return;
+    }
+    listView.classList.add("hidden");
+    if (viewMode === "hub") {
+      mainView.classList.add("hidden");
+      controlsEl.classList.add("hidden");
+      yearHub.classList.remove("hidden");
     } else {
-      listView.classList.add("hidden");
+      yearHub.classList.add("hidden");
+      controlsEl.classList.remove("hidden");
+      mainView.classList.remove("hidden");
       calendarView.classList.remove("hidden");
       renderCalendar();
       renderStats();
@@ -391,23 +452,30 @@
     renderCalendar();
   }
 
+  // 画面を切り替えたら、ヘッダーがメニュー行だけになる位置まで戻す
+  // (前の画面のスクロール位置が残って、切り替え先の先頭が見えなくなるのを防ぐ)
+  function scrollToContentTop() {
+    const top = window.SixDogHeader ? window.SixDogHeader.collapseOffset() : 0;
+    if (window.scrollY > top) window.scrollTo(0, top);
+  }
+
   function showCalendarUI() {
-    yearHub.classList.add("hidden");
-    controlsEl.classList.remove("hidden");
-    mainView.classList.remove("hidden");
+    viewMode = "calendar";
+    updateView();
   }
 
   function showYearHub() {
-    mainView.classList.add("hidden");
-    controlsEl.classList.add("hidden");
-    yearHub.classList.remove("hidden");
+    viewMode = "hub";
+    updateView();
+    scrollToContentTop();
   }
 
   function enterYear(year) {
     const idx = months.findIndex(m => m.year === year);
+    currentMonthIndex = idx >= 0 ? idx : 0;
+    monthSelect.value = months[currentMonthIndex].key;
     showCalendarUI();
-    selectMonth(idx >= 0 ? idx : 0);
-    updateView();
+    scrollToContentTop();
   }
 
   function renderYearHub() {
@@ -439,6 +507,11 @@
   backToYearsBtn.addEventListener("click", showYearHub);
 
   searchInput.addEventListener("input", updateView);
+  searchClear.addEventListener("click", () => {
+    searchInput.value = "";
+    updateView();
+    searchInput.focus();
+  });
   prevMonthBtn.addEventListener("click", () => selectMonth(currentMonthIndex - 1));
   nextMonthBtn.addEventListener("click", () => selectMonth(currentMonthIndex + 1));
   monthSelect.addEventListener("change", () => {
@@ -493,10 +566,10 @@
     const deepLinkEv = deepLinkDate ? eventsByDate.get(deepLinkDate) : null;
     if (deepLinkEv) {
       const idx = months.findIndex(m => m.key === deepLinkDate.slice(0, 7));
+      currentMonthIndex = idx >= 0 ? idx : initialIndex;
+      monthSelect.value = months[currentMonthIndex].key;
       showCalendarUI();
-      selectMonth(idx >= 0 ? idx : initialIndex);
       showDetail(deepLinkEv);
-      updateView();
     } else {
       showYearHub();
     }

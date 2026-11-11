@@ -56,15 +56,19 @@ a { color: var(--venue); }
 
 /* ---------- header ---------- */
 .topbar {
+  /*
+   * top を負の値にすると、ロゴと説明文のぶんだけ画面外へ流れてから止まる
+   * (=メニュー行だけが追従する)。流す高さは header.js が実測して渡す。
+   */
   position: sticky;
-  top: 0;
+  top: calc(-1 * var(--topbar-collapse, 0px));
   z-index: 9;
-  padding: 22px 20px 16px;
+  padding: 22px 20px 10px;
   border-bottom: 1px solid var(--hairline);
   background-color: var(--paper-raised);
   background-image: var(--grain);
 }
-.topbar .inner { max-width: 980px; margin: 0 auto; }
+.topbar .inner { max-width: 980px; margin: 0 auto; position: relative; }
 .brand {
   font-size: clamp(30px, 6vw, 40px);
   letter-spacing: 0.05em;
@@ -156,10 +160,32 @@ a { color: var(--venue); }
 .nav-tabs {
   display: flex;
   flex-wrap: nowrap;
+  align-items: center;
   gap: 4px;
-  margin-top: 16px;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+  margin-top: 14px;
+}
+.nav-spacer { flex: 1; }
+/* メニュー行だけになったとき(.is-stuck)に左端へ出す小さいロゴ */
+.nav-tabs a.nav-logo {
+  flex: none;
+  padding: 0;
+  border: none;
+  max-width: 0;
+  opacity: 0;
+  visibility: hidden;
+  overflow: hidden;
+  transition: max-width 0.25s ease, opacity 0.2s ease, margin 0.25s ease, visibility 0s linear 0.25s;
+}
+.nav-logo img { display: block; height: 26px; width: auto; }
+.topbar.is-stuck .nav-tabs a.nav-logo {
+  max-width: 90px;
+  margin-right: 8px;
+  opacity: 1;
+  visibility: visible;
+  transition: max-width 0.25s ease, opacity 0.2s ease, margin 0.25s ease, visibility 0s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav-tabs a.nav-logo, .topbar.is-stuck .nav-tabs a.nav-logo { transition: none; }
 }
 .nav-tabs a {
   font-family: "Bebas Neue", "Hiragino Sans", "Yu Gothic", sans-serif;
@@ -184,38 +210,32 @@ a { color: var(--venue); }
   padding: 6px 13px;
   line-height: 1;
 }
-.gear-btn {
-  position: fixed;
-  top: 16px;
-  right: 16px;
-  z-index: 8;
+.nav-tabs a.gear-btn {
+  flex: none;
   width: 32px;
   height: 32px;
+  padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 15px;
   line-height: 1;
   text-decoration: none;
-  background: transparent;
   border: 1px solid transparent;
   border-radius: 50%;
-  opacity: 0.32;
+  opacity: 0.4;
   transition: opacity 0.2s ease, background 0.2s ease, border-color 0.2s ease;
 }
-.gear-btn:hover, .gear-btn:focus-visible {
+.nav-tabs a.gear-btn:hover, .nav-tabs a.gear-btn:focus-visible {
   opacity: 1;
-  background: var(--paper-raised);
+  background: var(--paper);
   border-color: var(--hairline);
 }
-.gear-btn.active { opacity: 0.7; }
+.nav-tabs a.gear-btn.active { opacity: 0.8; }
 .help-btn {
-  position: fixed;
-  top: 16px;
-  right: 58px;
-  z-index: 8;
+  flex: none;
   height: 32px;
-  padding: 0 12px;
+  padding: 0 14px;
   display: flex;
   align-items: center;
   font-family: "Bebas Neue", "Hiragino Sans", "Yu Gothic", sans-serif;
@@ -223,16 +243,12 @@ a { color: var(--venue); }
   font-size: 13px;
   cursor: pointer;
   color: var(--ink);
-  background: var(--paper-raised);
+  background: var(--paper);
   border: 1px solid var(--hairline);
   border-radius: 999px;
-  opacity: 0.7;
-  transition: opacity 0.2s ease, border-color 0.2s ease;
+  transition: border-color 0.2s ease;
 }
-.help-btn:hover, .help-btn:focus-visible {
-  opacity: 1;
-  border-color: var(--stamp);
-}
+.help-btn:hover, .help-btn:focus-visible { border-color: var(--stamp); }
 .help-section { margin-top: 16px; }
 .help-section-title {
   font-family: "Bebas Neue", "Hiragino Sans", "Yu Gothic", sans-serif;
@@ -261,19 +277,37 @@ a { color: var(--venue); }
 .controls {
   max-width: 980px;
   margin: 0 auto;
-  padding: 16px 20px 0;
+  padding: 12px 20px 0;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 12px;
 }
-.search-wrap {
-  position: relative;
-  flex: 1 1 240px;
+.search-bar {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 16px 20px 0;
 }
+.search-wrap { position: relative; }
+.search-clear {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  transform: translateY(-50%);
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink-soft);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+.search-clear:hover, .search-clear:focus-visible { background: var(--venue-soft); color: var(--ink); }
 #search {
   width: 100%;
-  padding: 10px 14px;
+  padding: 10px 40px 10px 14px;
   border: 1px solid var(--hairline);
   border-radius: 6px;
   background: var(--paper-raised);
@@ -500,6 +534,19 @@ main {
 .list-item .t { font-weight: 700; }
 .list-item .p { color: var(--ink-soft); font-size: 13px; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .list-empty { text-align: center; padding: 48px 0; color: var(--ink-soft); }
+.list-count { font-size: 12.5px; color: var(--ink-soft); }
+.list-count b { color: var(--stamp); font-family: "Bebas Neue", sans-serif; font-size: 16px; letter-spacing: 0.04em; }
+.list-item .marks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  margin-top: 5px;
+  font-size: 11.5px;
+  color: var(--ink-soft);
+}
+.list-item .date .wd { display: block; font-family: "Hiragino Sans", "Yu Gothic", sans-serif; font-size: 11px; letter-spacing: 0; color: var(--ink-soft); }
+/* その月の公演リスト。マスに公演名が入るパソコン幅では出さず、スマホ幅でだけ表示する */
+.month-list { display: none; }
 
 .hidden { display: none !important; }
 
@@ -769,52 +816,24 @@ footer {
     padding: 0 3px;
     font-size: 9px;
   }
-  /* 𝕏・🔗・🎬バッジは件数バッジと重ならない角に小さく残し、モバイルでも一目でわかるようにする */
-  .cal-cell .badge-video,
-  .cal-cell .badge-tweet,
-  .cal-cell .badge-link {
-    display: flex;
-    position: absolute;
-    top: auto;
-    left: auto;
-    right: auto;
-    bottom: auto;
-    margin-left: 0;
-    border: none;
-    font-size: 9px;
-    line-height: 1;
-    padding: 0;
-    min-width: 0;
-    height: auto;
-  }
-  .cal-cell .badge-video { bottom: 3px; right: 3px; }
-  .cal-cell .badge-tweet { top: 3px; left: 3px; }
-  .cal-cell .badge-link { bottom: 3px; left: 3px; }
   /*
-   * 🔥・🥹は4隅がすでに埋まっているので、日付数字の高さ(中段)を挟んで左右に置く。
-   * どちらも.badge(件数バッジ)のクラスも併せ持つため、共通ルールが設定する
-   * top:3px/right:3pxを個別に明示的に打ち消す必要がある(でないと片方の指定だけが
-   * 効いて左右に間延びして伸びてしまう)。
+   * 🔗・🎬・𝕏・🔥・🥹 はマスの中では小さすぎて読めないため表示しない。
+   * 代わりにカレンダー下の「その月の公演リスト」に文字付きで出す。
    */
+  .cal-cell .badge-video,
   .cal-cell .badge-hype,
-  .cal-cell .badge-emoi {
+  .cal-cell .badge-emoi { display: none; }
+  .month-list {
     display: flex;
-    position: absolute;
-    top: calc(50% + 3px);
-    bottom: auto;
-    transform: translateY(-50%);
-    margin-left: 0;
-    border: none;
-    font-size: 9px;
-    line-height: 1;
-    padding: 0;
-    min-width: 0;
-    height: auto;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 18px;
   }
-  .cal-cell .badge-hype { left: 3px; right: auto; }
-  .cal-cell .badge-emoi { right: 3px; left: auto; }
+  .month-list .list-item { gap: 12px; padding: 10px 12px; }
+  .month-list .list-item .date { min-width: 38px; font-size: 20px; line-height: 1.1; text-align: center; }
+  .month-list .list-item .p { white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
   .cal-cell.cal-cell-empty .cal-add-hint { margin-top: 0; font-size: 13px; }
-  .stats { width: 100%; margin-left: 0; order: 3; }
+  .stats { margin-left: auto; }
 }
 
 /* ================= 年選択ハブ ================= */
@@ -1343,7 +1362,12 @@ footer {
 }
 
 /* ---------- 編集フォーム ---------- */
-.detail-edit-toggle { margin-top: 6px; }
+.detail-edit-toggle { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 8px; }
+/* 見るだけの人には入力欄・解除ボタン・中身のない見出しを見せない */
+.detail-card:not(.is-adding) .tweet-form,
+.detail-card:not(.is-adding) .tweet-unlink,
+.detail-card:not(.is-adding) .tweet-panel.is-empty { display: none; }
+.btn-add-toggle,
 .btn-edit-toggle {
   background: none;
   border: 1px solid var(--hairline);
@@ -1354,7 +1378,9 @@ footer {
   font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
   cursor: pointer;
 }
+.btn-add-toggle:hover,
 .btn-edit-toggle:hover { border-color: var(--venue); }
+.btn-add-toggle[aria-expanded="true"] { background: var(--venue-soft); border-color: var(--venue); }
 
 .edit-form {
   margin-top: 14px;
@@ -1611,7 +1637,8 @@ footer {
   color: var(--ink);
 }
 .tweet-form .tw-url:focus { outline: 2px solid var(--venue); outline-offset: 1px; }
-.tweet-form .tw-submit {
+.tweet-form .tw-submit,
+.tweet-form .lk-submit {
   background: var(--venue);
   border: 1px solid var(--venue);
   color: var(--stamp-ink);
@@ -1783,9 +1810,9 @@ footer {
 .brand-legacy,
 .nav-legacy-label { display: none; }
 .theme-toggle {
-  flex: none;
-  margin-left: auto;
-  align-self: center;
+  position: absolute;
+  top: 0;
+  right: 0;
   font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
   font-size: 11.5px;
   letter-spacing: 0.02em;
@@ -1844,6 +1871,7 @@ html[data-site-theme="2008"] a { color: var(--venue); }
 
 /* 中央の白い本文欄 */
 html[data-site-theme="2008"] body > header,
+html[data-site-theme="2008"] body > .search-bar,
 html[data-site-theme="2008"] body > section,
 html[data-site-theme="2008"] body > .controls,
 html[data-site-theme="2008"] body > main,
@@ -1859,6 +1887,7 @@ html[data-site-theme="2008"] .topbar {
   padding: 0;
   border-bottom: none;
 }
+html[data-site-theme="2008"] .search-bar { padding: 10px 16px 0; }
 html[data-site-theme="2008"] .topbar .inner {
   max-width: none;
   display: grid;
@@ -1879,7 +1908,7 @@ html[data-site-theme="2008"] .tagline {
   font-size: 10px;
   color: #999999;
   margin: 0;
-  padding: 0 130px 6px 8px;
+  padding: 0 64px 6px 8px;
 }
 html[data-site-theme="2008"] .bi-disclaimer {
   order: 3;
@@ -1898,9 +1927,11 @@ html[data-site-theme="2008"] .nav-tabs {
   border-bottom: 2px solid #222222;
   height: 22px;
 }
+html[data-site-theme="2008"] .nav-tabs a.nav-logo,
+html[data-site-theme="2008"] .nav-spacer { display: none; }
 html[data-site-theme="2008"] .nav-tabs a,
 html[data-site-theme="2008"] .nav-tabs a.icon,
-html[data-site-theme="2008"] .theme-toggle {
+html[data-site-theme="2008"] .help-btn {
   width: 88px;
   height: 18px;
   padding: 0;
@@ -1917,6 +1948,8 @@ html[data-site-theme="2008"] .theme-toggle {
 }
 html[data-site-theme="2008"] .nav-tabs a:hover,
 html[data-site-theme="2008"] .nav-tabs a:focus-visible,
+html[data-site-theme="2008"] .help-btn:hover,
+html[data-site-theme="2008"] .help-btn:focus-visible,
 html[data-site-theme="2008"] .theme-toggle:hover,
 html[data-site-theme="2008"] .theme-toggle:focus-visible {
   background: #888888;
@@ -1927,24 +1960,21 @@ html[data-site-theme="2008"] .nav-tabs a.active { background: #333333; color: #f
 html[data-site-theme="2008"] .nav-icon { display: none; }
 html[data-site-theme="2008"] .nav-legacy-label { display: inline; }
 
-/* 右上の固定ボタンも当時のメニューボタンと同じ質感に */
-html[data-site-theme="2008"] .help-btn,
-html[data-site-theme="2008"] .gear-btn {
-  /* 白いヘッダーの上に重なるため、ヘッダー(z-index:9)より手前に出す */
-  z-index: 10;
-  top: 14px;
+html[data-site-theme="2008"] .help-btn { display: block; text-transform: lowercase; cursor: pointer; }
+html[data-site-theme="2008"] .nav-tabs a.gear-btn { width: 22px; font-size: 10px; display: block; }
+/* 現在のデザインへ戻すボタンは、ロゴ行の右上に当時のメニューボタンと同じ質感で置く */
+html[data-site-theme="2008"] .theme-toggle {
+  top: 16px;
+  right: 8px;
   height: 18px;
+  padding: 0 10px;
   border: none;
   background: #333333;
   color: #ffffff;
   font-size: 11px;
-  opacity: 1;
+  font-weight: 700;
+  line-height: 18px;
 }
-/* 画面が広いときは黒地に浮かないよう、幅704pxの本文欄の右上に寄せる */
-html[data-site-theme="2008"] .help-btn { right: max(40px, calc(50% - 352px + 36px)); padding: 0 10px; }
-html[data-site-theme="2008"] .gear-btn { right: max(12px, calc(50% - 352px + 8px)); width: 22px; font-size: 11px; }
-html[data-site-theme="2008"] .help-btn:hover,
-html[data-site-theme="2008"] .gear-btn:hover { background: #888888; }
 
 /* ---------- 年選択 ---------- */
 html[data-site-theme="2008"] .year-hub { padding: 28px 16px 36px; }
@@ -1974,6 +2004,7 @@ html[data-site-theme="2008"] .year-tile:focus-visible {
 
 /* ---------- 検索・月送り ---------- */
 html[data-site-theme="2008"] .controls { padding: 10px 16px 0; }
+html[data-site-theme="2008"] .search-clear { width: 20px; height: 20px; font-size: 14px; }
 html[data-site-theme="2008"] #search,
 html[data-site-theme="2008"] #monthSelect,
 html[data-site-theme="2008"] .edit-form input,

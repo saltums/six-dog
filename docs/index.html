@@ -26,8 +26,6 @@
   <img src="img/six-dog-icon.jpg" alt="" class="splash-logo" />
 </div>
 
-<button type="button" class="help-btn" id="helpBtn" title="使い方" aria-label="使い方">How to</button>
-<a href="debug.html" class="gear-btn" title="デバッグ" aria-label="デバッグ">⚙️</a>
 
 <div id="helpOverlay" class="overlay hidden">
   <div class="detail-card">
@@ -60,15 +58,27 @@
 
 <header class="topbar">
   <div class="inner">
+    <button type="button" class="theme-toggle" data-theme-toggle>旧サイト風</button>
     <a href="index.html" class="brand"><img src="img/six-dog-wordmark.png" alt="SiX-DOG ARCHIVE" class="brand-wordmark" /><img src="img/legacy/logo.jpg" alt="SiX-DOG" class="brand-legacy" width="152" height="48" /></a>
     <div class="tagline">名古屋のライブハウス「SiX-DOG」公演記録</div>
     <nav class="nav-tabs">
+      <a href="index.html" class="nav-logo" aria-label="トップへ戻る"><img src="img/six-dog-wordmark.png" alt="" /></a>
       <a href="index.html" class="icon active" aria-current="page" title="カレンダー" aria-label="カレンダー"><span class="nav-icon">📅</span><span class="nav-legacy-label">schedule</span></a>
       <a href="bi.html" class="icon" title="BIダッシュボード" aria-label="BIダッシュボード"><span class="nav-icon">📊</span><span class="nav-legacy-label">analysis</span></a>
-      <button type="button" class="theme-toggle" data-theme-toggle>旧サイト風</button>
+      <span class="nav-spacer"></span>
+      <button type="button" class="help-btn" id="helpBtn" title="使い方" aria-label="使い方">How to</button>
+      <a href="debug.html" class="gear-btn" title="デバッグ" aria-label="デバッグ">⚙️</a>
     </nav>
   </div>
 </header>
+
+<!-- 検索は年を選ぶ前(トップ)からいつでも使えるよう、年選択・カレンダーの外に置く -->
+<div class="search-bar" id="searchBar">
+  <div class="search-wrap">
+    <input id="search" type="text" inputmode="search" enterkeyhint="search" placeholder="バンド名・イベント名で検索" autocomplete="off" aria-label="バンド名・イベント名で検索" />
+    <button type="button" class="search-clear hidden" id="searchClear" aria-label="検索をクリア">×</button>
+  </div>
+</div>
 
 <section id="yearHub" class="year-hub hidden">
   <p class="year-hub-lead">見たい年を選んでください</p>
@@ -78,9 +88,6 @@
 
 <div class="controls hidden" id="controls">
   <button type="button" class="back-to-years" id="backToYears">‹ 年を選び直す</button>
-  <div class="search-wrap">
-    <input id="search" type="text" placeholder="バンド名・イベント名で検索" autocomplete="off" />
-  </div>
   <div class="month-nav">
     <button id="prevMonth" aria-label="前の月" type="button">‹</button>
     <select id="monthSelect" aria-label="表示する年月"></select>
@@ -92,6 +99,8 @@
 <main id="mainView" class="hidden">
   <section id="calendarView">
     <div class="cal-grid" id="calGrid"></div>
+    <!-- スマホ幅ではマスに公演名が入らないため、その月の公演を一覧でも見せる -->
+    <div class="month-list" id="monthList"></div>
   </section>
   <section id="listView" class="list hidden"></section>
 </main>
@@ -103,6 +112,7 @@
 <footer>SiX-DOG Archive — 個人アーカイブプロジェクト</footer>
 
 <script src="splash.js"></script>
+<script src="header.js"></script>
 <script src="supabase-config.js"></script>
 <script src="editor.js"></script>
 <script src="videos.js"></script>

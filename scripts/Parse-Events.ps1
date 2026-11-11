@@ -203,7 +203,9 @@ function Parse-DayBlock([string[]]$lines, [int]$year, [int]$month, [hashtable]$s
     }
 
     $title = ($titleParts -join ' ').Trim()
-    if ($title -match '^-+$') { $title = $null }
+    # 「---------」「【--------------】」のような未定日のプレースホルダーはタイトル扱いしない
+    # (括弧付きの形を見逃すと、公演の無い日が「公演あり」として登録されてしまう)
+    if ($title -match '^[\s\-ー―—【】\[\]]*$') { $title = $null }
     if ($title -eq '') { $title = $null }
 
     $dateStr = "{0:D4}-{1:D2}-{2:D2}" -f $year, $month, $day

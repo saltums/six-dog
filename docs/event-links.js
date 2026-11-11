@@ -97,6 +97,8 @@
     `;
     const listEl = wrap.querySelector(".link-list");
     const statusEl = wrap.querySelector(".tweet-status");
+    // 中身が1件も無いときは、見るだけの人には見出しごと隠す(CSSが .is-empty を見る)
+    const syncEmpty = () => wrap.classList.toggle("is-empty", !listEl.children.length);
 
     function renderOne(row) {
       const item = document.createElement("div");
@@ -111,6 +113,7 @@
         try {
           await unlinkArticle(row.id);
           item.remove();
+          syncEmpty();
           const list = linksByDate.get(eventDate) || [];
           linksByDate.set(eventDate, list.filter(r => r.id !== row.id));
         } catch (e) {
@@ -120,6 +123,7 @@
     }
 
     (linksByDate.get(eventDate) || []).forEach(renderOne);
+    syncEmpty();
 
     wrap.querySelector(".lk-submit").addEventListener("click", async () => {
       const urlInput = wrap.querySelector(".lk-url");
@@ -137,6 +141,7 @@
         renderOne({ id: row.id, url: row.url, title: row.title });
         urlInput.value = "";
         titleInput.value = "";
+        syncEmpty();
         statusEl.textContent = "紐付けました！";
       } catch (e) {
         statusEl.textContent = e.message;

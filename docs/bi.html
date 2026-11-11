@@ -14,17 +14,19 @@
   <img src="img/six-dog-icon.jpg" alt="" class="splash-logo" />
 </div>
 
-<a href="debug.html" class="gear-btn" title="デバッグ" aria-label="デバッグ">⚙️</a>
 
 <header class="topbar">
   <div class="inner">
+    <button type="button" class="theme-toggle" data-theme-toggle>旧サイト風</button>
     <a href="index.html" class="brand"><img src="img/six-dog-wordmark.png" alt="SiX-DOG ARCHIVE" class="brand-wordmark" /><img src="img/legacy/logo.jpg" alt="SiX-DOG" class="brand-legacy" width="152" height="48" /></a>
     <div class="tagline">出演者BI — 公演データを頻度/時系列分析</div>
     <div class="bi-disclaimer">📝 出典が乏しい公演の情報は推定・不確定な部分を含みます。ランキングや推移は参考程度に楽しんでください。</div>
     <nav class="nav-tabs">
+      <a href="index.html" class="nav-logo" aria-label="トップへ戻る"><img src="img/six-dog-wordmark.png" alt="" /></a>
       <a href="index.html" class="icon" title="カレンダー" aria-label="カレンダー"><span class="nav-icon">📅</span><span class="nav-legacy-label">schedule</span></a>
       <a href="bi.html" class="icon active" aria-current="page" title="BIダッシュボード" aria-label="BIダッシュボード"><span class="nav-icon">📊</span><span class="nav-legacy-label">analysis</span></a>
-      <button type="button" class="theme-toggle" data-theme-toggle>旧サイト風</button>
+      <span class="nav-spacer"></span>
+      <a href="debug.html" class="gear-btn" title="デバッグ" aria-label="デバッグ">⚙️</a>
     </nav>
   </div>
 </header>
@@ -93,6 +95,7 @@
 <footer>SiX-DOG Archive — 個人アーカイブプロジェクト</footer>
 
 <script src="splash.js"></script>
+<script src="header.js"></script>
 <script src="supabase-config.js"></script>
 <script src="editor.js"></script>
 <script src="event-links.js"></script>

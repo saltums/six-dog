@@ -14,16 +14,18 @@
   <img src="img/six-dog-icon.jpg" alt="" class="splash-logo" />
 </div>
 
-<a href="debug.html" class="gear-btn active" title="デバッグ" aria-label="デバッグ">⚙️</a>
 
 <header class="topbar">
   <div class="inner">
+    <button type="button" class="theme-toggle" data-theme-toggle>旧サイト風</button>
     <a href="index.html" class="brand"><img src="img/six-dog-wordmark.png" alt="SiX-DOG ARCHIVE" class="brand-wordmark" /><img src="img/legacy/logo.jpg" alt="SiX-DOG" class="brand-legacy" width="152" height="48" /></a>
     <div class="tagline">各公演データの出典・取得元スナップショット情報(管理者向け)</div>
     <nav class="nav-tabs">
+      <a href="index.html" class="nav-logo" aria-label="トップへ戻る"><img src="img/six-dog-wordmark.png" alt="" /></a>
       <a href="index.html" class="icon" title="カレンダー" aria-label="カレンダー"><span class="nav-icon">📅</span><span class="nav-legacy-label">schedule</span></a>
       <a href="bi.html" class="icon" title="BIダッシュボード" aria-label="BIダッシュボード"><span class="nav-icon">📊</span><span class="nav-legacy-label">analysis</span></a>
-      <button type="button" class="theme-toggle" data-theme-toggle>旧サイト風</button>
+      <span class="nav-spacer"></span>
+      <a href="debug.html" class="gear-btn active" title="デバッグ" aria-label="デバッグ">⚙️</a>
     </nav>
   </div>
 </header>
@@ -161,6 +163,7 @@
 <footer>SiX-DOG Archive — 個人アーカイブプロジェクト — データは Wayback Machine のアーカイブに基づき復元</footer>
 
 <script src="splash.js"></script>
+<script src="header.js"></script>
 <script src="supabase-config.js"></script>
 <script src="editor.js"></script>
 <script src="event-links.js"></script>
