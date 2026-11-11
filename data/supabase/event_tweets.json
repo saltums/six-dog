@@ -1,0 +1,352 @@
+[
+    {
+        "id":  1,
+        "event_date":  "2015-12-30",
+        "tweet_id":  "682084154654130176",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  2,
+        "event_date":  "2015-12-29",
+        "tweet_id":  "681749310992613381",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  3,
+        "event_date":  "2016-08-28",
+        "tweet_id":  "769795477004914688",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  4,
+        "event_date":  "2016-09-03",
+        "tweet_id":  "772013471139377152",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  5,
+        "event_date":  "2016-09-10",
+        "tweet_id":  "774543083316793345",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  6,
+        "event_date":  "2016-09-11",
+        "tweet_id":  "774858217205575680",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  7,
+        "event_date":  "2016-09-12",
+        "tweet_id":  "775259991221481472",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  8,
+        "event_date":  "2016-09-18",
+        "tweet_id":  "777430993967783936",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  9,
+        "event_date":  "2016-09-22",
+        "tweet_id":  "778882813718257665",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  10,
+        "event_date":  "2016-09-23",
+        "tweet_id":  "779247392465969152",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  11,
+        "event_date":  "2016-09-24",
+        "tweet_id":  "779597698986979328",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  12,
+        "event_date":  "2016-10-01",
+        "tweet_id":  "782048551790444544",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  13,
+        "event_date":  "2016-10-09",
+        "tweet_id":  "785034641619070976",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  14,
+        "event_date":  "2016-10-23",
+        "tweet_id":  "790075044206489600",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  15,
+        "event_date":  "2016-10-28",
+        "tweet_id":  "791923936921395200",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  16,
+        "event_date":  "2016-10-29",
+        "tweet_id":  "792245927830368256",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  17,
+        "event_date":  "2016-10-30",
+        "tweet_id":  "792577116567023616",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  18,
+        "event_date":  "2016-11-06",
+        "tweet_id":  "795183959499948035",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  19,
+        "event_date":  "2016-11-12",
+        "tweet_id":  "797329583376736256",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  20,
+        "event_date":  "2016-11-13",
+        "tweet_id":  "797676404032741376",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  21,
+        "event_date":  "2016-11-15",
+        "tweet_id":  "798451565946277892",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  22,
+        "event_date":  "2016-11-18",
+        "tweet_id":  "799546504495120384",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  23,
+        "event_date":  "2016-11-19",
+        "tweet_id":  "799937111067496448",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  24,
+        "event_date":  "2016-11-20",
+        "tweet_id":  "800253730100654080",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  25,
+        "event_date":  "2016-11-25",
+        "tweet_id":  "802069087048208385",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  26,
+        "event_date":  "2016-11-26",
+        "tweet_id":  "802412604924653569",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  27,
+        "event_date":  "2016-11-27",
+        "tweet_id":  "802779942131888129",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  28,
+        "event_date":  "2016-11-29",
+        "tweet_id":  "803504506767970308",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  29,
+        "event_date":  "2016-12-04",
+        "tweet_id":  "805307100721094656",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  30,
+        "event_date":  "2016-12-05",
+        "tweet_id":  "805699129099751425",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  31,
+        "event_date":  "2016-12-10",
+        "tweet_id":  "807515331124084736",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  32,
+        "event_date":  "2016-12-14",
+        "tweet_id":  "809041181472485377",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  33,
+        "event_date":  "2016-12-23",
+        "tweet_id":  "812241889675988992",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  34,
+        "event_date":  "2016-12-28",
+        "tweet_id":  "814018002874048512",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  35,
+        "event_date":  "2016-12-29",
+        "tweet_id":  "814384148441747456",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  36,
+        "event_date":  "2016-12-30",
+        "tweet_id":  "814746974482153473",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  37,
+        "event_date":  "2016-12-31",
+        "tweet_id":  "815064596717268992",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  38,
+        "event_date":  "2018-11-25",
+        "tweet_id":  "1066645184170086400",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  39,
+        "event_date":  "2018-11-27",
+        "tweet_id":  "1067290316728758272",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  40,
+        "event_date":  "2018-11-27",
+        "tweet_id":  "1067365229208596482",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  41,
+        "event_date":  "2018-11-28",
+        "tweet_id":  "1067656148239638528",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  42,
+        "event_date":  "2018-12-09",
+        "tweet_id":  "1071674509948678145",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  43,
+        "event_date":  "2018-12-14",
+        "tweet_id":  "1073495338789539840",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  44,
+        "event_date":  "2018-12-20",
+        "tweet_id":  "1075685074841059328",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  45,
+        "event_date":  "2018-12-22",
+        "tweet_id":  "1076396907361193984",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  46,
+        "event_date":  "2018-12-27",
+        "tweet_id":  "1078211553810206720",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  47,
+        "event_date":  "2018-12-28",
+        "tweet_id":  "1078564862530408449",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  48,
+        "event_date":  "2017-07-01",
+        "tweet_id":  "1013255898519617536",
+        "submitted_by":  null,
+        "submitted_at":  "2026-07-27T06:39:39.181154+00:00"
+    },
+    {
+        "id":  49,
+        "event_date":  "2008-02-11",
+        "tweet_id":  "860482671507460096",
+        "submitted_by":  null,
+        "submitted_at":  "2026-08-01T14:26:06.104157+00:00"
+    },
+    {
+        "id":  50,
+        "event_date":  "2018-12-15",
+        "tweet_id":  "1071899300173496322",
+        "submitted_by":  null,
+        "submitted_at":  "2026-08-07T23:35:32.754424+00:00"
+    }
+]

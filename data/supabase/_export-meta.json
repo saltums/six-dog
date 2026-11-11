@@ -1,0 +1,14 @@
+{
+    "exported_at":  "2026-11-11T09:18:27Z",
+    "source_url":  "https://fzylksuomkqkrdujueym.supabase.co",
+    "table_prefix":  "",
+    "tables":  [
+                   "event_overrides",
+                   "event_links",
+                   "event_tweets",
+                   "event_title_groups",
+                   "videos",
+                   "event_hype",
+                   "event_emoi"
+               ]
+}

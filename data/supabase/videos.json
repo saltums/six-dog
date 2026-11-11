@@ -1,0 +1,672 @@
+[
+    {
+        "id":  2,
+        "event_date":  "2015-05-02",
+        "performer_name":  "Noward",
+        "video_url":  "https://www.youtube.com/watch?v=9KmkwIBYWcU",
+        "submitted_by":  "しゅが",
+        "submitted_at":  "2026-07-25T07:28:09.429132+00:00",
+        "notes":  null,
+        "video_title":  null
+    },
+    {
+        "id":  4,
+        "event_date":  "2011-03-20",
+        "performer_name":  "MARATHONS",
+        "video_url":  "https://www.youtube.com/watch?v=yd6u2AJ9_Pk",
+        "submitted_by":  "claude-research",
+        "submitted_at":  "2026-07-26T08:44:13.875642+00:00",
+        "notes":  null,
+        "video_title":  "MARATHONS - 浅い眠り 2011-03-20 名古屋新栄Six-DOG"
+    },
+    {
+        "id":  5,
+        "event_date":  "2011-03-20",
+        "performer_name":  "MARATHONS",
+        "video_url":  "https://www.youtube.com/watch?v=VXvzC6PoTxE",
+        "submitted_by":  "claude-research",
+        "submitted_at":  "2026-07-26T08:44:13.875642+00:00",
+        "notes":  null,
+        "video_title":  "MARATHONS - 夢を語れ 2011-03-20 名古屋新栄Six-DOG"
+    },
+    {
+        "id":  6,
+        "event_date":  "2011-12-17",
+        "performer_name":  "ばぁる",
+        "video_url":  "https://www.youtube.com/watch?v=wPlfVlTraXs",
+        "submitted_by":  "claude-research",
+        "submitted_at":  "2026-07-26T08:45:15.423018+00:00",
+        "notes":  null,
+        "video_title":  "【GO!!!】 Six dog LIVE 2011/12/17 【ばぁる】"
+    },
+    {
+        "id":  7,
+        "event_date":  "2013-09-15",
+        "performer_name":  "GEAR4th",
+        "video_url":  "https://www.youtube.com/watch?v=rbafyUK_2AM",
+        "submitted_by":  "claude-research",
+        "submitted_at":  "2026-07-26T08:45:15.423018+00:00",
+        "notes":  null,
+        "video_title":  "GEAR4th Live at SIX-DOG 20130915【PARK JAM Vol.4】"
+    },
+    {
+        "id":  8,
+        "event_date":  "2014-08-17",
+        "performer_name":  "Green Perch",
+        "video_url":  "https://www.youtube.com/watch?v=yJTTijCo5OA",
+        "submitted_by":  "claude-research",
+        "submitted_at":  "2026-07-26T08:46:22.791292+00:00",
+        "notes":  null,
+        "video_title":  "Green Perch ライブ (2014/8/17 名古屋 新栄SiX-DOG)"
+    },
+    {
+        "id":  9,
+        "event_date":  "2016-03-16",
+        "performer_name":  "萌花",
+        "video_url":  "https://www.youtube.com/watch?v=0WKoaZ-ZS3g",
+        "submitted_by":  "claude-research",
+        "submitted_at":  "2026-07-26T08:46:22.791292+00:00",
+        "notes":  null,
+        "video_title":  "萌花「タイトル未定曲」2016年3月16新栄SIX DOGライブ"
+    },
+    {
+        "id":  10,
+        "event_date":  "2013-01-27",
+        "performer_name":  "夢次現",
+        "video_url":  "https://www.youtube.com/watch?v=FNtYjinrG5c",
+        "submitted_by":  "claude-research",
+        "submitted_at":  "2026-07-26T08:46:22.791292+00:00",
+        "notes":  null,
+        "video_title":  "夢次現「beach」LIVE 13.01.27 新栄Six-Dog"
+    },
+    {
+        "id":  11,
+        "event_date":  "2015-09-13",
+        "performer_name":  "ThreeOut",
+        "video_url":  "https://www.youtube.com/watch?v=euXJ-8KySRU",
+        "submitted_by":  "claude-research",
+        "submitted_at":  "2026-07-26T08:46:22.791292+00:00",
+        "notes":  null,
+        "video_title":  "ThreeOut LIVE 2015.09.13@新栄SiX-DOG"
+    },
+    {
+        "id":  12,
+        "event_date":  "2012-07-16",
+        "performer_name":  "夢次現",
+        "video_url":  "https://www.youtube.com/watch?v=Z_SUJxDinPA",
+        "submitted_by":  "claude-research",
+        "submitted_at":  "2026-07-26T08:47:51.822324+00:00",
+        "notes":  null,
+        "video_title":  "夢次現「オランダ」2012.07.16 LIVE SIX-DOG"
+    },
+    {
+        "id":  13,
+        "event_date":  "2017-05-03",
+        "performer_name":  "モノリス",
+        "video_url":  "https://www.youtube.com/watch?v=IzpHz7Dlm3w",
+        "submitted_by":  "claude-research",
+        "submitted_at":  "2026-07-26T08:47:51.822324+00:00",
+        "notes":  null,
+        "video_title":  "モノリス.2017/5/3＠新栄SIX-DOG"
+    },
+    {
+        "id":  14,
+        "event_date":  "2018-02-11",
+        "performer_name":  "(不明)",
+        "video_url":  "https://www.youtube.com/watch?v=DPmYveSPIRM",
+        "submitted_by":  "claude-research",
+        "submitted_at":  "2026-07-26T08:47:51.822324+00:00",
+        "notes":  null,
+        "video_title":  "20180211@新栄SiX-DOG【Working Dog vol.2】"
+    },
+    {
+        "id":  15,
+        "event_date":  "2016-07-27",
+        "performer_name":  "HISTGRAM",
+        "video_url":  "https://www.youtube.com/watch?v=0sYJ9bBI7uU",
+        "submitted_by":  "claude-research",
+        "submitted_at":  "2026-07-26T08:58:34.714362+00:00",
+        "notes":  null,
+        "video_title":  "2016.7/27＠新栄SiX-DOG HISTGRAM ライブダイジェスト"
+    },
+    {
+        "id":  16,
+        "event_date":  "2012-11-24",
+        "performer_name":  "夢次現",
+        "video_url":  "https://www.youtube.com/watch?v=32YrqdZRSj4",
+        "submitted_by":  "claude-research",
+        "submitted_at":  "2026-07-26T08:59:55.372347+00:00",
+        "notes":  null,
+        "video_title":  "夢次現「おやつ」LIVE 12.11.24 新栄Six-Dog"
+    },
+    {
+        "id":  17,
+        "event_date":  "2017-05-13",
+        "performer_name":  "忘れてモーテルズ",
+        "video_url":  "https://www.youtube.com/watch?v=wW1iUZdzcv8",
+        "submitted_by":  "claude-research",
+        "submitted_at":  "2026-07-26T08:59:55.372347+00:00",
+        "notes":  null,
+        "video_title":  "忘れてモーテルズ 2017.5.13 新栄SIX DOG op"
+    },
+    {
+        "id":  18,
+        "event_date":  "2013-01-27",
+        "performer_name":  "夢次現",
+        "video_url":  "https://www.youtube.com/watch?v=nZTvw7oJF-M",
+        "submitted_by":  "claude-research",
+        "submitted_at":  "2026-07-26T09:00:31.043858+00:00",
+        "notes":  null,
+        "video_title":  "夢次現「おやつ」LIVE 13.01.27 新栄Six-Dog"
+    },
+    {
+        "id":  19,
+        "event_date":  "2017-05-28",
+        "performer_name":  "Spitcore",
+        "video_url":  "https://www.youtube.com/watch?v=iXD8HT45lGo",
+        "submitted_by":  "claude-research",
+        "submitted_at":  "2026-07-26T09:01:53.606866+00:00",
+        "notes":  null,
+        "video_title":  "名古屋発！【SpitCore】LIVE@SIX-DOG (2017/5/28)"
+    },
+    {
+        "id":  20,
+        "event_date":  "2018-08-20",
+        "performer_name":  "諭吉佳作/men",
+        "video_url":  "https://www.youtube.com/watch?v=bFqcl5VTUp8",
+        "submitted_by":  "claude-research",
+        "submitted_at":  "2026-07-26T09:03:27.745167+00:00",
+        "notes":  null,
+        "video_title":  "諭吉佳作/men 2018.08.20 名古屋・新栄SiX-DOG"
+    },
+    {
+        "id":  21,
+        "event_date":  "2017-05-03",
+        "performer_name":  "pepsiman",
+        "video_url":  "https://www.youtube.com/watch?v=wH_aZZVlP_o",
+        "submitted_by":  "claude-research",
+        "submitted_at":  "2026-07-26T09:05:00.270057+00:00",
+        "notes":  null,
+        "video_title":  "pepsiman 2017/5/3@新栄SiX-DOG"
+    },
+    {
+        "id":  22,
+        "event_date":  "2011-02-20",
+        "performer_name":  "CANNON BALL RUSH!!",
+        "video_url":  "https://www.youtube.com/watch?v=eMB51C-eEeY",
+        "submitted_by":  "claude-research",
+        "submitted_at":  "2026-07-26T09:06:41.915471+00:00",
+        "notes":  null,
+        "video_title":  "CANNON BALL RUSH!! Live at Nagoya SIXDOG 1"
+    },
+    {
+        "id":  23,
+        "event_date":  "2011-02-20",
+        "performer_name":  "CANNON BALL RUSH!!",
+        "video_url":  "https://www.youtube.com/watch?v=9A8y5ZLP68g",
+        "submitted_by":  "claude-research",
+        "submitted_at":  "2026-07-26T09:06:41.915471+00:00",
+        "notes":  null,
+        "video_title":  "CANNON BALL RUSH!! Live at Nagoya SIXDOG 2"
+    },
+    {
+        "id":  24,
+        "event_date":  "2011-02-20",
+        "performer_name":  "CANNON BALL RUSH!!",
+        "video_url":  "https://www.youtube.com/watch?v=GOu0CFovCM8",
+        "submitted_by":  "claude-research",
+        "submitted_at":  "2026-07-26T09:06:41.915471+00:00",
+        "notes":  null,
+        "video_title":  "CANNON BALL RUSH!! Live at Nagoya SIXDOG 3"
+    },
+    {
+        "id":  25,
+        "event_date":  "2011-03-20",
+        "performer_name":  "MARATHONS",
+        "video_url":  "https://www.youtube.com/watch?v=Hgm8AZYLVkI",
+        "submitted_by":  "claude-research",
+        "submitted_at":  "2026-07-26T09:06:41.915471+00:00",
+        "notes":  null,
+        "video_title":  "MARATHONS - 銀河鉄道の夜 2011-03-20 名古屋新栄Six-DOG"
+    },
+    {
+        "id":  26,
+        "event_date":  "2012-09-09",
+        "performer_name":  "夢次現",
+        "video_url":  "https://www.youtube.com/watch?v=wsHk_FyzgTU",
+        "submitted_by":  "claude-research",
+        "submitted_at":  "2026-07-26T09:08:02.599261+00:00",
+        "notes":  null,
+        "video_title":  "夢次現 2012.09.09 LIVE SIX-DOG full ver."
+    },
+    {
+        "id":  27,
+        "event_date":  "2012-07-16",
+        "performer_name":  "夢次現",
+        "video_url":  "https://www.youtube.com/watch?v=Z-Euh-G6x9w",
+        "submitted_by":  "claude-research",
+        "submitted_at":  "2026-07-26T09:08:02.599261+00:00",
+        "notes":  null,
+        "video_title":  "夢次現 120716 live full ver. sixdog"
+    },
+    {
+        "id":  28,
+        "event_date":  "2010-06-19",
+        "performer_name":  "Frenzy",
+        "video_url":  "https://www.youtube.com/watch?v=aOdJWnnT-J4",
+        "submitted_by":  "claude-research",
+        "submitted_at":  "2026-07-26T09:19:28.443286+00:00",
+        "notes":  null,
+        "video_title":  "名古屋バンド Frenzy 2010/6/19 新栄SixDog"
+    },
+    {
+        "id":  29,
+        "event_date":  "2008-02-10",
+        "performer_name":  "PSYCHO kui METALLICS",
+        "video_url":  "https://www.youtube.com/watch?v=iGBfVJ30eJs",
+        "submitted_by":  "claude-research",
+        "submitted_at":  "2026-07-26T09:19:28.443286+00:00",
+        "notes":  null,
+        "video_title":  "PSTCHO kui METALLICS 2008.2.10.名古屋SIX DOG"
+    },
+    {
+        "id":  30,
+        "event_date":  "2008-01-27",
+        "performer_name":  "goose \u0026 chase",
+        "video_url":  "https://www.youtube.com/watch?v=s_FQcmtC5vc",
+        "submitted_by":  "claude-research",
+        "submitted_at":  "2026-07-26T09:20:27.572667+00:00",
+        "notes":  null,
+        "video_title":  "goose \u0026 chase 聖域 @ nagoya SIX-DOG (2008.1.27)"
+    },
+    {
+        "id":  31,
+        "event_date":  "2007-10-07",
+        "performer_name":  "E.M.P.",
+        "video_url":  "https://www.youtube.com/watch?v=hVDMFlZvUyU",
+        "submitted_by":  "claude-research",
+        "submitted_at":  "2026-07-26T09:21:30.353173+00:00",
+        "notes":  null,
+        "video_title":  "E.M.P. LIVE WILD FLOWER at SIX-DOG (2007.10.7)"
+    },
+    {
+        "id":  32,
+        "event_date":  "2008-01-27",
+        "performer_name":  "goose \u0026 chase",
+        "video_url":  "https://www.youtube.com/watch?v=RJkOXeI9VsM",
+        "submitted_by":  "claude-research",
+        "submitted_at":  "2026-07-26T09:22:28.876622+00:00",
+        "notes":  null,
+        "video_title":  "goose \u0026 chase 残像 @ nagoya SIX-DOG (2008.1.27)"
+    },
+    {
+        "id":  33,
+        "event_date":  "2008-01-27",
+        "performer_name":  "goose \u0026 chase",
+        "video_url":  "https://www.youtube.com/watch?v=K-AodTvmQ3w",
+        "submitted_by":  "claude-research",
+        "submitted_at":  "2026-07-26T09:22:28.876622+00:00",
+        "notes":  null,
+        "video_title":  "goose \u0026 chase VOICE @ nagoya SIX-DOG (2008.1.27)"
+    },
+    {
+        "id":  34,
+        "event_date":  "2008-01-27",
+        "performer_name":  "goose \u0026 chase",
+        "video_url":  "https://www.youtube.com/watch?v=7MMpG7Hmzkc",
+        "submitted_by":  "claude-research",
+        "submitted_at":  "2026-07-26T09:23:52.288715+00:00",
+        "notes":  null,
+        "video_title":  "goose\u0026chase Welcome to the underground @ nagoya SIX-DOG (2008.1.27)"
+    },
+    {
+        "id":  35,
+        "event_date":  "2014-08-17",
+        "performer_name":  "Green Perch",
+        "video_url":  "https://www.youtube.com/watch?v=yJTTijCo5OA",
+        "submitted_by":  "claude-research",
+        "submitted_at":  "2026-07-26T13:17:02.835556+00:00",
+        "notes":  null,
+        "video_title":  "Green Perch ライブ (2014/8/17 名古屋 新栄SiX-DOG)"
+    },
+    {
+        "id":  36,
+        "event_date":  "2012-07-16",
+        "performer_name":  "夢次現",
+        "video_url":  "https://www.youtube.com/watch?v=a-qAu3fmJWA",
+        "submitted_by":  "claude-research",
+        "submitted_at":  "2026-07-26T13:18:01.978017+00:00",
+        "notes":  null,
+        "video_title":  "夢次現「おやつ」2012.07.16 LIVE SIX-DOG(愛知県名古屋市新栄)"
+    },
+    {
+        "id":  37,
+        "event_date":  "2013-02-27",
+        "performer_name":  "ごみ減量係",
+        "video_url":  "https://www.youtube.com/watch?v=deLRDUXRYMk",
+        "submitted_by":  "claude-research",
+        "submitted_at":  "2026-07-26T13:18:56.943086+00:00",
+        "notes":  null,
+        "video_title":  "ごみ減量係『ULTIMO』2013/02/27@新栄SiX-DOG"
+    },
+    {
+        "id":  38,
+        "event_date":  "2013-02-27",
+        "performer_name":  "ごみ減量係",
+        "video_url":  "https://www.youtube.com/watch?v=ulmzzMvYoO0",
+        "submitted_by":  "claude-research",
+        "submitted_at":  "2026-07-26T13:18:56.943086+00:00",
+        "notes":  null,
+        "video_title":  "ごみ減量係『宇宙船のワルツ』2013/02/27@新栄SiX-DOG"
+    },
+    {
+        "id":  39,
+        "event_date":  "2014-11-30",
+        "performer_name":  "THE CHILD PLAY PARTY",
+        "video_url":  "https://www.youtube.com/watch?v=tp0fi73tpbY",
+        "submitted_by":  "claude-research",
+        "submitted_at":  "2026-07-26T13:19:55.893343+00:00",
+        "notes":  null,
+        "video_title":  "THE CHILD PLAY PARTY「愛とデカダンス」2014・11・30レコ発＠新栄SiX-DOG"
+    },
+    {
+        "id":  40,
+        "event_date":  "2016-07-27",
+        "performer_name":  "HISTGRAM",
+        "video_url":  "https://www.youtube.com/watch?v=0sYJ9bBI7uU",
+        "submitted_by":  "claude-research",
+        "submitted_at":  "2026-07-26T13:19:55.893343+00:00",
+        "notes":  null,
+        "video_title":  "HISTGRAM ライブダイジェスト 2016.7/27@新栄SiX-DOG"
+    },
+    {
+        "id":  41,
+        "event_date":  "2018-02-11",
+        "performer_name":  "StelaMuziko",
+        "video_url":  "https://www.youtube.com/watch?v=DPmYveSPIRM",
+        "submitted_by":  "claude-research",
+        "submitted_at":  "2026-07-26T13:21:11.274483+00:00",
+        "notes":  null,
+        "video_title":  "20180211@新栄SiX-DOG【Working Dog vol.2】"
+    },
+    {
+        "id":  42,
+        "event_date":  "2015-09-13",
+        "performer_name":  "ThreeOut",
+        "video_url":  "https://www.youtube.com/watch?v=euXJ-8KySRU",
+        "submitted_by":  "claude-research",
+        "submitted_at":  "2026-07-26T13:21:27.852612+00:00",
+        "notes":  null,
+        "video_title":  "ThreeOut LIVE 2015.09.13@新栄SiX-DOG"
+    },
+    {
+        "id":  43,
+        "event_date":  "2013-06-08",
+        "performer_name":  "夢次現",
+        "video_url":  "https://www.youtube.com/watch?v=8wOsromr3Mk",
+        "submitted_by":  "claude-research",
+        "submitted_at":  "2026-07-26T13:23:32.919021+00:00",
+        "notes":  null,
+        "video_title":  "夢次現ライブ「おやつ」130608＠sixdog"
+    },
+    {
+        "id":  44,
+        "event_date":  "2013-06-08",
+        "performer_name":  "夢次現",
+        "video_url":  "https://www.youtube.com/watch?v=iNbuB31EhEU",
+        "submitted_by":  "claude-research",
+        "submitted_at":  "2026-07-26T13:23:32.919021+00:00",
+        "notes":  null,
+        "video_title":  "夢次現ライブ「Water Please!」130608＠sixdog"
+    },
+    {
+        "id":  45,
+        "event_date":  "2017-07-01",
+        "performer_name":  "檸檬をかじる彼女",
+        "video_url":  "https://youtu.be/oK_z8-_VMpU?si=_xZ_EMvtstz2vCbR",
+        "submitted_by":  "しゅが",
+        "submitted_at":  "2026-07-27T06:40:26.677469+00:00",
+        "notes":  null,
+        "video_title":  "170701 僕らのサイダー計画Vol 3 ~復活祭~ 檸檬をかじる彼女@SiX DOG"
+    },
+    {
+        "id":  46,
+        "event_date":  "2011-03-20",
+        "performer_name":  "MARATHONS",
+        "video_url":  "https://www.youtube.com/watch?v=HUxGXlgqJ8I",
+        "submitted_by":  "claude-research",
+        "submitted_at":  "2026-07-27T11:51:37.236135+00:00",
+        "notes":  null,
+        "video_title":  "MARATHONS - 朝鮮朝顔 2011-03-20 名古屋新栄Six-DOG"
+    },
+    {
+        "id":  47,
+        "event_date":  "2013-06-08",
+        "performer_name":  "夢次現",
+        "video_url":  "https://www.youtube.com/watch?v=mF1cwbD290o",
+        "submitted_by":  "claude-research",
+        "submitted_at":  "2026-07-27T11:53:35.08441+00:00",
+        "notes":  null,
+        "video_title":  "夢次現ライブ「水中」130608＠sixdog"
+    },
+    {
+        "id":  48,
+        "event_date":  "2013-06-08",
+        "performer_name":  "夢次現",
+        "video_url":  "https://www.youtube.com/watch?v=rWKDVgjEnOc",
+        "submitted_by":  "claude-research",
+        "submitted_at":  "2026-07-27T11:53:35.08441+00:00",
+        "notes":  null,
+        "video_title":  "夢次現ライブ「Beach」130608＠sixdog"
+    },
+    {
+        "id":  49,
+        "event_date":  "2012-09-09",
+        "performer_name":  "夢次現",
+        "video_url":  "https://www.youtube.com/watch?v=QGAa5otJRro",
+        "submitted_by":  "claude-research",
+        "submitted_at":  "2026-07-27T11:54:37.158287+00:00",
+        "notes":  null,
+        "video_title":  "夢次現「BEACH」2012.09.09 LIVE SIX-DOG"
+    },
+    {
+        "id":  53,
+        "event_date":  "2018-12-15",
+        "performer_name":  "檸檬をかじる彼女",
+        "video_url":  "https://www.youtube.com/watch?v=sb_0i1oW49w\u0026feature=youtu.be",
+        "submitted_by":  "しゅが",
+        "submitted_at":  "2026-08-07T23:47:02.243482+00:00",
+        "notes":  null,
+        "video_title":  "181215 檸檬をかじる彼女pre 「深海より哀を込めて」レコ発@SiX DOG（檸檬をかじる彼女）"
+    },
+    {
+        "id":  54,
+        "event_date":  "2018-03-03",
+        "performer_name":  "UNISON KANADE GARDEN",
+        "video_url":  "https://www.youtube.com/watch?v=hh9m_QUtRpg",
+        "submitted_by":  "しゅが",
+        "submitted_at":  "2026-08-07T23:49:10.360804+00:00",
+        "notes":  null,
+        "video_title":  "180303 UNISON KANADE GARDENUNISON SQUARE GARDEN　二番手ロックフェスVol 13"
+    },
+    {
+        "id":  55,
+        "event_date":  "2019-01-13",
+        "performer_name":  "インドでらインド",
+        "video_url":  "https://www.youtube.com/watch?v=JM0MhwwFrXQ",
+        "submitted_by":  "しゅが",
+        "submitted_at":  "2026-08-08T00:07:53.418232+00:00",
+        "notes":  null,
+        "video_title":  "190113 インド でら インドindigo la End　二番手ロックフェスVol 15 DAY2"
+    },
+    {
+        "id":  56,
+        "event_date":  "2017-10-21",
+        "performer_name":  "魔法陣グルグル",
+        "video_url":  "https://www.youtube.com/watch?v=Hxskak3gWfI",
+        "submitted_by":  "しゅが",
+        "submitted_at":  "2026-08-08T00:18:30.120983+00:00",
+        "notes":  null,
+        "video_title":  "171021 魔法陣グルグルハヌマーン　二番手ロックフェスVol 12"
+    },
+    {
+        "id":  57,
+        "event_date":  "2019-01-12",
+        "performer_name":  "Grapevananappleichigopeeman",
+        "video_url":  "https://www.youtube.com/watch?v=MJbQDEjYlKA",
+        "submitted_by":  null,
+        "submitted_at":  "2026-08-08T00:39:43.226587+00:00",
+        "notes":  "YouTube「永遠の二番手ロックフェス」チャンネルより",
+        "video_title":  "Grapevananappleichigopeeman(GRAPEVINE) - その日、三十度以上 2019/01/12 @永遠の二番手ロックフェスvol.15"
+    },
+    {
+        "id":  58,
+        "event_date":  "2019-01-12",
+        "performer_name":  "Grapevananappleichigopeeman",
+        "video_url":  "https://www.youtube.com/watch?v=oQhA5DV5OoE",
+        "submitted_by":  null,
+        "submitted_at":  "2026-08-08T00:39:43.226587+00:00",
+        "notes":  "YouTube「永遠の二番手ロックフェス」チャンネルより",
+        "video_title":  "Grapevananappleichigopeeman(GRAPEVINE) - COME ON 2019/01/12 @永遠の二番手ロックフェスvol.15"
+    },
+    {
+        "id":  59,
+        "event_date":  "2019-01-12",
+        "performer_name":  "Grapevananappleichigopeeman",
+        "video_url":  "https://www.youtube.com/watch?v=2TzhHjiMCFA",
+        "submitted_by":  null,
+        "submitted_at":  "2026-08-08T00:39:43.226587+00:00",
+        "notes":  "YouTube「永遠の二番手ロックフェス」チャンネルより",
+        "video_title":  "Grapevananappleichigopeeman(GRAPEVINE) - 豚の皿 2019/01/12 @永遠の二番手ロックフェスvol.15"
+    },
+    {
+        "id":  60,
+        "event_date":  "2019-01-12",
+        "performer_name":  "Grapevananappleichigopeeman",
+        "video_url":  "https://www.youtube.com/watch?v=ypuydnoLvFI",
+        "submitted_by":  null,
+        "submitted_at":  "2026-08-08T00:39:43.226587+00:00",
+        "notes":  "YouTube「永遠の二番手ロックフェス」チャンネルより",
+        "video_title":  "Grapevananappleichigopeeman(GRAPEVINE) - Reverb 2019/01/12 @永遠の二番手ロックフェスvol.15"
+    },
+    {
+        "id":  61,
+        "event_date":  "2019-01-12",
+        "performer_name":  "Grapevananappleichigopeeman",
+        "video_url":  "https://www.youtube.com/watch?v=xAKI2sIX6oo",
+        "submitted_by":  null,
+        "submitted_at":  "2026-08-08T00:39:43.226587+00:00",
+        "notes":  "YouTube「永遠の二番手ロックフェス」チャンネルより",
+        "video_title":  "Grapevananappleichigopeeman(GRAPEVINE) - 光について 2019/01/12 @永遠の二番手ロックフェスvol.15"
+    },
+    {
+        "id":  62,
+        "event_date":  "2019-01-13",
+        "performer_name":  "ふっかつの「F」",
+        "video_url":  "https://www.youtube.com/watch?v=E1vDPXYjd6o",
+        "submitted_by":  null,
+        "submitted_at":  "2026-08-08T00:39:43.226587+00:00",
+        "notes":  "YouTube「永遠の二番手ロックフェス」チャンネルより",
+        "video_title":  "ふっかつの「F」(sumika) - ソーダ 2019/01/13 @永遠の二番手ロックフェスvol.15"
+    },
+    {
+        "id":  63,
+        "event_date":  "2019-01-13",
+        "performer_name":  "ふっかつの「F」",
+        "video_url":  "https://www.youtube.com/watch?v=tfxjTRL3-rU",
+        "submitted_by":  null,
+        "submitted_at":  "2026-08-08T00:39:43.226587+00:00",
+        "notes":  "YouTube「永遠の二番手ロックフェス」チャンネルより",
+        "video_title":  "ふっかつの「F」(sumika) - ふっかつのじゅもん 2019/01/13 @永遠の二番手ロックフェスvol.15"
+    },
+    {
+        "id":  64,
+        "event_date":  "2019-01-13",
+        "performer_name":  "ふっかつの「F」",
+        "video_url":  "https://www.youtube.com/watch?v=PXrqUdh8s7c",
+        "submitted_by":  null,
+        "submitted_at":  "2026-08-08T00:39:43.226587+00:00",
+        "notes":  "YouTube「永遠の二番手ロックフェス」チャンネルより",
+        "video_title":  "ふっかつの「F」(sumika) - 伝言歌 2019/01/13 @永遠の二番手ロックフェスvol.15"
+    },
+    {
+        "id":  65,
+        "event_date":  "2019-01-13",
+        "performer_name":  "ふっかつの「F」",
+        "video_url":  "https://www.youtube.com/watch?v=Y9zn7gqC91E",
+        "submitted_by":  null,
+        "submitted_at":  "2026-08-08T00:39:43.226587+00:00",
+        "notes":  "YouTube「永遠の二番手ロックフェス」チャンネルより",
+        "video_title":  "ふっかつの「F」(sumika) - Lovers 2019/01/13 @永遠の二番手ロックフェスvol.15"
+    },
+    {
+        "id":  66,
+        "event_date":  "2019-01-13",
+        "performer_name":  "ふっかつの「F」",
+        "video_url":  "https://www.youtube.com/watch?v=EJRn1LSj_cE",
+        "submitted_by":  null,
+        "submitted_at":  "2026-08-08T00:39:43.226587+00:00",
+        "notes":  "YouTube「永遠の二番手ロックフェス」チャンネルより",
+        "video_title":  "ふっかつの「F」(sumika) - ファンファーレ 2019/01/13 @永遠の二番手ロックフェスvol.15"
+    },
+    {
+        "id":  67,
+        "event_date":  "2019-01-13",
+        "performer_name":  "1000-FEET",
+        "video_url":  "https://www.youtube.com/watch?v=46xCmFz97kU",
+        "submitted_by":  null,
+        "submitted_at":  "2026-08-08T00:39:43.226587+00:00",
+        "notes":  "YouTube「永遠の二番手ロックフェス」チャンネルより",
+        "video_title":  "1000-FEET(10-FEET) - その向こうへ 2019/01/13 @永遠の二番手ロックフェスvol.15"
+    },
+    {
+        "id":  68,
+        "event_date":  "2019-01-13",
+        "performer_name":  "1000-FEET",
+        "video_url":  "https://www.youtube.com/watch?v=wrMr92Z4J8Y",
+        "submitted_by":  null,
+        "submitted_at":  "2026-08-08T00:39:43.226587+00:00",
+        "notes":  "YouTube「永遠の二番手ロックフェス」チャンネルより",
+        "video_title":  "1000-FEET(10-FEET) - VIBES BY VIBES 2019/01/13 @永遠の二番手ロックフェスvol.15"
+    },
+    {
+        "id":  69,
+        "event_date":  "2019-01-13",
+        "performer_name":  "1000-FEET",
+        "video_url":  "https://www.youtube.com/watch?v=iDElu0YNG6Y",
+        "submitted_by":  null,
+        "submitted_at":  "2026-08-08T00:39:43.226587+00:00",
+        "notes":  "YouTube「永遠の二番手ロックフェス」チャンネルより",
+        "video_title":  "1000-FEET(10-FEET) - STAY GOLD 2019/01/13 @永遠の二番手ロックフェスvol.15"
+    },
+    {
+        "id":  70,
+        "event_date":  "2019-01-13",
+        "performer_name":  "1000-FEET",
+        "video_url":  "https://www.youtube.com/watch?v=s8tLmhymCdE",
+        "submitted_by":  null,
+        "submitted_at":  "2026-08-08T00:39:43.226587+00:00",
+        "notes":  "YouTube「永遠の二番手ロックフェス」チャンネルより",
+        "video_title":  "1000-FEET(10-FEET) - CHERRY BLOSSOM 2019/01/13 @永遠の二番手ロックフェスvol.15"
+    },
+    {
+        "id":  71,
+        "event_date":  "2019-01-13",
+        "performer_name":  "1000-FEET",
+        "video_url":  "https://www.youtube.com/watch?v=j1eEfwaeHR8",
+        "submitted_by":  null,
+        "submitted_at":  "2026-08-08T00:39:43.226587+00:00",
+        "notes":  "YouTube「永遠の二番手ロックフェス」チャンネルより",
+        "video_title":  "1000-FEET(10-FEET) - RIVER 2019/01/13 @永遠の二番手ロックフェスvol.15"
+    },
+    {
+        "id":  72,
+        "event_date":  "2019-01-13",
+        "performer_name":  "1000-FEET",
+        "video_url":  "https://www.youtube.com/watch?v=KTBW-6Xt4II",
+        "submitted_by":  null,
+        "submitted_at":  "2026-08-08T00:39:43.226587+00:00",
+        "notes":  "YouTube「永遠の二番手ロックフェス」チャンネルより",
+        "video_title":  "1000-FEET(10-FEET) - Goes On 2019/01/13 @永遠の二番手ロックフェスvol.15"
+    }
+]

@@ -1,0 +1,324 @@
+[
+    {
+        "id":  1,
+        "variant_title":  "東海学園大学 RENT HALL",
+        "group_name":  "RENT HALL",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  2,
+        "variant_title":  "シャナクラブ RENT HALL",
+        "group_name":  "RENT HALL",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  3,
+        "variant_title":  "RENT HALL 【--------------】",
+        "group_name":  "RENT HALL",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  4,
+        "variant_title":  "RENT HALL キャンセルにつき激安レンタル!! 通常価格129,600円→半額の64,800円でイベントできます!!",
+        "group_name":  "RENT HALL",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  5,
+        "variant_title":  "RENT　HALL",
+        "group_name":  "RENT HALL",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  6,
+        "variant_title":  "RENTHALL",
+        "group_name":  "RENT HALL",
+        "submitted_by":  "claude-import",
+        "submitted_at":  "2026-07-25T13:30:47.104526+00:00"
+    },
+    {
+        "id":  7,
+        "variant_title":  "Final call vol.15",
+        "group_name":  "Final call",
+        "submitted_by":  null,
+        "submitted_at":  "2026-07-26T12:26:44.854939+00:00"
+    },
+    {
+        "id":  8,
+        "variant_title":  "Final call vol.16",
+        "group_name":  "Final call",
+        "submitted_by":  null,
+        "submitted_at":  "2026-07-26T12:26:44.854939+00:00"
+    },
+    {
+        "id":  9,
+        "variant_title":  "Final call vol.17",
+        "group_name":  "Final call",
+        "submitted_by":  null,
+        "submitted_at":  "2026-07-26T12:26:44.854939+00:00"
+    },
+    {
+        "id":  10,
+        "variant_title":  "Final call vol.18",
+        "group_name":  "Final call",
+        "submitted_by":  null,
+        "submitted_at":  "2026-07-26T12:26:44.854939+00:00"
+    },
+    {
+        "id":  11,
+        "variant_title":  "Final call vol.19",
+        "group_name":  "Final call",
+        "submitted_by":  null,
+        "submitted_at":  "2026-07-26T12:26:44.854939+00:00"
+    },
+    {
+        "id":  12,
+        "variant_title":  "Final call vol.20",
+        "group_name":  "Final call",
+        "submitted_by":  null,
+        "submitted_at":  "2026-07-26T12:26:44.854939+00:00"
+    },
+    {
+        "id":  13,
+        "variant_title":  "Final call vol.21",
+        "group_name":  "Final call",
+        "submitted_by":  null,
+        "submitted_at":  "2026-07-26T12:26:44.854939+00:00"
+    },
+    {
+        "id":  14,
+        "variant_title":  "Final call vol.23",
+        "group_name":  "Final call",
+        "submitted_by":  null,
+        "submitted_at":  "2026-07-26T12:26:44.854939+00:00"
+    },
+    {
+        "id":  15,
+        "variant_title":  "Final call vol.26",
+        "group_name":  "Final call",
+        "submitted_by":  null,
+        "submitted_at":  "2026-07-26T12:26:44.854939+00:00"
+    },
+    {
+        "id":  16,
+        "variant_title":  "Final call vol.27",
+        "group_name":  "Final call",
+        "submitted_by":  null,
+        "submitted_at":  "2026-07-26T12:26:44.854939+00:00"
+    },
+    {
+        "id":  17,
+        "variant_title":  "Final call vol.29",
+        "group_name":  "Final call",
+        "submitted_by":  null,
+        "submitted_at":  "2026-07-26T12:26:44.854939+00:00"
+    },
+    {
+        "id":  18,
+        "variant_title":  "Final call vol.30",
+        "group_name":  "Final call",
+        "submitted_by":  null,
+        "submitted_at":  "2026-07-26T12:26:44.854939+00:00"
+    },
+    {
+        "id":  19,
+        "variant_title":  "Final call vol.38",
+        "group_name":  "Final call",
+        "submitted_by":  null,
+        "submitted_at":  "2026-07-26T12:26:44.854939+00:00"
+    },
+    {
+        "id":  20,
+        "variant_title":  "Final call vol.41",
+        "group_name":  "Final call",
+        "submitted_by":  null,
+        "submitted_at":  "2026-07-26T12:26:44.854939+00:00"
+    },
+    {
+        "id":  21,
+        "variant_title":  "Final call vol.44",
+        "group_name":  "Final call",
+        "submitted_by":  null,
+        "submitted_at":  "2026-07-26T12:26:44.854939+00:00"
+    },
+    {
+        "id":  22,
+        "variant_title":  "Final call vol.45",
+        "group_name":  "Final call",
+        "submitted_by":  null,
+        "submitted_at":  "2026-07-26T12:26:44.854939+00:00"
+    },
+    {
+        "id":  23,
+        "variant_title":  "Final call vol.43",
+        "group_name":  "Final call",
+        "submitted_by":  null,
+        "submitted_at":  "2026-07-26T12:26:44.854939+00:00"
+    },
+    {
+        "id":  24,
+        "variant_title":  "Final call vol.48",
+        "group_name":  "Final call",
+        "submitted_by":  null,
+        "submitted_at":  "2026-07-26T12:26:44.854939+00:00"
+    },
+    {
+        "id":  25,
+        "variant_title":  "Final call vol.49",
+        "group_name":  "Final call",
+        "submitted_by":  null,
+        "submitted_at":  "2026-07-26T12:26:44.854939+00:00"
+    },
+    {
+        "id":  26,
+        "variant_title":  "Final call vol.50",
+        "group_name":  "Final call",
+        "submitted_by":  null,
+        "submitted_at":  "2026-07-26T12:26:44.854939+00:00"
+    },
+    {
+        "id":  27,
+        "variant_title":  "Final call vol.51",
+        "group_name":  "Final call",
+        "submitted_by":  null,
+        "submitted_at":  "2026-07-26T12:26:44.854939+00:00"
+    },
+    {
+        "id":  28,
+        "variant_title":  "Final call vol.52",
+        "group_name":  "Final call",
+        "submitted_by":  null,
+        "submitted_at":  "2026-07-26T12:26:44.854939+00:00"
+    },
+    {
+        "id":  29,
+        "variant_title":  "Final call vol.53",
+        "group_name":  "Final call",
+        "submitted_by":  null,
+        "submitted_at":  "2026-07-26T12:26:44.854939+00:00"
+    },
+    {
+        "id":  30,
+        "variant_title":  "Final call vol.54",
+        "group_name":  "Final call",
+        "submitted_by":  null,
+        "submitted_at":  "2026-07-26T12:26:44.854939+00:00"
+    },
+    {
+        "id":  31,
+        "variant_title":  "Final call vol.55",
+        "group_name":  "Final call",
+        "submitted_by":  null,
+        "submitted_at":  "2026-07-26T12:26:44.854939+00:00"
+    },
+    {
+        "id":  32,
+        "variant_title":  "Final call vol.56",
+        "group_name":  "Final call",
+        "submitted_by":  null,
+        "submitted_at":  "2026-07-26T12:26:44.854939+00:00"
+    },
+    {
+        "id":  33,
+        "variant_title":  "Final call vol.57",
+        "group_name":  "Final call",
+        "submitted_by":  null,
+        "submitted_at":  "2026-07-26T12:26:44.854939+00:00"
+    },
+    {
+        "id":  34,
+        "variant_title":  "Final call vol.58",
+        "group_name":  "Final call",
+        "submitted_by":  null,
+        "submitted_at":  "2026-07-26T12:26:44.854939+00:00"
+    },
+    {
+        "id":  35,
+        "variant_title":  "Final call vol.59",
+        "group_name":  "Final call",
+        "submitted_by":  null,
+        "submitted_at":  "2026-07-26T12:26:44.854939+00:00"
+    },
+    {
+        "id":  36,
+        "variant_title":  "Final call vol.60",
+        "group_name":  "Final call",
+        "submitted_by":  null,
+        "submitted_at":  "2026-07-26T12:26:44.854939+00:00"
+    },
+    {
+        "id":  37,
+        "variant_title":  "Final call vol.61",
+        "group_name":  "Final call",
+        "submitted_by":  null,
+        "submitted_at":  "2026-07-26T12:26:44.854939+00:00"
+    },
+    {
+        "id":  38,
+        "variant_title":  "Final call vol.62",
+        "group_name":  "Final call",
+        "submitted_by":  null,
+        "submitted_at":  "2026-07-26T12:26:44.854939+00:00"
+    },
+    {
+        "id":  39,
+        "variant_title":  "SiX-DOG Pre\u0027 【Final call Vol.63】",
+        "group_name":  "Final call",
+        "submitted_by":  null,
+        "submitted_at":  "2026-07-26T12:26:44.854939+00:00"
+    },
+    {
+        "id":  40,
+        "variant_title":  "Final call vol.64",
+        "group_name":  "Final call",
+        "submitted_by":  null,
+        "submitted_at":  "2026-07-26T12:26:44.854939+00:00"
+    },
+    {
+        "id":  41,
+        "variant_title":  "Final call vol.65",
+        "group_name":  "Final call",
+        "submitted_by":  null,
+        "submitted_at":  "2026-07-26T12:26:44.854939+00:00"
+    },
+    {
+        "id":  42,
+        "variant_title":  "Final call vol.63",
+        "group_name":  "Final call",
+        "submitted_by":  null,
+        "submitted_at":  "2026-07-26T12:26:44.854939+00:00"
+    },
+    {
+        "id":  43,
+        "variant_title":  "Final call",
+        "group_name":  "Final call",
+        "submitted_by":  null,
+        "submitted_at":  "2026-07-26T12:26:44.854939+00:00"
+    },
+    {
+        "id":  44,
+        "variant_title":  "Final call vol.69",
+        "group_name":  "Final call",
+        "submitted_by":  null,
+        "submitted_at":  "2026-07-26T12:26:44.854939+00:00"
+    },
+    {
+        "id":  45,
+        "variant_title":  "Final call vol.70",
+        "group_name":  "Final call",
+        "submitted_by":  null,
+        "submitted_at":  "2026-07-26T12:26:44.854939+00:00"
+    },
+    {
+        "id":  46,
+        "variant_title":  "〜Final call vol.65〜",
+        "group_name":  "Final call",
+        "submitted_by":  null,
+        "submitted_at":  "2026-07-26T12:26:44.854939+00:00"
+    }
+]
