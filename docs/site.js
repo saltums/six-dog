@@ -796,22 +796,147 @@
     function signTex(T, draw, w, h) {
       const c = document.createElement("canvas"); c.width = w; c.height = h;
       draw(c.getContext("2d"), w, h);
-      return new T.CanvasTexture(c);
+      const t = new T.CanvasTexture(c);
+      t.encoding = T.sRGBEncoding;
+      return t;
     }
 
-    function build(T) {
-      const scene = new T.Scene();
-      scene.background = new T.Color(0x030405);
-      scene.fog = new T.Fog(0x030405, 7, 26);
-      const P = (c, o) => new T.MeshPhongMaterial(Object.assign({ color: c, shininess: 6 }, o || {}));
-      const m = {
-        wall: P(0x141618), ceil: P(0x0c0d0e), hall: P(0x2a2b2e, { shininess: 18 }), stage: P(0x1b1b1d, { shininess: 20 }),
-        red: P(0x8e1d21), tile: P(0x37393d), white: P(0xd6d6cf), wood: P(0x5d4733), metal: P(0x8a8d93, { shininess: 60 }),
-        black: P(0x0f0f10), grille: P(0x2c2d30), door: P(0x2b3036), shell: P(0x7a1717, { shininess: 50 }), gold: P(0xb8963a, { shininess: 80 }),
-        green: P(0x1f5a32),
+    // ---- 質感:写真のない部分は、キャンバスで描いた繰り返し模様で「それらしい」塗装・床・木目にする ----
+    // 模様は1メートルあたりの大きさで貼る(箱や床の大きさが違っても、模様の細かさがそろうように)
+    function makeKit(T, aniso) {
+      let seed = 20051123;
+      const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+      const lin = c => new T.Color(c).convertSRGBToLinear();
+      const draw = (size, fn) => { const c = document.createElement("canvas"); c.width = c.height = size; fn(c.getContext("2d"), size); return c; };
+      const tex = (c, meters, srgb) => {
+        const t = new T.CanvasTexture(c);
+        t.wrapS = t.wrapT = T.RepeatWrapping; t.repeat.set(1 / meters, 1 / meters); t.anisotropy = aniso;
+        if (srgb) t.encoding = T.sRGBEncoding;
+        return t;
       };
+      // 端でつながるように、はみ出した分は反対側にも描く
+      const around = (s, x, y, r, fn) => { for (const dx of [-s, 0, s]) for (const dy of [-s, 0, s]) if (x + dx > -r && x + dx < s + r && y + dy > -r && y + dy < s + r) fn(x + dx, y + dy); };
+      const blotch = (g, s, n, r0, cols) => {
+        for (let i = 0; i < n; i++) {
+          const x = rnd() * s, y = rnd() * s, r = r0 * (0.35 + rnd()), col = cols[(rnd() * cols.length) | 0];
+          around(s, x, y, r, (cx, cy) => { const gr = g.createRadialGradient(cx, cy, 0, cx, cy, r); gr.addColorStop(0, col); gr.addColorStop(1, "rgba(0,0,0,0)"); g.fillStyle = gr; g.fillRect(cx - r, cy - r, r * 2, r * 2); });
+        }
+      };
+      const speck = (g, s, n, sz, cols) => { for (let i = 0; i < n; i++) { g.fillStyle = cols[(rnd() * cols.length) | 0]; const z = sz * (0.4 + rnd()); g.fillRect(rnd() * s, rnd() * s, z, z); } };
+      const scratch = (g, s, n, len, col) => {
+        g.strokeStyle = col; g.lineWidth = 1;
+        for (let i = 0; i < n; i++) {
+          const x = rnd() * s, y = rnd() * s, a = rnd() * Math.PI, l = len * (0.3 + rnd());
+          around(s, x, y, l, (cx, cy) => { g.beginPath(); g.moveTo(cx, cy); g.lineTo(cx + Math.cos(a) * l, cy + Math.sin(a) * l); g.stroke(); });
+        }
+      };
+      const surf = (size, meters, paint, opt) => {
+        const c = draw(size, paint), o = Object.assign({ roughness: 0.85, metalness: 0, envMapIntensity: 0.25 }, opt || {});
+        o.map = tex(c, meters, true);
+        if (o.bump) { o.bumpMap = tex(c, meters, false); o.bumpScale = o.bump; }
+        delete o.bump;
+        return new T.MeshStandardMaterial(o);
+      };
+      const plain = (c, o) => new T.MeshStandardMaterial(Object.assign({ color: lin(c), roughness: 0.75, metalness: 0, envMapIntensity: 0.3 }, o || {}));
+      const m = {
+        // ホールの壁:黒い塗装。ローラーの跡、こすれ、ほこり
+        wall: surf(256, 1.6, (g, s) => {
+          g.fillStyle = "#1c1d1f"; g.fillRect(0, 0, s, s);
+          blotch(g, s, 60, 22, ["rgba(255,255,255,.03)", "rgba(0,0,0,.18)"]);
+          for (let x = 0; x < s; x += 3) { g.fillStyle = `rgba(255,255,255,${(rnd() * 0.03).toFixed(3)})`; g.fillRect(x, 0, 2, s); }
+          speck(g, s, 500, 1.5, ["rgba(255,255,255,.07)", "rgba(0,0,0,.45)"]);
+          scratch(g, s, 30, 26, "rgba(255,255,255,.06)");
+        }, { roughness: 0.9, bump: 0.004 }),
+        ceil: surf(128, 1.5, (g, s) => { g.fillStyle = "#0e0e0f"; g.fillRect(0, 0, s, s); speck(g, s, 300, 1.5, ["rgba(255,255,255,.05)", "rgba(0,0,0,.5)"]); }, { roughness: 1 }),
+        // ホールの床:塗装したコンクリート。踏まれて色が抜けたところと、細かい傷
+        hall: surf(512, 3, (g, s) => {
+          g.fillStyle = "#2a2a2c"; g.fillRect(0, 0, s, s);
+          blotch(g, s, 80, 70, ["rgba(0,0,0,.35)", "rgba(255,255,255,.05)", "rgba(70,55,35,.12)"]);
+          speck(g, s, 2600, 1.6, ["rgba(255,255,255,.06)", "rgba(0,0,0,.4)"]);
+          scratch(g, s, 170, 40, "rgba(255,255,255,.07)"); scratch(g, s, 90, 26, "rgba(0,0,0,.45)");
+        }, { roughness: 0.6, bump: 0.003 }),
+        // ステージの床:黒く塗った合板(継ぎ目つき)
+        stage: surf(512, 1.8, (g, s) => {
+          g.fillStyle = "#1d1d1f"; g.fillRect(0, 0, s, s);
+          blotch(g, s, 60, 50, ["rgba(255,255,255,.05)", "rgba(0,0,0,.3)"]);
+          scratch(g, s, 260, 34, "rgba(255,255,255,.08)");
+          speck(g, s, 900, 1.4, ["rgba(255,255,255,.05)", "rgba(0,0,0,.4)"]);
+          g.fillStyle = "rgba(0,0,0,.75)"; g.fillRect(0, 0, s, 2); g.fillRect(0, s / 2, s, 2); g.fillRect(0, 0, 2, s);
+        }, { roughness: 0.5, bump: 0.003 }),
+        // ロビーの床:30cm角のタイル
+        tile: surf(256, 0.6, (g, s) => {
+          g.fillStyle = "#1f2022"; g.fillRect(0, 0, s, s);
+          const n = 2, t = s / n;
+          for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) { const v = 52 + ((rnd() * 10) | 0); g.fillStyle = `rgb(${v},${v + 2},${v + 5})`; g.fillRect(i * t + 2, j * t + 2, t - 4, t - 4); }
+          blotch(g, s, 20, 40, ["rgba(0,0,0,.25)", "rgba(255,255,255,.04)"]);
+          speck(g, s, 600, 1.4, ["rgba(255,255,255,.08)", "rgba(0,0,0,.35)"]);
+        }, { roughness: 0.45, bump: 0.002 }),
+        // 楽屋の白い壁:手あかと、こすれた跡
+        white: surf(256, 2, (g, s) => {
+          g.fillStyle = "#aaa79e"; g.fillRect(0, 0, s, s);
+          blotch(g, s, 40, 46, ["rgba(90,80,60,.08)", "rgba(0,0,0,.05)", "rgba(255,255,255,.2)"]);
+          scratch(g, s, 30, 16, "rgba(40,40,40,.07)"); speck(g, s, 300, 1.4, ["rgba(0,0,0,.08)"]);
+        }, { roughness: 0.85, bump: 0.002 }),
+        // 階段の赤:塗装の色むらと、すり減り
+        red: surf(256, 1, (g, s) => {
+          g.fillStyle = "#8b1c21"; g.fillRect(0, 0, s, s);
+          blotch(g, s, 40, 40, ["rgba(0,0,0,.25)", "rgba(255,200,200,.06)"]);
+          speck(g, s, 700, 1.5, ["rgba(0,0,0,.3)", "rgba(255,255,255,.06)"]); scratch(g, s, 60, 20, "rgba(0,0,0,.3)");
+        }, { roughness: 0.7, bump: 0.002 }),
+        // カウンターの木目
+        wood: surf(256, 1.2, (g, s) => {
+          g.fillStyle = "#6a4e36"; g.fillRect(0, 0, s, s);
+          for (let i = 0; i < 90; i++) {
+            const y = rnd() * s, a = 1.5 + rnd() * 4, f = (1 + ((rnd() * 3) | 0)) * Math.PI * 2 / s, ph = rnd() * 6;
+            g.strokeStyle = rnd() < 0.6 ? `rgba(40,25,12,${(0.1 + rnd() * 0.25).toFixed(2)})` : "rgba(255,230,190,.06)"; g.lineWidth = 0.6 + rnd() * 1.6;
+            g.beginPath(); for (let x = 0; x <= s; x += 4) { const yy = y + Math.sin(x * f + ph) * a; x ? g.lineTo(x, yy) : g.moveTo(x, yy); } g.stroke();
+          }
+        }, { roughness: 0.5, bump: 0.002 }),
+        // スピーカーやアンプの外装(トーレックス)
+        black: surf(128, 0.25, (g, s) => { g.fillStyle = "#141415"; g.fillRect(0, 0, s, s); speck(g, s, 1800, 1.3, ["rgba(255,255,255,.06)", "rgba(0,0,0,.5)"]); }, { roughness: 0.72, bump: 0.003 }),
+        // スピーカーの網
+        grille: surf(64, 0.04, (g, s) => { g.fillStyle = "#151617"; g.fillRect(0, 0, s, s); g.fillStyle = "#3a3c40"; for (let x = 0; x < s; x += 8) for (let y = 0; y < s; y += 8) g.fillRect(x + 2, y + 2, 3, 3); }, { roughness: 0.8 }),
+        green: surf(128, 0.6, (g, s) => { g.fillStyle = "#1f4f30"; g.fillRect(0, 0, s, s); speck(g, s, 900, 1.4, ["rgba(0,0,0,.35)", "rgba(255,255,255,.06)"]); }, { roughness: 0.95 }),
+        metal: plain(0x8a8f95, { metalness: 0.85, roughness: 0.38, envMapIntensity: 0.55 }),
+        door: plain(0x3b424a, { metalness: 0.45, roughness: 0.45 }),
+        shell: plain(0x7a1717, { metalness: 0.25, roughness: 0.22, envMapIntensity: 0.8 }),
+        duct: plain(0x8c9196, { metalness: 0.6, roughness: 0.6, envMapIntensity: 0.25 }),
+        gold: plain(0xc9a34a, { metalness: 1, roughness: 0.28, envMapIntensity: 1 }),
+      };
+      return { m, plain, rnd, lin };
+    }
+    // 箱・板の模様を1メートル単位で貼るため、面ごとにUVを実寸に引き伸ばす
+    function scaleUV(geo, sizes) {
+      const uv = geo.attributes.uv;
+      sizes.forEach(([a, b], f) => { for (let k = 0; k < 4; k++) { const i = f * 4 + k; uv.setXY(i, uv.getX(i) * a, uv.getY(i) * b); } });
+      uv.needsUpdate = true;
+      return geo;
+    }
+    // ステージの照明が映り込む先(金属やドラムの塗装に色が乗るように)
+    function makeEnv(T, renderer) {
+      const env = new T.Scene();
+      env.background = new T.Color(0x020203);
+      const panel = (col, k, x, y, z, w, h) => { const o = new T.Mesh(new T.PlaneGeometry(w, h), new T.MeshBasicMaterial({ color: new T.Color(col).multiplyScalar(k), side: T.DoubleSide })); o.position.set(x, y, z); o.lookAt(0, 0, 0); env.add(o); };
+      panel(0xff3344, 2.2, -3, 2.2, -2, 2.2, 1); panel(0x3355ff, 2.2, 3, 2.2, -2, 2.2, 1); panel(0xffe6c4, 1.8, 0, 3, 0.5, 3.5, 1.2);
+      panel(0xffa23a, 1.2, 0, 1.4, -4, 2, 0.8); panel(0xffd9a8, 0.5, 0, 1.4, 4, 3, 1);
+      const pm = new T.PMREMGenerator(renderer);
+      const rt = pm.fromScene(env, 0.03);
+      pm.dispose();
+      return rt.texture;
+    }
+
+
+    function build(T, renderer, hi) {
+      const scene = new T.Scene();
+      const kit = makeKit(T, Math.min(8, renderer.capabilities.getMaxAnisotropy()));
+      const { m, plain, rnd, lin } = kit;
+      scene.background = lin(0x030405);
+      scene.fog = new T.Fog(lin(0x030405), 7, 26);
+      scene.environment = makeEnv(T, renderer);
+      const P = (c, o) => plain(c, o);
+      const glow = (c, k) => new T.MeshBasicMaterial({ color: lin(c).multiplyScalar(k), toneMapped: false });
       const add = o => { scene.add(o); return o; };
-      const box = (w, h, d, mat, x, y, z) => { const o = new T.Mesh(new T.BoxGeometry(w, h, d), mat); o.position.set(x, y, z); return add(o); };
+      const box = (w, h, d, mat, x, y, z) => { const o = new T.Mesh(scaleUV(new T.BoxGeometry(w, h, d), [[d, h], [d, h], [w, d], [w, d], [w, h], [w, h]]), mat); o.position.set(x, y, z); return add(o); };
       const cyl = (rt, rb, h, mat, x, y, z, seg) => { const o = new T.Mesh(new T.CylinderGeometry(rt, rb, h, seg || 20), mat); o.position.set(x, y, z); return add(o); };
       const wall = (x1, z1, x2, z2, y0, y1, mat) => {
         y0 = y0 || 0; y1 = y1 || 2.4;
@@ -819,7 +944,7 @@
         o.rotation.y = -Math.atan2(z2 - z1, x2 - x1); return o;
       };
       const plane = (x1, z1, x2, z2, y, mat, up) => {
-        const o = new T.Mesh(new T.PlaneGeometry(x2 - x1, z2 - z1), mat);
+        const o = new T.Mesh(scaleUV(new T.PlaneGeometry(x2 - x1, z2 - z1), [[x2 - x1, z2 - z1]]), mat);
         o.rotation.x = up ? Math.PI / 2 : -Math.PI / 2; o.position.set((x1 + x2) / 2, y, (z1 + z2) / 2); return add(o);
       };
       const facePlane = (w, h, mat, x, y, z, ry) => { const o = new T.Mesh(new T.PlaneGeometry(w, h), mat); o.position.set(x, y, z); o.rotation.y = ry || 0; return add(o); };
@@ -833,7 +958,7 @@
         for (let y = -16; y < h + 32; y += 16) for (let x = (y / 16) % 2 ? 16 : 0; x < w + 32; x += 32) { g.beginPath(); g.arc(x, y, 16, 0, Math.PI); g.stroke(); }
       }, 128, 128);
       scale.wrapS = scale.wrapT = T.RepeatWrapping; scale.repeat.set(8, 4);
-      const scaleMat = P(0xffffff, { map: scale });
+      const scaleMat = new T.MeshStandardMaterial({ map: scale, roughness: 0.4 });
       plane(10.14, 0.81, 14.28, 2.94, 0.005, scaleMat);
       plane(8.6, 2.94, 11.35, 4.32, 0.006, scaleMat);
       [[0, 0, 6.8, 9.1], [6.8, 0, 11.35, 9.15], [11.35, 4.32, 14.78, 9.15], [11.35, 0, 14.28, 2.94]].forEach(r => plane(r[0], r[1], r[2], r[3], 2.4, m.ceil, true));
@@ -859,7 +984,9 @@
       const loader = new T.TextureLoader();
       const poster = (i, x, y, z, ry) => {
         const tex = loader.load(`img/venue/posters/p${String(i).padStart(2, "0")}.jpg`);
-        facePlane(0.82, 0.48, new T.MeshBasicMaterial({ map: tex, color: 0xb8b8b8 }), x, y, z, ry);
+        tex.encoding = T.sRGBEncoding; tex.anisotropy = 4;
+        const o = facePlane(0.82, 0.48, new T.MeshStandardMaterial({ map: tex, roughness: 0.55, envMapIntensity: 0.4 }), x, y, z, ry);
+        o.rotation.z = (rnd() - 0.5) * 0.05; o.position.addScaledVector(new T.Vector3(Math.sin(ry), 0, Math.cos(ry)), 0.004);
       };
       let pi = 1;
       for (let k = 0; k < 4; k++) for (let row = 0; row < 2; row++) { const z = 4.75 + k * 1.15; poster(pi++ % 18 + 1, 14.85, floorAt(15, z) + 1.25 + row * 0.62, z, Math.PI / 2); }
@@ -900,11 +1027,11 @@
       box(3.6, 1.05, 0.45, m.wood, 10.35, 0.525, 8.08); box(3.7, 0.05, 0.56, m.black, 10.35, 1.07, 8.08);
       box(3.6, 0.04, 0.28, m.wood, 10.35, 1.45, 9.0); box(3.6, 0.04, 0.28, m.wood, 10.35, 1.8, 9.0);
       const bottleCols = [0x2f7d4a, 0x7a3d1d, 0xd8c690, 0x3b5e8c, 0x8c2d2d, 0xc9b36a];
-      for (let i = 0; i < 16; i++) cyl(0.04, 0.045, 0.26, P(bottleCols[i % 6], { shininess: 90, emissive: bottleCols[i % 6], emissiveIntensity: 0.15 }), 8.75 + i * 0.21, i < 8 ? 1.6 : 1.95, 9.0);
+      for (let i = 0; i < 16; i++) cyl(0.04, 0.045, 0.26, P(bottleCols[i % 6], { roughness: 0.08, metalness: 0.1, transparent: true, opacity: 0.85, emissive: lin(bottleCols[i % 6]), emissiveIntensity: 0.12 }), 8.75 + i * 0.21, i < 8 ? 1.6 : 1.95, 9.0);
 
       // 楽屋(白い壁、鏡、カウンター、丸椅子)
       plane(6.8, 0, 8.46, 5.12, 0.004, m.tile);
-      facePlane(1.6, 0.7, new T.MeshBasicMaterial({ color: 0x8e989c }), 8.39, 1.45, 2.6, -Math.PI / 2);
+      facePlane(1.6, 0.7, P(0x6c7478, { metalness: 0.6, roughness: 0.45, envMapIntensity: 0.2 }), 8.39, 1.45, 2.6, -Math.PI / 2);
       box(0.45, 0.05, 2.4, m.white, 8.2, 0.8, 2.6);
       [1.9, 2.6, 3.3].forEach(z => { cyl(0.17, 0.17, 0.06, m.black, 7.7, 0.48, z); cyl(0.02, 0.02, 0.45, m.metal, 7.7, 0.23, z, 8); });
 
@@ -929,7 +1056,7 @@
       box(0.76, 0.58, 0.28, m.black, 5.95, 0.64, 0.75); box(0.68, 0.36, 0.01, P(0x9a9ea3), 5.95, 0.6, 0.895);
       // ドラム
       const kick = cyl(0.28, 0.28, 0.42, m.shell, 3.4, 0.63, 1.25); kick.rotation.x = Math.PI / 2;
-      const head = new T.Mesh(new T.CircleGeometry(0.265, 24), P(0xe8e4d8)); head.position.set(3.4, 0.63, 1.462); add(head);
+      const head = new T.Mesh(new T.CircleGeometry(0.265, 24), P(0xcfcbc0, { roughness: 0.75 })); head.position.set(3.4, 0.63, 1.462); add(head);
       cyl(0.18, 0.18, 0.14, m.shell, 2.95, 1.0, 1.55); cyl(0.14, 0.14, 0.2, m.shell, 3.22, 1.12, 1.05); cyl(0.15, 0.15, 0.2, m.shell, 3.6, 1.12, 1.05);
       cyl(0.2, 0.2, 0.42, m.shell, 3.95, 0.75, 1.55);
       [[2.7, 1.25, 1.45, 0.18], [3.0, 1.62, 0.85, 0.22], [3.95, 1.45, 0.95, 0.25]].forEach(([x, y, z, r]) => { cyl(r, r, 0.01, m.gold, x, y, z); cyl(0.012, 0.012, y - 0.35, m.metal, x, 0.35 + (y - 0.35) / 2, z, 8); });
@@ -941,7 +1068,7 @@
       box(2.4, 0.06, 0.6, m.black, 3.4, 0.95, 7.85); box(1.6, 0.08, 0.5, m.grille, 3.4, 1.01, 7.85);
       facePlane(0.45, 0.3, new T.MeshBasicMaterial({ color: 0x3d6f8f }), 3.4, 1.2, 8.15, 0);
       // 天井の配管と空調
-      [1.2, 5.6].forEach(x => { const d = cyl(0.12, 0.12, 5.2, m.metal, x, 2.22, 6.3, 12); d.rotation.x = Math.PI / 2; });
+      [1.2, 5.6].forEach(x => { const d = cyl(0.12, 0.12, 5.2, m.duct, x, 2.22, 6.3, 12); d.rotation.x = Math.PI / 2; });
       box(0.9, 0.22, 0.9, m.grille, 3.4, 2.29, 6.0);
       // 防音扉(開いた状態)
       box(0.9, 2.0, 0.06, m.door, 7.25, 1.0, 6.6);
@@ -952,7 +1079,7 @@
       const COLS = [0xff2b3a, 0x2f5bff, 0xfff1d6, 0xffa23a, 0xd23cff, 0x38c8c8];
       const fixture = (x, z, col, tilt, ph) => {
         cyl(0.09, 0.09, 0.2, m.black, x, 2.17, z, 12);
-        const lens = new T.Mesh(new T.CircleGeometry(0.07, 16), new T.MeshBasicMaterial({ color: col })); lens.rotation.x = Math.PI / 2; lens.position.set(x, 2.065, z); add(lens);
+        const lens = new T.Mesh(new T.CircleGeometry(0.07, 16), glow(col, 1.7)); lens.rotation.x = Math.PI / 2; lens.position.set(x, 2.065, z); add(lens);
         const g = new T.CylinderGeometry(0.04, 0.42, 2.0, 18, 1, true); g.translate(0, -1, 0);
         const mat = new T.MeshBasicMaterial({ color: col, transparent: true, opacity: 0.06, blending: T.AdditiveBlending, depthWrite: false, side: T.DoubleSide });
         const b = new T.Mesh(g, mat); b.position.set(x, 2.06, z); b.rotation.x = tilt; add(b);
@@ -962,15 +1089,34 @@
       FRONT.forEach((c, i) => {
         const x = 0.55 + i * 0.52;
         if (i % 2 === 0) fixture(x, 3.3, c, 0.5, i * 1.1);
-        else { cyl(0.09, 0.09, 0.2, m.black, x, 2.17, 3.3, 12); const ln = new T.Mesh(new T.CircleGeometry(0.07, 16), new T.MeshBasicMaterial({ color: c })); ln.rotation.x = Math.PI / 2; ln.position.set(x, 2.065, 3.3); add(ln); }
+        else { cyl(0.09, 0.09, 0.2, m.black, x, 2.17, 3.3, 12); const ln = new T.Mesh(new T.CircleGeometry(0.07, 16), glow(c, 1.3)); ln.rotation.x = Math.PI / 2; ln.position.set(x, 2.065, 3.3); add(ln); }
       });
       [1.4, 2.8, 4.0, 5.4].forEach((x, i) => fixture(x, 0.6, COLS[(i + 2) % COLS.length], -0.45, i * 0.9 + 0.5));
       const pool = (x, z, y, col, r) => { const o = new T.Mesh(new T.CircleGeometry(r, 24), new T.MeshBasicMaterial({ color: col, transparent: true, opacity: 0.16, blending: T.AdditiveBlending, depthWrite: false })); o.rotation.x = -Math.PI / 2; o.position.set(x, y, z); return add(o); };
       [[1.3, 2.3, 0xff2b3a], [3.4, 2.0, 0xfff1d6], [5.4, 2.3, 0x2f5bff], [2.4, 1.2, 0xffa23a], [4.5, 1.2, 0xd23cff]].forEach(([x, z, c]) => pool(x, z, 0.352, c, 0.75));
       [[1.8, 5.0, 0xff2b3a], [4.8, 5.2, 0x2f5bff]].forEach(([x, z, c]) => pool(x, z, 0.005, c, 0.9));
 
+      // ステージの小物:立ち位置のテープ、足元のセットリスト、シールド(ケーブル)
+      const tapeMat = P(0xe8e2c8, { roughness: 0.6 }), tapeY = P(0xd9b23a, { roughness: 0.6 }), paper = P(0xf2f0e8, { roughness: 0.9 });
+      [[2.2, 2.75, 0.3], [3.4, 2.75, -0.2], [4.6, 2.75, 0.15], [1.9, 1.0, 0.6], [4.9, 1.0, -0.4], [3.4, 1.9, 1.2]].forEach(([x, z, r], i) => {
+        const t = box(0.18, 0.004, 0.05, i % 3 ? tapeMat : tapeY, x, 0.352, z); t.rotation.y = r;
+        const t2 = box(0.05, 0.004, 0.14, i % 3 ? tapeMat : tapeY, x + 0.06, 0.352, z + 0.03); t2.rotation.y = r;
+      });
+      [[2.0, 3.05, 0.2], [3.6, 3.1, -0.15], [4.8, 3.0, 0.3]].forEach(([x, z, r]) => { const o = box(0.21, 0.003, 0.3, paper, x, 0.353, z); o.rotation.y = r; });
+      const cable = (pts, r) => { const curve = new T.CatmullRomCurve3(pts.map(([x, z]) => new T.Vector3(x, 0.365, z))); add(new T.Mesh(new T.TubeGeometry(curve, 40, r || 0.012, 6, false), P(0x0b0b0c, { roughness: 0.5 }))); };
+      cable([[2.2, 2.95], [2.0, 2.6], [1.6, 2.2], [1.2, 1.4], [1.0, 0.6]]);
+      cable([[3.4, 2.95], [3.1, 2.4], [2.6, 2.1], [2.0, 1.2], [1.9, 0.7]]);
+      cable([[4.6, 2.95], [4.9, 2.4], [5.3, 1.6], [5.6, 1.1], [5.95, 0.9]]);
+      cable([[1.6, 3.35], [1.0, 3.2], [0.6, 2.6], [0.4, 1.4]], 0.016); cable([[5.2, 3.35], [5.8, 3.1], [6.3, 2.3], [6.45, 1.2]], 0.016);
+      // ステッカー(ホールの出入口まわりと楽屋の壁)
+      const STK = ["#38c8c8", "#e8e2c8", "#d23c3c", "#f2c230", "#ffffff", "#2b2b2b", "#3b5e8c", "#e86fa8"];
+      const sticker = (x, y, z, ry) => { const w = 0.06 + rnd() * 0.12, h = 0.04 + rnd() * 0.08; const o = facePlane(w, h, P(STK[(rnd() * STK.length) | 0], { roughness: 0.4 }), x, y, z, ry); o.rotation.z = (rnd() - 0.5) * 0.6; };
+      for (let i = 0; i < 26; i++) sticker(6.73, 0.9 + rnd() * 1.2, 6.0 + rnd() * 0.5, -Math.PI / 2);
+      for (let i = 0; i < 40; i++) sticker(6.87 + 0.004, 0.7 + rnd() * 1.4, 0.4 + rnd() * 4.4, Math.PI / 2);
+      for (let i = 0; i < 18; i++) sticker(7.0 + rnd() * 1.3, 0.8 + rnd() * 1.3, 5.05, Math.PI);
+
       // 客席の人影(当たり判定なし。順路の立ち位置は避けて並べる)
-      const crowdMat = P(0x1d2024, { shininess: 2 });
+      const crowdMat = P(0x1d2024, { roughness: 0.95 });
       [[1.0, 4.6], [1.8, 4.5], [2.6, 4.7], [4.3, 4.6], [5.0, 4.5], [5.8, 4.7], [0.9, 5.4], [1.7, 5.6], [2.5, 5.3], [3.3, 5.6],
        [4.2, 5.4], [5.1, 5.7], [5.9, 5.5], [1.2, 6.4], [2.2, 6.6], [3.6, 6.4], [4.6, 6.7], [1.6, 7.6], [0.8, 8.2]].forEach(([x, z], i) => {
         const h = 1.55 + ((i * 37) % 9) / 40;
@@ -979,12 +1125,45 @@
       });
 
       // 光源
-      add(new T.AmbientLight(0xffffff, 0.27));
+      add(new T.AmbientLight(0xffffff, 0.1));
+      // 前のトラスからのスポット(ドラムやマイクスタンドの影が床に落ちる)
+      const spot = (x, z, tx, tz, col, inten) => {
+        const l = new T.SpotLight(col, inten, 9, 0.52, 0.55, 1);
+        l.position.set(x, 2.12, z); l.target.position.set(tx, 0.35, tz); add(l); add(l.target);
+        l.castShadow = true; l.shadow.mapSize.set(hi ? 1024 : 512, hi ? 1024 : 512); l.shadow.bias = -0.0006; l.shadow.camera.near = 0.3; l.shadow.camera.far = 8;
+        return l;
+      };
+      spot(2.3, 3.35, 2.8, 1.3, 0xfff1d6, 1.5); spot(4.5, 3.35, 4.1, 1.3, 0xffb060, 1.2);
       const lights = [];
       [[1.4, 2.0, 1.6, 0xff3344, 1.3], [5.4, 2.0, 1.6, 0x3355ff, 1.3], [3.4, 2.0, 2.9, 0xffe6c4, 1.0]].forEach(([x, y, z, c, i]) => { const l = new T.PointLight(c, i, 6.5); l.position.set(x, y, z); add(l); lights.push({ l, i }); });
       [[3.4, 2.2, 7.0, 0x6070ff, 0.45, 6], [9.6, 2.2, 2.4, 0xffe2c0, 0.85, 6], [9.0, 2.2, 6.4, 0xffe2c0, 0.75, 6], [12.2, 2.2, 1.9, 0xffe8d0, 0.8, 5],
-       [10.4, 2.2, 8.4, 0xffd9a8, 0.7, 4], [7.6, 2.2, 2.6, 0xffffff, 0.9, 5], [15.5, 4.3, 6.6, 0xfff0dd, 0.9, 7], [13.0, 3.6, 3.6, 0xfff0dd, 0.6, 5]].forEach(([x, y, z, c, i, d]) => { const l = new T.PointLight(c, i, d); l.position.set(x, y, z); add(l); });
+       [10.4, 2.2, 8.4, 0xffd9a8, 0.7, 4], [7.6, 2.2, 2.6, 0xfff4e6, 0.32, 5], [15.5, 4.3, 6.6, 0xfff0dd, 0.9, 7], [13.0, 3.6, 3.6, 0xfff0dd, 0.6, 5]].forEach(([x, y, z, c, i, d]) => { const l = new T.PointLight(c, i, d); l.position.set(x, y, z); add(l); });
+      // 影:透けない物はすべて影を落とし、受ける
+      scene.traverse(o => { if (o.isMesh && !o.material.transparent && o.material.isMeshStandardMaterial) { o.castShadow = true; o.receiveShadow = true; } });
       return { scene, beams, lights };
+    }
+
+    // three.js 付属の後処理(r128)。順番に読み込む
+    const FX_BASE = "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/";
+    const FX_FILES = ["shaders/CopyShader.js", "shaders/LuminosityHighPassShader.js", "shaders/GammaCorrectionShader.js", "postprocessing/EffectComposer.js", "postprocessing/RenderPass.js", "postprocessing/ShaderPass.js", "postprocessing/UnrealBloomPass.js"];
+    let fxP = null;
+    const loadFx = () => fxP || (fxP = FX_FILES.reduce((p, f) => p.then(() => new Promise((res, rej) => {
+      const s = document.createElement("script"); s.src = FX_BASE + f; s.onload = res; s.onerror = () => { fxP = null; rej(new Error(f)); }; document.head.appendChild(s);
+    })), Promise.resolve()));
+    async function makeBloom(T, renderer, scene, camera) {
+      await loadFx();
+      const gl2 = renderer.capabilities.isWebGL2;
+      const opts = { type: gl2 ? T.HalfFloatType : T.UnsignedByteType };
+      const rt = gl2 && !coarse() && T.WebGLMultisampleRenderTarget ? new T.WebGLMultisampleRenderTarget(2, 2, opts) : new T.WebGLRenderTarget(2, 2, opts);
+      const composer = new T.EffectComposer(renderer, rt);
+      composer.addPass(new T.RenderPass(scene, camera));
+      const bloom = new T.UnrealBloomPass(new T.Vector2(256, 256), 0.55, 0.45, 0.82);
+      composer.addPass(bloom);
+      composer.addPass(new T.ShaderPass(T.GammaCorrectionShader));
+      return {
+        setSize(w, h) { composer.setPixelRatio(renderer.getPixelRatio()); composer.setSize(w, h); bloom.setSize(Math.round(w * renderer.getPixelRatio() / 2), Math.round(h * renderer.getPixelRatio() / 2)); },
+        render() { composer.render(); },
+      };
     }
 
     async function enter(si) {
@@ -1029,9 +1208,20 @@
       const canvas = $("canvas");
       const renderer = new T.WebGLRenderer({ canvas, antialias: !coarse(), powerPreference: "high-performance" });
       renderer.setPixelRatio(Math.min(devicePixelRatio || 1, coarse() ? 1.25 : 1.75));
+      renderer.outputEncoding = T.sRGBEncoding;
+      renderer.toneMapping = T.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.0;
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = T.PCFSoftShadowMap;
       const camera = new T.PerspectiveCamera(72, 1, 0.05, 60);
       camera.rotation.order = "YXZ";
-      const world = build(T);
+      const world = build(T, renderer, !coarse());
+      // 照明のにじみ(ブルーム)。読み込めなければ、にじみなしで描く
+      let fx = null;
+      try { fx = await makeBloom(T, renderer, world.scene, camera); } catch (e) { fx = null; }
+      // 後処理を使うときは、最後の段で明るさの補正(ガンマ)をかけるので、ここでは二重にかけない
+      if (fx) renderer.outputEncoding = T.LinearEncoding;
+      if (!S || !S.alive) return;
       $(".v3d-load").hidden = true;
 
       const st = { px: 0, pz: 0, eye: 1.6, yaw: 0, pitch: -0.05, mx: 0, my: 0, keys: new Set(), joy: null, look: null, last: performance.now(), place: "", paused: false };
@@ -1049,6 +1239,7 @@
       function resize() {
         const w = root.clientWidth, h = root.clientHeight;
         renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+        if (fx) fx.setSize(w, h);
         st.paused = coarse() && h > w;
         $(".v3d-rot").hidden = !st.paused;
       }
@@ -1108,9 +1299,9 @@
         camera.position.set(st.px, st.eye, st.pz);
         camera.rotation.set(st.pitch, st.yaw, 0);
         const s = t / 1000;
-        world.beams.forEach(o => { o.mat.opacity = 0.035 + 0.035 * (0.5 + 0.5 * Math.sin(s * 1.3 + o.ph)); o.b.rotation.x = o.base + Math.sin(s * 0.5 + o.ph) * 0.08; });
+        world.beams.forEach(o => { o.mat.opacity = 0.022 + 0.022 * (0.5 + 0.5 * Math.sin(s * 1.3 + o.ph)); o.b.rotation.x = o.base + Math.sin(s * 0.5 + o.ph) * 0.08; });
         world.lights.forEach((o, i) => { o.l.intensity = o.i * (0.75 + 0.25 * Math.sin(s * 1.1 + i * 2)); });
-        renderer.render(world.scene, camera);
+        if (fx) fx.render(); else renderer.render(world.scene, camera);
         S.raf = requestAnimationFrame(frame);
       }
       function exit() {
