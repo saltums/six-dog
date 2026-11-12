@@ -1243,7 +1243,8 @@
         </div>
         <div class="v3d-stops" hidden>${STOPS.map((p, i) => `<button type="button" data-i="${i}"><b>${i + 1}</b>${p.name}</button>`).join("")}</div>
         <div class="joy" hidden><i></i></div>
-        <div class="v3d-hint">${coarse() ? "左側をなぞって歩く・右側をドラッグして見回す" : "W A S D / 矢印キーで歩く・ドラッグで見回す・「行き先」でワープ"}</div>
+        <div class="joy-home" ${coarse() ? "" : "hidden"}><i></i><span>ここを押して歩く</span></div>
+        <div class="v3d-hint">${coarse() ? "行きたい場所をタップすると歩きます・左下のスティックでも歩けます・右側をなぞって見回す" : "W A S D / 矢印キーで歩く・行きたい場所をクリックしても歩ける・ドラッグで見回す"}</div>
         <div class="v3d-rot" hidden><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="7" width="19" height="10" rx="2"/><path d="M7 3.5a8 8 0 0 1 10 0M17 20.5a8 8 0 0 1-10 0"/></svg>スマホを横向きにすると、中を歩けます</div></div>
         <div class="v3d-load"><div>SiX-DOGへ向かっています…</div></div>
         <div class="v3d-voices" aria-hidden="true"></div>
@@ -1274,11 +1275,11 @@
       if (!S || !S.alive) return;
       const canvas = $("canvas");
       const renderer = new T.WebGLRenderer({ canvas, antialias: !coarse(), powerPreference: "high-performance" });
-      renderer.setPixelRatio(Math.min(devicePixelRatio || 1, coarse() ? 1.25 : 1.75));
+      renderer.setPixelRatio(Math.min(devicePixelRatio || 1, coarse() ? 1 : 1.75));
       renderer.outputEncoding = T.sRGBEncoding;
       renderer.toneMapping = T.ACESFilmicToneMapping;
       renderer.toneMappingExposure = 1.0;
-      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.enabled = !coarse();
       renderer.shadowMap.type = T.PCFSoftShadowMap;
       const camera = new T.PerspectiveCamera(72, 1, 0.05, 60);
       camera.rotation.order = "YXZ";
@@ -1348,14 +1349,47 @@
       const hideHint = () => hint.classList.add("off");
       setTimeout(hideHint, 6000);
 
-      const joy = $(".joy"), knob = joy.querySelector("i");
+      const joy = $(".joy"), knob = joy.querySelector("i"), home = $(".joy-home");
+      // タップ(ほとんど動かさずに離す)は「そこまで歩く」。押した位置と時刻を覚えておく
+      const taps = new Map();
+      // 歩く先の目印(床の上のターコイズの輪)
+      const ring = new T.Mesh(new T.RingGeometry(0.16, 0.22, 32), new T.MeshBasicMaterial({ color: 0x38c8c8, transparent: true, opacity: 0, depthWrite: false, toneMapped: false }));
+      ring.rotation.x = -Math.PI / 2; world.scene.add(ring);
+      const ray = new T.Raycaster(), ndc = new T.Vector2();
+      function tapWalk(cx, cy) {
+        const r = root.getBoundingClientRect();
+        ndc.set((cx - r.left) / r.width * 2 - 1, -((cy - r.top) / r.height) * 2 + 1);
+        camera.updateMatrixWorld();
+        ray.setFromCamera(ndc, camera);
+        const o = ray.ray.origin, d = ray.ray.direction;
+        if (d.y > -0.02) return;
+        // まず今の床の高さで当て、行ける場所ならその床の高さで当て直す(段差・ステージ・階段)
+        let y = st.eye - 1.6, k = (y - o.y) / d.y, x = o.x + d.x * k, z = o.z + d.z * k;
+        const w = walkAt(x, z); if (!w) return;
+        y = floorAt(x, z, w); k = (y - o.y) / d.y; x = o.x + d.x * k; z = o.z + d.z * k;
+        if (!walkAt(x, z) || Math.hypot(x - st.px, z - st.pz) > 14) return;
+        st.target = { x, z, stuck: 0 };
+        ring.position.set(x, floorAt(x, z) + 0.02, z); ring.material.opacity = 0.9;
+      }
+      function joyStart(e, cx, cy) {
+        st.joy = { id: e.pointerId, x: cx, y: cy };
+        joy.hidden = false; joy.style.left = cx + "px"; joy.style.top = cy + "px"; knob.style.transform = "";
+        home.classList.add("off"); st.target = null;
+      }
       canvas.addEventListener("pointerdown", e => {
         hideHint(); canvas.setPointerCapture(e.pointerId);
-        if (e.pointerType !== "mouse" && e.clientX < root.clientWidth * 0.45 && !st.joy) {
-          st.joy = { id: e.pointerId, x: e.clientX, y: e.clientY };
-          joy.hidden = false; joy.style.left = e.clientX + "px"; joy.style.top = e.clientY + "px"; knob.style.transform = "";
-        } else if (!st.look) st.look = { id: e.pointerId, x: e.clientX, y: e.clientY };
+        taps.set(e.pointerId, { x: e.clientX, y: e.clientY, t: performance.now() });
+        if (e.pointerType !== "mouse" && e.clientX < root.clientWidth * 0.45 && !st.joy) joyStart(e, e.clientX, e.clientY);
+        else if (!st.look) st.look = { id: e.pointerId, x: e.clientX, y: e.clientY };
       });
+      // 左下の台から始めたときは、台の真ん中を中心にする
+      home.addEventListener("pointerdown", e => {
+        e.preventDefault(); hideHint(); home.setPointerCapture(e.pointerId);
+        const b = home.getBoundingClientRect(); joyStart(e, b.left + b.width / 2, b.top + b.height / 2);
+      });
+      home.addEventListener("pointermove", e => canvas.dispatchEvent(new PointerEvent("pointermove", e)));
+      home.addEventListener("pointerup", e => canvas.dispatchEvent(new PointerEvent("pointerup", e)));
+      home.addEventListener("pointercancel", e => canvas.dispatchEvent(new PointerEvent("pointercancel", e)));
       canvas.addEventListener("pointermove", e => {
         if (st.joy && e.pointerId === st.joy.id) {
           let dx = e.clientX - st.joy.x, dy = e.clientY - st.joy.y; const d = Math.hypot(dx, dy), R = 48;
@@ -1367,8 +1401,11 @@
         }
       });
       const release = e => {
-        if (st.joy && e.pointerId === st.joy.id) { st.joy = null; st.mx = st.my = 0; joy.hidden = true; }
+        const tp = taps.get(e.pointerId); taps.delete(e.pointerId);
+        const isTap = tp && e.type === "pointerup" && Math.hypot(e.clientX - tp.x, e.clientY - tp.y) < 12 && performance.now() - tp.t < 350;
+        if (st.joy && e.pointerId === st.joy.id) { st.joy = null; st.mx = st.my = 0; joy.hidden = true; home.classList.remove("off"); }
         if (st.look && e.pointerId === st.look.id) st.look = null;
+        if (isTap) tapWalk(e.clientX, e.clientY);
       };
       canvas.addEventListener("pointerup", release); canvas.addEventListener("pointercancel", release);
       const kd = e => { if (e.key === "Escape") { exit(); return; } st.keys.add(e.code); if (/^(Arrow|Key[WASD])/.test(e.code)) { e.preventDefault(); hideHint(); } };
@@ -1382,22 +1419,41 @@
 
       function frame(t) {
         if (!S || !S.alive) return;
-        const dt = Math.min(0.05, (t - st.last) / 1000); st.last = t;
+        const dt = Math.min(0.12, (t - st.last) / 1000); st.last = t;
         if (!st.paused) {
           const k = st.keys;
           let fw = (k.has("KeyW") || k.has("ArrowUp") ? 1 : 0) - (k.has("KeyS") || k.has("ArrowDown") ? 1 : 0) + st.my;
           let sd = (k.has("KeyD") ? 1 : 0) - (k.has("KeyA") ? 1 : 0) + st.mx;
+          // キーやスティックを触ったら、タップで決めた行き先はやめる
+          if (st.target && (fw || sd)) st.target = null;
+          if (st.target) {
+            const tx = st.target.x - st.px, tz = st.target.z - st.pz, dist = Math.hypot(tx, tz);
+            if (dist < 0.12 || st.target.stuck > 0.6) { st.target = null; }
+            else {
+              // 行き先のほうへ向きを少しずつ変えながら歩く
+              const want = Math.atan2(-tx, -tz);
+              let dy = want - st.yaw; dy = Math.atan2(Math.sin(dy), Math.cos(dy));
+              st.yaw += dy * Math.min(1, dt * 3);
+              const f = Math.min(1, dist / 0.5), cosY = Math.cos(st.yaw), sinY = Math.sin(st.yaw);
+              // 世界の向き(tx,tz)を、今向いている方向の前後・左右に直す
+              fw = (-sinY * tx - cosY * tz) / dist * f; sd = (cosY * tx - sinY * tz) / dist * f;
+            }
+          }
           st.yaw += ((k.has("ArrowLeft") ? 1 : 0) - (k.has("ArrowRight") ? 1 : 0)) * 1.9 * dt;
           const mag = Math.hypot(fw, sd); if (mag > 1) { fw /= mag; sd /= mag; }
           const sp = 1.8 * (k.has("ShiftLeft") || k.has("ShiftRight") ? 1.8 : 1) * dt;
           const fx = -Math.sin(st.yaw), fz = -Math.cos(st.yaw), rx = Math.cos(st.yaw), rz = -Math.sin(st.yaw);
           const nx = st.px + (fx * fw + rx * sd) * sp, nz = st.pz + (fz * fw + rz * sd) * sp;
+          const ox = st.px, oz = st.pz;
           if (walkAt(nx, nz)) { st.px = nx; st.pz = nz; } else if (walkAt(nx, st.pz)) st.px = nx; else if (walkAt(st.px, nz)) st.pz = nz;
+          // 壁に当たって進めないときは、しばらくしたら自動歩行をやめる
+          if (st.target) { if (Math.hypot(st.px - ox, st.pz - oz) < sp * 0.2) st.target.stuck += dt; else st.target.stuck = 0; }
           const r = walkAt(st.px, st.pz);
           if (r) { const stop = STOPS.find(p => p.name === r[0]); setPlace(r[0], stop ? stop.note : ""); }
           st.eye += (floorAt(st.px, st.pz, r) + 1.6 - st.eye) * Math.min(1, dt * 10);
         }
         camera.position.set(st.px, st.eye, st.pz);
+        if (!st.target && ring.material.opacity > 0) ring.material.opacity = Math.max(0, ring.material.opacity - dt * 2.5);
         camera.rotation.set(st.pitch, st.yaw, 0);
         const s = t / 1000;
         world.beams.forEach(o => { o.mat.opacity = 0.028 + 0.025 * (0.5 + 0.5 * Math.sin(s * 1.3 + o.ph)); o.b.rotation.x = o.base + Math.sin(s * 0.5 + o.ph) * 0.08; });

@@ -540,3 +540,10 @@ body.compact .dogbar{margin-top:26px}
 .voice::after{content:"";position:absolute;left:50%;bottom:-6px;margin-left:-6px;border:6px solid transparent;border-bottom:0;border-top-color:rgba(250,252,252,.94)}
 .voice small{display:block;margin-top:2px;font-family:var(--en);font-size:.72rem;letter-spacing:.08em;color:#138585}
 .voice.on{opacity:1}
+
+/* スマホ:左下に常に見えるスティックの台 */
+.joy-home{position:absolute;left:max(22px,env(safe-area-inset-left,0px));bottom:calc(22px + env(safe-area-inset-bottom,0px));width:116px;height:116px;border-radius:50%;border:2px solid rgba(255,255,255,.4);background:rgba(0,0,0,.25);touch-action:none;display:grid;place-items:center;transition:opacity .2s}
+.joy-home[hidden]{display:none}
+.joy-home i{width:46px;height:46px;border-radius:50%;background:rgba(56,200,200,.75)}
+.joy-home span{position:absolute;top:-22px;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:.7rem;color:#bcc6c6;text-shadow:0 1px 4px #000}
+.joy-home.off{opacity:0}
