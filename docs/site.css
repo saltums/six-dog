@@ -37,12 +37,13 @@ h1,h2,h3{margin:0;line-height:1.3;text-wrap:balance}
 .ic.l{width:24px;height:24px}
 
 /* ---------- header ---------- */
-header.site{padding-block:40px 0;text-align:center;position:relative}
-.wordmark{display:block;margin:0 auto;width:min(440px,74%);height:auto;filter:var(--logo-filter)}
-.slogan{margin:18px 0 0;font-family:var(--en);font-size:1.12rem;letter-spacing:.14em;color:var(--ink)}
-.subline{display:flex;justify-content:center;align-items:center;gap:12px;margin:8px 0 0;font-family:var(--en);font-size:.86rem;letter-spacing:.22em;color:var(--ink-2)}
+header.site{padding-block:26px 0;text-align:center;position:relative}
+.wordmark{display:block;margin:0 auto;width:min(320px,62%);height:auto;filter:var(--logo-filter);transition:width .3s ease}
+.slogan{margin:12px 0 0;font-family:var(--en);font-size:1.12rem;letter-spacing:.14em;color:var(--ink)}
+.subline{display:flex;justify-content:center;align-items:center;gap:12px;margin:4px 0 0;font-family:var(--en);font-size:.86rem;letter-spacing:.22em;color:var(--ink-2)}
 .subline i{width:28px;height:1px;background:currentColor}
 .dogbar{position:relative;height:14px;margin-top:58px;background:var(--dog);box-shadow:inset 0 -3px 0 var(--dog-deep)}
+.dogbar{margin-top:40px}
 /* 犬はバーの後ろから顔を出す。窓(overflow:hidden)の下端がバーの上端 */
 .dogwin{position:absolute;bottom:100%;right:max(16px,calc(50% - 430px));width:86px;height:64px;overflow:hidden}
 .dog{display:block;width:86px;height:72px;padding:0;border:0;background:none;cursor:pointer;transform:translateY(2px)}
@@ -329,10 +330,10 @@ footer .en{display:block;font-size:1rem;letter-spacing:.16em;color:var(--ink);ma
 .loading{padding:60px 0;text-align:center;color:var(--ink-2)}
 @media (prefers-reduced-motion:no-preference){#view.fade{animation:fadein .35s ease both}@keyframes fadein{from{opacity:.001;transform:translateY(6px)}to{opacity:1;transform:none}}}
 @media (max-width:560px){
-  header.site{padding-block:28px 0}
+  header.site{padding-block:20px 0}
   .slogan{font-size:.92rem;letter-spacing:.08em}
   .subline{font-size:.72rem;letter-spacing:.16em}
-  .dogbar{margin-top:66px}
+  .dogbar{margin-top:48px}
   .dogwin{width:72px;height:54px}
   .dog{width:72px;height:60px}
   nav.tabs a{padding:9px 9px 7px}
@@ -525,3 +526,10 @@ footer .en{display:block;font-size:1rem;letter-spacing:.16em;color:var(--ink);ma
 @media (prefers-reduced-motion: reduce) {
   .splash-photo { transition: opacity 0.3s ease; }
 }
+
+/* TOP以外のページでは、ヘッダーをたたんで中身を上に寄せる(小さいロゴと柴犬だけ残す) */
+body.compact header.site{padding-block:12px 0}
+body.compact .wordmark{width:min(170px,40%)}
+body.compact .slogan,body.compact .subline{display:none}
+body.compact .dogbar{margin-top:26px}
+@media (max-width:560px){body.compact .dogbar{margin-top:30px}}

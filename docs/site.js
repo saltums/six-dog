@@ -615,6 +615,7 @@
     else if ((m = h.match(/^encounter-(.+)$/))) { html = vData(m[1]); tab = "data"; }
     else if (h === "howto") { html = vHowto(); tab = "howto"; }
     else html = vTop();
+    document.body.classList.toggle("compact", tab !== "top");
     view.classList.remove("fade", "adding"); void view.offsetWidth; view.classList.add("fade");
     view.innerHTML = html;
     document.title = [name || TAB_TITLE[tab], "SiX-DOG ARCHIVE"].filter(Boolean).join(" — ");
