@@ -195,6 +195,8 @@ function Parse-DayBlock([string[]]$lines, [int]$year, [int]$month, [hashtable]$s
             # "etc"(大小文字問わず、ドット任意)や "and more...." を除去する。
             # 除去した結果空になったトークンは捨てる。
             $tt = [regex]::Replace($tt, '(?i)\s*(etc\.*|and more\.*)\s*$', '')
+            # 出演順の注記「(順不同)」は名前の一部ではない
+            $tt = [regex]::Replace($tt, '\s*[（(]\s*順不同\s*[）)]\s*$', '')
             # "バンドA(大阪)" のような出身地表記の除去
             $tt = [regex]::Replace($tt, $regionSuffixPattern, '')
             $tt = $tt.Trim()
@@ -456,7 +458,9 @@ foreach ($entry in $manifest) {
         timestamp   = $entry.timestamp
     }
 
-    $h2Matches = [regex]::Matches($html, '<h2>\s*(\d{4})\s*/\s*(\d{1,2})\s*</h2>(.*?)(?=<h2>|\z)', $ROpt)
+    # 月見出しは「2013/07」だけでなく、途中から「2013.08」とドット区切りにもなる
+    # (ドットを読めずに2013年8〜12月・2014年2月がまるごと抜けていた)
+    $h2Matches = [regex]::Matches($html, '<h2>\s*(\d{4})\s*[/.]\s*(\d{1,2})\s*</h2>(.*?)(?=<h2>|\z)', $ROpt)
     # 2016年以降: 月ごとの見出しではなく「MM/DD(曜) 【タイトル】」という日ごとの<h2>になる
     $dayLevelH2Matches = [regex]::Matches($html, '<h2>\s*(\d{1,2})/(\d{1,2})\s*[\(（]([^\)）]{1,4})[\)）]\s*(?:<br\s*/?>)?\s*(?:【([^】]*)】)?\s*</h2>(.*?)(?=<h2>|\z)', $ROpt)
 
