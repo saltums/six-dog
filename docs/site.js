@@ -403,6 +403,7 @@
       <section class="sec">
         ${sh("もとにした資料", "REFERENCE")}
         <div class="photos">
+          <figure><img src="img/venue/hall2008.jpg" alt="お客さんのいないホール。天井のむき出しの配管、横一列の照明、黒い幕、銀色の柵、グレーの床" loading="lazy"><figcaption>開演前のホール(公式サイト、2008年頃)</figcaption></figure>
           <figure><img src="img/venue/stage.jpg" alt="正面から見たステージ。ドラム、Marshallのアンプ、柵、色とりどりの照明" loading="lazy"><figcaption>ステージ正面(公式サイト、2016年)</figcaption></figure>
           <figure><img src="img/venue/floor.jpg" alt="フロア後方から見たステージと天井の設備" loading="lazy"><figcaption>フロアの後ろから(公式サイト、2008年頃)</figcaption></figure>
           <figure><img src="img/venue/entrance.jpg" alt="赤い床の入口と、ポスターで埋まった壁" loading="lazy"><figcaption>入口の階段</figcaption></figure>
@@ -849,12 +850,13 @@
         }, { roughness: 0.9, bump: 0.004 }),
         ceil: surf(128, 1.5, (g, s) => { g.fillStyle = "#0e0e0f"; g.fillRect(0, 0, s, s); speck(g, s, 300, 1.5, ["rgba(255,255,255,.05)", "rgba(0,0,0,.5)"]); }, { roughness: 1 }),
         // ホールの床:塗装したコンクリート。踏まれて色が抜けたところと、細かい傷
-        hall: surf(512, 3, (g, s) => {
-          g.fillStyle = "#2a2a2c"; g.fillRect(0, 0, s, s);
-          blotch(g, s, 80, 70, ["rgba(0,0,0,.35)", "rgba(255,255,255,.05)", "rgba(70,55,35,.12)"]);
-          speck(g, s, 2600, 1.6, ["rgba(255,255,255,.06)", "rgba(0,0,0,.4)"]);
-          scratch(g, s, 170, 40, "rgba(255,255,255,.07)"); scratch(g, s, 90, 26, "rgba(0,0,0,.45)");
-        }, { roughness: 0.6, bump: 0.003 }),
+        // ホールの床:2008年の写真のとおり、グレーに白黒の細かい粒が入った床。踏まれて黒ずんだところ
+        hall: surf(512, 2.5, (g, s) => {
+          g.fillStyle = "#4b4b4d"; g.fillRect(0, 0, s, s);
+          blotch(g, s, 70, 60, ["rgba(0,0,0,.28)", "rgba(255,255,255,.04)", "rgba(60,45,30,.1)"]);
+          speck(g, s, 9000, 1.3, ["rgba(255,255,255,.18)", "rgba(0,0,0,.35)", "rgba(150,150,150,.25)"]);
+          scratch(g, s, 120, 36, "rgba(255,255,255,.07)"); scratch(g, s, 80, 24, "rgba(0,0,0,.4)");
+        }, { roughness: 0.55, bump: 0.003 }),
         // ステージの床:黒く塗った合板(継ぎ目つき)
         stage: surf(512, 1.8, (g, s) => {
           g.fillStyle = "#1d1d1f"; g.fillRect(0, 0, s, s);
@@ -900,6 +902,8 @@
         metal: plain(0x8a8f95, { metalness: 0.85, roughness: 0.38, envMapIntensity: 0.55 }),
         door: plain(0x3b424a, { metalness: 0.45, roughness: 0.45 }),
         shell: plain(0x7a1717, { metalness: 0.25, roughness: 0.22, envMapIntensity: 0.8 }),
+        ceilPipe: plain(0x1a1b1d, { metalness: 0.4, roughness: 0.6, envMapIntensity: 0.2 }),
+        acWhite: plain(0xd8d8d2, { roughness: 0.7 }),
         duct: plain(0x8c9196, { metalness: 0.6, roughness: 0.6, envMapIntensity: 0.25 }),
         gold: plain(0xc9a34a, { metalness: 1, roughness: 0.28, envMapIntensity: 1 }),
       };
@@ -1038,9 +1042,20 @@
       // ステージ
       box(6.8, 0.35, 3.7, m.stage, 3.4, 0.175, 1.85);
       box(6.8, 0.04, 0.04, m.metal, 3.4, 0.33, 3.7);
-      // 柵(ステージ前、高さ約1m)
-      for (let i = 0; i < 6; i++) box(0.05, 0.92, 0.05, m.metal, 0.5 + i * 1.16, 0.46, 4.0);
-      box(5.9, 0.05, 0.05, m.metal, 3.4, 0.9, 4.0); box(5.9, 0.04, 0.04, m.metal, 3.4, 0.5, 4.0);
+      // ステージ奥:ひだのある黒い幕(2008・2016・2018年の写真と動画)
+      {
+        const W = 6.7, H = 2.03, g = new T.PlaneGeometry(W, H, 220, 1), pos = g.attributes.position;
+        for (let i = 0; i < pos.count; i++) { const x = pos.getX(i); pos.setZ(i, 0.035 * Math.sin(x * Math.PI * 2 / 0.16) + 0.01 * Math.sin(x * 7.3)); }
+        g.computeVertexNormals();
+        const c = new T.Mesh(g, P(0x111113, { roughness: 1, envMapIntensity: 0.1 })); c.position.set(3.4, 0.35 + H / 2, 0.1); add(c);
+      }
+      // 柵:銀色の細いパイプ。ステージの縁のすぐ前に、4つに分かれて横幅いっぱい(2008・2016年の写真)
+      [[0.25, 1.75], [1.85, 3.35], [3.45, 4.95], [5.05, 6.55]].forEach(([x0, x1]) => {
+        const cx = (x0 + x1) / 2, w = x1 - x0, z = 3.86;
+        [x0, x1].forEach(x => { cyl(0.022, 0.022, 0.98, m.metal, x, 0.49, z, 10); box(0.06, 0.02, 0.36, m.metal, x, 0.01, z + 0.1); });
+        const top = cyl(0.024, 0.024, w, m.metal, cx, 0.97, z, 10); top.rotation.z = Math.PI / 2;
+        const low = cyl(0.018, 0.018, w, m.metal, cx, 0.52, z, 10); low.rotation.z = Math.PI / 2;
+      });
       // スピーカーとモニター
       [0.5, 6.3].forEach(x => {
         box(0.62, 0.8, 0.6, m.black, x, 0.75, 3.15); box(0.62, 0.8, 0.55, m.black, x, 1.56, 3.15);
@@ -1056,7 +1071,7 @@
       box(0.76, 0.58, 0.28, m.black, 5.95, 0.64, 0.75); box(0.68, 0.36, 0.01, P(0x9a9ea3), 5.95, 0.6, 0.895);
       // ドラム
       const kick = cyl(0.28, 0.28, 0.42, m.shell, 3.4, 0.63, 1.25); kick.rotation.x = Math.PI / 2;
-      const head = new T.Mesh(new T.CircleGeometry(0.265, 24), P(0xcfcbc0, { roughness: 0.75 })); head.position.set(3.4, 0.63, 1.462); add(head);
+      const head = new T.Mesh(new T.CircleGeometry(0.265, 24), P(0x9e9a90, { roughness: 0.8 })); head.position.set(3.4, 0.63, 1.462); add(head);
       cyl(0.18, 0.18, 0.14, m.shell, 2.95, 1.0, 1.55); cyl(0.14, 0.14, 0.2, m.shell, 3.22, 1.12, 1.05); cyl(0.15, 0.15, 0.2, m.shell, 3.6, 1.12, 1.05);
       cyl(0.2, 0.2, 0.42, m.shell, 3.95, 0.75, 1.55);
       [[2.7, 1.25, 1.45, 0.18], [3.0, 1.62, 0.85, 0.22], [3.95, 1.45, 0.95, 0.25]].forEach(([x, y, z, r]) => { cyl(r, r, 0.01, m.gold, x, y, z); cyl(0.012, 0.012, y - 0.35, m.metal, x, 0.35 + (y - 0.35) / 2, z, 8); });
@@ -1067,31 +1082,47 @@
       box(2.6, 1.1, 0.08, m.wall, 3.4, 0.55, 7.5); box(0.08, 1.1, 1.6, m.wall, 2.1, 0.55, 8.3); box(0.08, 1.1, 1.6, m.wall, 4.7, 0.55, 8.3);
       box(2.4, 0.06, 0.6, m.black, 3.4, 0.95, 7.85); box(1.6, 0.08, 0.5, m.grille, 3.4, 1.01, 7.85);
       facePlane(0.45, 0.3, new T.MeshBasicMaterial({ color: 0x3d6f8f }), 3.4, 1.2, 8.15, 0);
-      // 天井の配管と空調
+      // 天井:張っていない黒い天井に、ダクト・配管・ケーブルの通り道がむき出し(2008年の写真)
       [1.2, 5.6].forEach(x => { const d = cyl(0.12, 0.12, 5.2, m.duct, x, 2.22, 6.3, 12); d.rotation.x = Math.PI / 2; });
-      box(0.9, 0.22, 0.9, m.grille, 3.4, 2.29, 6.0);
+      [[0.6, 2.3, 0.03], [2.6, 2.34, 0.025], [3.9, 2.32, 0.04], [6.2, 2.3, 0.03]].forEach(([x, y, r]) => { const d = cyl(r, r, 9.0, m.ceilPipe, x, y, 4.55, 8); d.rotation.x = Math.PI / 2; });
+      [4.4, 6.2, 8.1].forEach(z => { box(6.8, 0.12, 0.1, m.ceilPipe, 3.4, 2.33, z); });
+      [[1.75, 0.35], [4.9, 0.3]].forEach(([x, w]) => { box(w, 0.04, 8.8, m.ceilPipe, x, 2.27, 4.6); for (let z = 0.4; z < 9; z += 0.5) box(w, 0.025, 0.03, m.black, x, 2.29, z); });
+      // 天井埋め込みのエアコン(白い四角の吹き出し口。ホールの前寄り)
+      box(0.84, 0.05, 0.84, m.acWhite, 1.8, 2.37, 4.75); box(0.5, 0.012, 0.5, m.grille, 1.8, 2.343, 4.75);
+      [[1.8, 4.36], [1.8, 5.14]].forEach(([x, z]) => box(0.6, 0.012, 0.08, m.grille, x, 2.343, z));
       // 防音扉(開いた状態)
       box(0.9, 2.0, 0.06, m.door, 7.25, 1.0, 6.6);
 
-      // 照明:トラスと灯体、光の筋(当時の写真の赤・青・白・アンバー)
-      box(6.6, 0.08, 0.08, m.black, 3.4, 2.3, 0.6); box(6.6, 0.08, 0.08, m.black, 3.4, 2.3, 3.3);
+      // 照明:天井のパイプに丸い照明(PAR)を一列。前は赤・アンバー・青・白、奥は白(2008・2016年の写真、2014年の動画)
       const beams = [];
-      const COLS = [0xff2b3a, 0x2f5bff, 0xfff1d6, 0xffa23a, 0xd23cff, 0x38c8c8];
-      const fixture = (x, z, col, tilt, ph) => {
-        cyl(0.09, 0.09, 0.2, m.black, x, 2.17, z, 12);
-        const lens = new T.Mesh(new T.CircleGeometry(0.07, 16), glow(col, 1.7)); lens.rotation.x = Math.PI / 2; lens.position.set(x, 2.065, z); add(lens);
-        const g = new T.CylinderGeometry(0.04, 0.42, 2.0, 18, 1, true); g.translate(0, -1, 0);
-        const mat = new T.MeshBasicMaterial({ color: col, transparent: true, opacity: 0.06, blending: T.AdditiveBlending, depthWrite: false, side: T.DoubleSide });
-        const b = new T.Mesh(g, mat); b.position.set(x, 2.06, z); b.rotation.x = tilt; add(b);
-        beams.push({ b, mat, ph, base: tilt });
+      const pipe = z => { const o = cyl(0.025, 0.025, 6.6, m.metal, 3.4, 2.33, z, 8); o.rotation.z = Math.PI / 2; };
+      pipe(3.35); pipe(0.95);
+      const par = (x, z, col, tilt, ph, beam, k) => {
+        const g = new T.Group(); g.position.set(x, 2.33, z); g.rotation.x = tilt; add(g);
+        const clamp = new T.Mesh(new T.BoxGeometry(0.03, 0.05, 0.05), m.black); clamp.position.y = -0.02; g.add(clamp);
+        const can = new T.Mesh(new T.CylinderGeometry(0.1, 0.09, 0.22, 14), m.black); can.position.y = -0.15; g.add(can);
+        const rim = new T.Mesh(new T.CylinderGeometry(0.106, 0.106, 0.025, 14), m.black); rim.position.y = -0.26; g.add(rim);
+        const lens = new T.Mesh(new T.CircleGeometry(0.084, 18), glow(col, k)); lens.rotation.x = Math.PI / 2; lens.position.y = -0.274; g.add(lens);
+        if (beam) {
+          const bg = new T.CylinderGeometry(0.06, 0.5, 2.2, 18, 1, true); bg.translate(0, -1.1, 0);
+          const mat = new T.MeshBasicMaterial({ color: col, transparent: true, opacity: 0.03, blending: T.AdditiveBlending, depthWrite: false, side: T.DoubleSide });
+          const b = new T.Mesh(bg, mat); b.position.y = -0.27; g.add(b);
+          beams.push({ b, mat, ph, base: 0 });
+        }
       };
-      const FRONT = [0xff2b3a, 0x2f5bff, 0xff2b3a, 0xfff1d6, 0xffa23a, 0xfff1d6, 0xfff1d6, 0xffa23a, 0xfff1d6, 0xff2b3a, 0x2f5bff, 0xff2b3a];
-      FRONT.forEach((c, i) => {
-        const x = 0.55 + i * 0.52;
-        if (i % 2 === 0) fixture(x, 3.3, c, 0.5, i * 1.1);
-        else { cyl(0.09, 0.09, 0.2, m.black, x, 2.17, 3.3, 12); const ln = new T.Mesh(new T.CircleGeometry(0.07, 16), glow(c, 1.3)); ln.rotation.x = Math.PI / 2; ln.position.set(x, 2.065, 3.3); add(ln); }
-      });
-      [1.4, 2.8, 4.0, 5.4].forEach((x, i) => fixture(x, 0.6, COLS[(i + 2) % COLS.length], -0.45, i * 0.9 + 0.5));
+      const RED = 0xff2b3a, BLU = 0x2f5bff, WHT = 0xfff1d6, AMB = 0xffa23a;
+      [BLU, WHT, RED, RED, AMB, WHT, WHT, WHT, WHT, AMB, RED, RED, WHT, BLU].forEach((c, i) => par(0.35 + i * 0.47, 3.35, c, 0.42, i * 1.1, i % 2 === 0, i % 2 ? 1.2 : 1.6));
+      [0.9, 2.0, 3.0, 3.8, 4.8, 5.9].forEach((x, i) => par(x, 0.95, WHT, -0.3, i * 0.9 + 0.5, i % 2 === 1, 1.4));
+      // 横の壁から斜めに当てる照明
+      [[0.18, 1.9, 0.6], [6.62, 1.9, -0.6]].forEach(([x, z, rz]) => { const g = new T.Group(); g.position.set(x, 2.15, z); g.rotation.z = rz; add(g); const can = new T.Mesh(new T.CylinderGeometry(0.1, 0.09, 0.28, 14), m.black); can.position.y = -0.18; g.add(can); const ln = new T.Mesh(new T.CircleGeometry(0.085, 16), glow(0xd23cff, 1.2)); ln.rotation.x = Math.PI / 2; ln.position.y = -0.33; g.add(ln); });
+      // スモーク(ステージの上をゆっくり漂う)
+      const hazeTex = signTex(T, (g, w, h) => { const gr = g.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, w / 2); gr.addColorStop(0, "rgba(255,255,255,1)"); gr.addColorStop(1, "rgba(255,255,255,0)"); g.fillStyle = gr; g.fillRect(0, 0, w, h); }, 64, 64);
+      const haze = [];
+      for (let i = 0; i < 9; i++) {
+        const sp = new T.Sprite(new T.SpriteMaterial({ map: hazeTex, color: 0x9aa0aa, transparent: true, opacity: 0.05, depthWrite: false }));
+        const x = 0.6 + rnd() * 5.6, y = 1.0 + rnd() * 1.0, z = 0.6 + rnd() * 3.4, sc = 1.8 + rnd() * 1.6;
+        sp.position.set(x, y, z); sp.scale.set(sc, sc * 0.7, 1); add(sp); haze.push({ sp, x, y, z, ph: rnd() * 6 });
+      }
       const pool = (x, z, y, col, r) => { const o = new T.Mesh(new T.CircleGeometry(r, 24), new T.MeshBasicMaterial({ color: col, transparent: true, opacity: 0.16, blending: T.AdditiveBlending, depthWrite: false })); o.rotation.x = -Math.PI / 2; o.position.set(x, y, z); return add(o); };
       [[1.3, 2.3, 0xff2b3a], [3.4, 2.0, 0xfff1d6], [5.4, 2.3, 0x2f5bff], [2.4, 1.2, 0xffa23a], [4.5, 1.2, 0xd23cff]].forEach(([x, z, c]) => pool(x, z, 0.352, c, 0.75));
       [[1.8, 5.0, 0xff2b3a], [4.8, 5.2, 0x2f5bff]].forEach(([x, z, c]) => pool(x, z, 0.005, c, 0.9));
@@ -1115,14 +1146,45 @@
       for (let i = 0; i < 40; i++) sticker(6.87 + 0.004, 0.7 + rnd() * 1.4, 0.4 + rnd() * 4.4, Math.PI / 2);
       for (let i = 0; i < 18; i++) sticker(7.0 + rnd() * 1.3, 0.8 + rnd() * 1.3, 5.05, Math.PI);
 
-      // 客席の人影(当たり判定なし。順路の立ち位置は避けて並べる)
-      const crowdMat = P(0x1d2024, { roughness: 0.95 });
-      [[1.0, 4.6], [1.8, 4.5], [2.6, 4.7], [4.3, 4.6], [5.0, 4.5], [5.8, 4.7], [0.9, 5.4], [1.7, 5.6], [2.5, 5.3], [3.3, 5.6],
-       [4.2, 5.4], [5.1, 5.7], [5.9, 5.5], [1.2, 6.4], [2.2, 6.6], [3.6, 6.4], [4.6, 6.7], [1.6, 7.6], [0.8, 8.2]].forEach(([x, z], i) => {
-        const h = 1.55 + ((i * 37) % 9) / 40;
-        cyl(0.17, 0.2, h - 0.25, crowdMat, x, (h - 0.25) / 2, z, 10);
-        const hd = new T.Mesh(new T.SphereGeometry(0.11, 12, 10), crowdMat); hd.position.set(x, h - 0.12, z); add(hd);
-      });
+      // お客さん(当たり判定なし。順路の立ち位置は避けて並べる)。体つき・服・髪をばらして、曲に合わせて揺れる
+      const SKIN = [0xc99a7c, 0xb98a6c, 0xd8ab8c, 0xa77b5e].map(c => P(c, { roughness: 0.7 }));
+      const CLOTH = [0x151517, 0x1f2024, 0x26282d, 0x2a2f3d, 0x3b1c1f, 0x2d3326, 0x55575c, 0x15171c, 0xbfbab0, 0x6b1f2a].map(c => P(c, { roughness: 0.95 }));
+      const PANTS = [0x121316, 0x1b2230, 0x24262a, 0x2b2b2b, 0x3a3f4a].map(c => P(c, { roughness: 0.9 }));
+      const HAIR = [0x0d0c0b, 0x15110e, 0x2a1d14, 0x0b0b0b, 0x4a3322].map(c => P(c, { roughness: 0.8 }));
+      const pick = a => a[(rnd() * a.length) | 0];
+      const torsoGeo = new T.LatheGeometry([[0, 0], [0.15, 0.01], [0.16, 0.12], [0.145, 0.28], [0.165, 0.42], [0.19, 0.5], [0.15, 0.56], [0.06, 0.6], [0, 0.6]].map(([x, y]) => new T.Vector2(x, y)), 14);
+      const limb = (r0, r1, len, mat) => { const g = new T.CylinderGeometry(r0, r1, len, 8); g.translate(0, -len / 2, 0); return new T.Mesh(g, mat); };
+      const people = [];
+      const person = (x, z, i) => {
+        const h = 1.55 + rnd() * 0.3, k = h / 1.7, root = new T.Group(); root.position.set(x, 0, z); root.rotation.y = (rnd() - 0.5) * 0.5; add(root);
+        const body = new T.Group(); root.add(body);
+        const cloth = pick(CLOTH), pants = pick(PANTS), skin = pick(SKIN), hair = pick(HAIR);
+        const legL = 0.8 * k;
+        [-0.08, 0.08].forEach(dx => { const l = limb(0.075 * k, 0.055 * k, legL, pants); l.position.set(dx * k, legL, 0); body.add(l); const shoe = new T.Mesh(new T.BoxGeometry(0.1 * k, 0.07, 0.26 * k), m.black); shoe.position.set(dx * k, 0.035, -0.04); body.add(shoe); });
+        const torso = new T.Mesh(torsoGeo, cloth); torso.scale.set(k * (0.95 + rnd() * 0.15), k, k * 0.62); torso.position.y = legL - 0.04; body.add(torso);
+        const top = legL - 0.04 + 0.6 * k;
+        const neck = limb(0.045 * k, 0.05 * k, 0.09, skin); neck.position.y = top + 0.07; body.add(neck);
+        const head = new T.Mesh(new T.SphereGeometry(0.098 * k, 14, 12), skin); head.scale.set(0.9, 1.12, 1); head.position.y = top + 0.15 * k; body.add(head);
+        const longHair = rnd() < 0.35;
+        const hr = new T.Mesh(new T.SphereGeometry(0.104 * k, 14, 10, 0, Math.PI * 2, 0, Math.PI * (longHair ? 0.75 : 0.55)), hair); hr.scale.set(0.95, 1.15, 1.05); hr.position.set(0, top + 0.16 * k, 0.01); body.add(hr);
+        if (longHair) { const back = limb(0.08 * k, 0.07 * k, 0.22 * k, hair); back.position.set(0, top + 0.17 * k, 0.05); back.scale.z = 0.6; body.add(back); }
+        if (rnd() < 0.15) { const cap = new T.Mesh(new T.SphereGeometry(0.11 * k, 12, 8, 0, Math.PI * 2, 0, Math.PI * 0.5), pick(CLOTH)); cap.position.y = top + 0.18 * k; body.add(cap); const brim = new T.Mesh(new T.CylinderGeometry(0.08, 0.08, 0.01, 10, 1, false, 0, Math.PI), cap.material); brim.position.set(0, top + 0.18 * k, -0.08); brim.rotation.y = Math.PI / 2; body.add(brim); }
+        const raise = rnd() < 0.3 ? (rnd() < 0.5 ? -1 : 1) : 0;
+        const arms = [];
+        [-1, 1].forEach(sd => {
+          const sh = new T.Group(); sh.position.set(sd * 0.17 * k, top - 0.07 * k, 0); body.add(sh);
+          const up = limb(0.05 * k, 0.042 * k, 0.3 * k, cloth); sh.add(up);
+          const fore = limb(0.04 * k, 0.034 * k, 0.27 * k, skin); fore.position.y = -0.3 * k; up.add(fore);
+          const hand = new T.Mesh(new T.SphereGeometry(0.04 * k, 8, 6), skin); hand.position.y = -0.28 * k; fore.add(hand);
+          // 体は -z(ステージ)向き。x軸の回転は正で腕が前に出る
+          if (raise === sd) { sh.rotation.x = 2.55 + rnd() * 0.4; sh.rotation.z = sd * 0.12; fore.rotation.x = 0.35; }
+          else { sh.rotation.z = sd * 0.1; sh.rotation.x = 0.04 + rnd() * 0.16; fore.rotation.x = 0.12 + rnd() * 0.4; }
+          arms.push({ sh, raised: raise === sd, base: sh.rotation.x });
+        });
+        people.push({ body, arms, ph: rnd() * 6, amp: 0.012 + rnd() * 0.025, nod: rnd() < 0.6 });
+      };
+      [[1.0, 4.45], [1.8, 4.4], [2.6, 4.5], [4.3, 4.45], [5.0, 4.4], [5.8, 4.5], [0.9, 5.25], [1.7, 5.45], [2.5, 5.15], [3.3, 5.5],
+       [4.2, 5.25], [5.1, 5.55], [5.9, 5.35], [1.2, 6.3], [2.2, 6.5], [3.6, 6.3], [4.6, 6.6], [5.6, 6.4], [1.6, 7.6], [0.8, 8.2], [5.6, 7.5]].forEach(([x, z], i) => person(x + (rnd() - 0.5) * 0.15, z + (rnd() - 0.5) * 0.15, i));
 
       // 光源
       add(new T.AmbientLight(0xffffff, 0.1));
@@ -1140,7 +1202,7 @@
        [10.4, 2.2, 8.4, 0xffd9a8, 0.7, 4], [7.6, 2.2, 2.6, 0xfff4e6, 0.32, 5], [15.5, 4.3, 6.6, 0xfff0dd, 0.9, 7], [13.0, 3.6, 3.6, 0xfff0dd, 0.6, 5]].forEach(([x, y, z, c, i, d]) => { const l = new T.PointLight(c, i, d); l.position.set(x, y, z); add(l); });
       // 影:透けない物はすべて影を落とし、受ける
       scene.traverse(o => { if (o.isMesh && !o.material.transparent && o.material.isMeshStandardMaterial) { o.castShadow = true; o.receiveShadow = true; } });
-      return { scene, beams, lights };
+      return { scene, beams, lights, haze, people };
     }
 
     // three.js 付属の後処理(r128)。順番に読み込む
@@ -1299,8 +1361,17 @@
         camera.position.set(st.px, st.eye, st.pz);
         camera.rotation.set(st.pitch, st.yaw, 0);
         const s = t / 1000;
-        world.beams.forEach(o => { o.mat.opacity = 0.022 + 0.022 * (0.5 + 0.5 * Math.sin(s * 1.3 + o.ph)); o.b.rotation.x = o.base + Math.sin(s * 0.5 + o.ph) * 0.08; });
+        world.beams.forEach(o => { o.mat.opacity = 0.028 + 0.025 * (0.5 + 0.5 * Math.sin(s * 1.3 + o.ph)); o.b.rotation.x = o.base + Math.sin(s * 0.5 + o.ph) * 0.08; });
         world.lights.forEach((o, i) => { o.l.intensity = o.i * (0.75 + 0.25 * Math.sin(s * 1.1 + i * 2)); });
+        // 曲のテンポ(だいたい170BPM)で、軽く跳ねたり、うなずいたり、拳を振ったり
+        const beat = s * Math.PI * 2 * (170 / 60) / 2;
+        world.people.forEach(o => {
+          const b = Math.max(0, Math.sin(beat + o.ph));
+          o.body.position.y = b * o.amp;
+          if (o.nod) o.body.rotation.x = b * 0.04;
+          o.arms.forEach(a => { if (a.raised) a.sh.rotation.x = a.base + Math.sin(beat * 2 + o.ph) * 0.18; });
+        });
+        world.haze.forEach(h => { h.sp.position.x = h.x + Math.sin(s * 0.11 + h.ph) * 0.5; h.sp.position.y = h.y + Math.sin(s * 0.07 + h.ph) * 0.15; h.sp.material.opacity = 0.04 + 0.02 * Math.sin(s * 0.2 + h.ph); });
         if (fx) fx.render(); else renderer.render(world.scene, camera);
         S.raf = requestAnimationFrame(frame);
       }
