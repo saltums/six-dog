@@ -25,7 +25,7 @@
 
   function measure() {
     // 旧サイト風はメニューバーを上端にぴったり付ける。通常表示は少し余白を残す
-    const gap = document.documentElement.getAttribute("data-site-theme") === "2008" ? 0 : 8;
+    const gap = 8;
     const next = Math.max(0, Math.round(nav.getBoundingClientRect().top - bar.getBoundingClientRect().top - gap));
     if (next !== collapse) {
       collapse = next;

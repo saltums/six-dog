@@ -20,13 +20,16 @@
   }
 
   let videoDates = null; // Set<event_date> — その日に動画が1件でも投稿されているか
+  let videoRows = []; // 一覧表示用(公演ページ・出演者ページで、タイトルとURLを並べる)
 
   async function loadVideoIndex() {
     videoDates = new Set();
+    videoRows = [];
     try {
-      const res = await fetch(`${CONFIG.rest("videos")}?select=event_date`, { headers: headers() });
+      const res = await fetch(`${CONFIG.rest("videos")}?select=id,event_date,performer_name,video_url,video_title&order=submitted_at.asc`, { headers: headers() });
       if (!res.ok) return videoDates;
       const rows = await res.json();
+      videoRows = rows;
       rows.forEach(row => videoDates.add(row.event_date));
     } catch (e) {
       // データが無くても他の機能に影響させない
@@ -36,6 +39,14 @@
 
   function hasVideo(eventDate) {
     return !!(videoDates && videoDates.has(eventDate));
+  }
+
+  function getVideosByDate(eventDate) {
+    return videoRows.filter(v => v.event_date === eventDate);
+  }
+
+  function getVideosByPerformer(name) {
+    return videoRows.filter(v => v.performer_name === name);
   }
 
   async function fetchVideoPerformers(eventDate) {
@@ -132,7 +143,7 @@
     wrap.className = "video-panel";
     wrap.innerHTML = `
       <div class="video-panel-head">
-        <span class="video-panel-title">🎬 ${escapeHtml(performerName)} の動画</span>
+        <span class="video-panel-title">${escapeHtml(performerName)} の動画</span>
         <button type="button" class="video-panel-close" aria-label="閉じる">✕</button>
       </div>
       <div class="video-list"></div>
@@ -257,5 +268,5 @@
     return wrap;
   }
 
-  global.SixDogVideos = { buildVideoPanel, fetchVideoPerformers, loadVideoIndex, hasVideo };
+  global.SixDogVideos = { buildVideoPanel, fetchVideoPerformers, loadVideoIndex, hasVideo, getVideosByDate, getVideosByPerformer };
 })(window);

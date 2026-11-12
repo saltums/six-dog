@@ -30,10 +30,15 @@ data/
 supabase/
   schema.sql              Supabaseのテーブル定義と権限(Row Level Security)
 docs/                     GitHub Pages 公開ルート(素のHTML/CSS/JS、ビルド不要)
-  index.html / styles.css / app.js   カレンダー・検索画面
-  bi.html / bi.js                    出演者BIダッシュボード
+  index.html / site.css / site.js    公開ページ(TOP・SCHEDULE・ARTISTS・VENUE・DATA・HOW TO を1ページで切り替え)
+  editor.js / tweets.js / event-links.js / videos.js / hype.js / emoi.js / share.js / recent-feed.js
+                                     投稿・修正・反応・シェアの部品(Supabaseとのやりとり)
   supabase-config.js                 Supabaseの接続先(引っ越し時はここだけ書き換える)
+  debug.html / styles.css            管理者用の画面(出典の確認・出演者の名寄せ・公演名のグループ分け)
+  bi.html                            旧分析ページ。index.html#data へ転送するだけ
+  img/venue/                         3D会場と VENUE ページで使う写真・ポスター
   data/events.json
+  data/changelog.json                更新履歴(HOW TO に表示。更新のたびに先頭へ追記する)
 notebooklm/
   six-dog-schedule.md     NotebookLM にアップロードする用のMarkdown
 ```

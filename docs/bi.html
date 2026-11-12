@@ -1,106 +1,13 @@
 <!doctype html>
 <html lang="ja">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>SiX-DOG ARCHIVE — 出演者BIダッシュボード</title>
-<meta name="description" content="SiX-DOG の公演データを出演者・頻度・時系列で分析するダッシュボード" />
-<link rel="stylesheet" href="styles.css" />
-<script src="legacy-theme.js"></script>
+<meta charset="utf-8">
+<title>SiX-DOG ARCHIVE — データ</title>
+<meta http-equiv="refresh" content="0; url=index.html#data">
+<link rel="canonical" href="index.html#data">
+<script>location.replace("index.html#data");</script>
 </head>
 <body>
-
-<div id="splash" class="splash" aria-hidden="true">
-  <img src="img/six-dog-icon.jpg" alt="" class="splash-logo" />
-</div>
-
-
-<header class="topbar">
-  <div class="inner">
-    <button type="button" class="theme-toggle" data-theme-toggle>旧サイト風</button>
-    <a href="index.html" class="brand"><img src="img/six-dog-wordmark.png" alt="SiX-DOG ARCHIVE" class="brand-wordmark" /><img src="img/legacy/logo.jpg" alt="SiX-DOG" class="brand-legacy" width="152" height="48" /></a>
-    <div class="tagline">出演者BI — 公演データを頻度/時系列分析</div>
-    <div class="bi-disclaimer">📝 出典が乏しい公演の情報は推定・不確定な部分を含みます。ランキングや推移は参考程度に楽しんでください。</div>
-    <nav class="nav-tabs">
-      <a href="index.html" class="nav-logo" aria-label="トップへ戻る"><img src="img/six-dog-wordmark.png" alt="" /></a>
-      <a href="index.html" class="icon" title="カレンダー" aria-label="カレンダー"><span class="nav-icon">📅</span><span class="nav-legacy-label">schedule</span></a>
-      <a href="bi.html" class="icon active" aria-current="page" title="BIダッシュボード" aria-label="BIダッシュボード"><span class="nav-icon">📊</span><span class="nav-legacy-label">analysis</span></a>
-      <span class="nav-spacer"></span>
-      <a href="debug.html" class="gear-btn" title="デバッグ" aria-label="デバッグ">⚙️</a>
-    </nav>
-  </div>
-</header>
-
-<main class="bi-main">
-
-  <div class="filter-row" id="yearFilter">
-    <span class="filter-label">対象期間</span>
-    <!-- チップはJSで生成 -->
-  </div>
-
-  <div class="kpi-row" id="kpiRow"></div>
-
-  <section class="panel">
-    <div class="panel-head">
-      <div>
-        <div class="panel-title">出演者ランキング</div>
-        <div class="panel-sub" id="rankingSub"></div>
-      </div>
-      <div class="view-toggle" id="rankingToggle">
-        <button type="button" data-view="chart" class="active">グラフ</button>
-        <button type="button" data-view="table">テーブル</button>
-      </div>
-    </div>
-    <div id="rankingChart" class="bar-chart-h"></div>
-    <div id="rankingTable" class="table-wrap hidden"></div>
-    <div id="drilldown" class="drilldown hidden"></div>
-  </section>
-
-  <section class="panel">
-    <div class="panel-head">
-      <div>
-        <div class="panel-title" id="trendTitle">公演数の推移</div>
-        <div class="panel-sub" id="trendSub"></div>
-      </div>
-    </div>
-    <div class="bar-chart-v-wrap">
-      <div class="bar-chart-v" id="trendChart"></div>
-    </div>
-  </section>
-
-  <section class="panel">
-    <div class="panel-head">
-      <div>
-        <div class="panel-title">🔥🥹 反応ランキング</div>
-        <div class="panel-sub" id="reactionSub"></div>
-      </div>
-    </div>
-    <div id="reactionChart" class="bar-chart-h"></div>
-  </section>
-
-  <section class="panel">
-    <div class="panel-head">
-      <div>
-        <div class="panel-title">出典あり・出演者未登録</div>
-        <div class="panel-sub" id="needsReviewSub">関連リンクは登録済みだが出演者情報が空の公演。リンク先を確認して手動で入力できます</div>
-      </div>
-    </div>
-    <div id="needsReviewList" class="table-wrap"></div>
-  </section>
-
-</main>
-
-<div class="tooltip hidden" id="tooltip"></div>
-
-<footer>SiX-DOG Archive — 個人アーカイブプロジェクト</footer>
-
-<script src="splash.js"></script>
-<script src="header.js"></script>
-<script src="supabase-config.js"></script>
-<script src="editor.js"></script>
-<script src="event-links.js"></script>
-<script src="hype.js"></script>
-<script src="emoi.js"></script>
-<script src="bi.js"></script>
+<p>分析ページは移動しました。<a href="index.html#data">こちら(DATA)</a>からご覧ください。</p>
 </body>
 </html>
