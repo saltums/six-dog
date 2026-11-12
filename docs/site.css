@@ -88,6 +88,7 @@ main{padding-block:40px 80px;min-height:60vh}
 
 /* ---------- top ---------- */
 .lead{font-size:1rem;line-height:2;max-width:36em;margin:0 0 30px;color:var(--ink)}
+.lead + .lead{margin-top:-14px}
 .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 .stat b{display:block;font-family:var(--en);font-weight:400;font-size:clamp(2.3rem,9vw,3.4rem);line-height:1;letter-spacing:.02em}
 .stat span{display:block;font-size:.82rem;color:var(--ink-2);margin-top:6px}

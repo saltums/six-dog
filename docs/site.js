@@ -82,7 +82,8 @@
     }
     return `
       <section class="sec">
-        <p class="lead">2005年11月、名古屋・新栄のビルの地下にできたライブハウス SiX-DOG。2019年2月24日に閉店するまでの約13年間に、ここで開かれた公演と、そこに立ったバンドの記録を、残っていた公式サイトや当時の投稿から集めています。</p>
+        <p class="lead">2005年11月、<br>名古屋・新栄のビルの地下にできたライブハウス SiX-DOG。</p>
+        <p class="lead">2019年2月24日に閉店するまでの約13年間に、<br>ここで開かれた公演と、そこに立ったバンドの記録を、<br>残っていた公式サイトや当時の投稿から集めています。</p>
         <div class="stats">
           <div class="stat"><b class="num">${events.length.toLocaleString()}</b><span>公演</span></div>
           <div class="stat"><b class="num">${artists.length.toLocaleString()}</b><span>出演者(名義)</span></div>
