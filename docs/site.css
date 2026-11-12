@@ -533,3 +533,10 @@ body.compact .wordmark{width:min(170px,40%)}
 body.compact .slogan,body.compact .subline{display:none}
 body.compact .dogbar{margin-top:26px}
 @media (max-width:560px){body.compact .dogbar{margin-top:30px}}
+
+/* 3Dのお客さんのつぶやき */
+.v3d-voices{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.voice{position:absolute;transform:translate(-50%,-100%);margin-top:-10px;max-width:min(240px,46vw);background:rgba(250,252,252,.94);color:#121515;font-size:.8rem;line-height:1.5;padding:7px 12px 6px;border-radius:12px;box-shadow:0 4px 14px rgba(0,0,0,.35);opacity:0;transition:opacity .4s ease;text-align:left}
+.voice::after{content:"";position:absolute;left:50%;bottom:-6px;margin-left:-6px;border:6px solid transparent;border-bottom:0;border-top-color:rgba(250,252,252,.94)}
+.voice small{display:block;margin-top:2px;font-family:var(--en);font-size:.72rem;letter-spacing:.08em;color:#138585}
+.voice.on{opacity:1}

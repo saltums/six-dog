@@ -380,7 +380,7 @@
     });
     return `
       <div class="wip">${ic("cone")}<div><h2>3Dの会場は仮組みです</h2><p>残っていた会場見取り図(寸法入り)と写真をもとに組んだ仮の3Dです。機材や壁の色などは推測で、思い出や写真が集まるほど本物に近づけていきます。</p></div></div>
-      <div class="enter">${ic("cube")}<p><b>ENTER SiX-DOG</b>スマホは横向きにすると、左手で歩いて右手で見回せます。パソコンは W A S D で歩いて、ドラッグで見回します。</p><button type="button" id="enter3d">${ic("cube", "s")}中に入る</button></div>
+      <div class="enter">${ic("cube")}<p><b>ENTER SiX-DOG</b>スマホは横向きにすると、左手で歩いて右手で見回せます。パソコンは W A S D で歩いて、ドラッグで見回します。<br>お客さんのつぶやきは、当時のXに投稿されたSiX-DOGへの声を、名前を出さずに短く言い換えたものです。</p><button type="button" id="enter3d">${ic("cube", "s")}中に入る</button></div>
       <section class="sec">
         ${sh("会場の略図", "FLOOR MAP")}
         <div class="planbox"><svg class="plan" viewBox="-40 -110 650 470" role="img" aria-label="SiX-DOGの見取り図。左にステージとホール、右に楽屋・受付・ドリンクカウンター・階段">
@@ -1183,7 +1183,7 @@
           else { sh.rotation.z = sd * 0.1; sh.rotation.x = 0.04 + rnd() * 0.16; fore.rotation.x = 0.12 + rnd() * 0.4; }
           arms.push({ sh, raised: raise === sd, base: sh.rotation.x });
         });
-        people.push({ body, arms, ph: rnd() * 6, amp: 0.012 + rnd() * 0.025, nod: rnd() < 0.6 });
+        people.push({ body, head, arms, ph: rnd() * 6, amp: 0.012 + rnd() * 0.025, nod: rnd() < 0.6 });
       };
       [[1.0, 4.45], [1.8, 4.4], [2.6, 4.5], [4.3, 4.45], [5.0, 4.4], [5.8, 4.5], [0.9, 5.25], [1.7, 5.45], [2.5, 5.15], [3.3, 5.5],
        [4.2, 5.25], [5.1, 5.55], [5.9, 5.35], [1.2, 6.3], [2.2, 6.5], [3.6, 6.3], [4.6, 6.6], [5.6, 6.4], [1.6, 7.6], [0.8, 8.2], [5.6, 7.5]].forEach(([x, z], i) => person(x + (rnd() - 0.5) * 0.15, z + (rnd() - 0.5) * 0.15, i));
@@ -1246,6 +1246,7 @@
         <div class="v3d-hint">${coarse() ? "左側をなぞって歩く・右側をドラッグして見回す" : "W A S D / 矢印キーで歩く・ドラッグで見回す・「行き先」でワープ"}</div>
         <div class="v3d-rot" hidden><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="7" width="19" height="10" rx="2"/><path d="M7 3.5a8 8 0 0 1 10 0M17 20.5a8 8 0 0 1-10 0"/></svg>スマホを横向きにすると、中を歩けます</div></div>
         <div class="v3d-load"><div>SiX-DOGへ向かっています…</div></div>
+        <div class="v3d-voices" aria-hidden="true"></div>
         <div class="v3d-fade"></div>`;
       document.body.appendChild(root);
       document.documentElement.style.overflow = "hidden";
@@ -1253,6 +1254,8 @@
       S = { root, alive: true };
       // 3Dの読み込みは先に始めておく。全画面・横向き固定は、返事が来ない端末があるので待ちすぎない
       const threeReady = loadThree();
+      // お客さんのつぶやき(当時のXの投稿を、名前を出さずに短く言い換えたもの)
+      const voicesP = fetch("data/voices.json").then(r => r.json()).catch(() => []);
       threeReady.catch(() => {});
       const settle = (fn, ms) => { let p; try { p = fn(); } catch (e) { p = null; } return Promise.race([Promise.resolve(p).catch(() => {}), new Promise(r => setTimeout(r, ms))]); };
       if (coarse()) {
@@ -1306,6 +1309,40 @@
         if (fx) fx.setSize(w, h);
         st.paused = coarse() && h > w;
         $(".v3d-rot").hidden = !st.paused;
+      }
+      // つぶやき:近くにいて画面に映っているお客さんが、ときどき吹き出しでひとこと言う
+      const voices = await voicesP, vLayer = $(".v3d-voices"), talking = [], recent = [];
+      const vTmp = new T.Vector3();
+      let nextVoice = performance.now() + 1500;
+      function headOnScreen(p) {
+        p.head.getWorldPosition(vTmp); vTmp.y += 0.22;
+        const dist = Math.hypot(vTmp.x - st.px, vTmp.z - st.pz);
+        vTmp.project(camera);
+        const on = vTmp.z < 1 && Math.abs(vTmp.x) < 0.85 && vTmp.y < 0.9 && vTmp.y > -0.6;
+        return { on, dist, x: (vTmp.x + 1) / 2 * root.clientWidth, y: (1 - vTmp.y) / 2 * root.clientHeight };
+      }
+      function updateVoices(now) {
+        if (!voices.length) return;
+        camera.updateMatrixWorld();
+        if (now > nextVoice && talking.length < 3 && !st.paused) {
+          nextVoice = now + 1800 + Math.random() * 2200;
+          const cand = world.people.filter(p => !talking.some(t => t.p === p)).map(p => ({ p, s: headOnScreen(p) })).filter(c => c.s.on && c.s.dist < 6.5);
+          if (cand.length) {
+            const c = cand[(Math.random() * cand.length) | 0];
+            let vi; for (let k = 0; k < 8; k++) { vi = (Math.random() * voices.length) | 0; if (!recent.includes(vi)) break; }
+            recent.push(vi); if (recent.length > Math.min(20, voices.length - 1)) recent.shift();
+            const v = voices[vi], el = document.createElement("div");
+            el.className = "voice"; el.innerHTML = `${esc(v.t)}<small>${esc(v.d.replace("-", "."))}</small>`;
+            vLayer.appendChild(el); requestAnimationFrame(() => el.classList.add("on"));
+            talking.push({ p: c.p, el, until: now + 4200 });
+          }
+        }
+        for (let i = talking.length - 1; i >= 0; i--) {
+          const t = talking[i], sc = headOnScreen(t.p);
+          t.el.style.left = sc.x + "px"; t.el.style.top = sc.y + "px";
+          t.el.style.visibility = sc.on ? "visible" : "hidden";
+          if (now > t.until) { t.el.classList.remove("on"); const el = t.el; setTimeout(() => el.remove(), 400); talking.splice(i, 1); }
+        }
       }
       const hint = $(".v3d-hint");
       const hideHint = () => hint.classList.add("off");
@@ -1375,6 +1412,7 @@
         });
         world.haze.forEach(h => { h.sp.position.x = h.x + Math.sin(s * 0.11 + h.ph) * 0.5; h.sp.position.y = h.y + Math.sin(s * 0.07 + h.ph) * 0.15; h.sp.material.opacity = 0.04 + 0.02 * Math.sin(s * 0.2 + h.ph); });
         if (fx) fx.render(); else renderer.render(world.scene, camera);
+        updateVoices(t);
         S.raf = requestAnimationFrame(frame);
       }
       function exit() {
