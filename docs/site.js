@@ -373,11 +373,9 @@
   function vVenue() {
     const s = 36, R = (x, y, w, h, cls) => `<rect class="${cls}" x="${x * s}" y="${y * s}" width="${w * s}" height="${h * s}"/>`;
     const T = (x, y, t, cls) => `<text class="${cls || "lbl"}" x="${x * s}" y="${y * s}">${t}</text>`;
-    const stops = STOPS.map(p => [p.x, p.z]);
     setTimeout(() => {
       const b = document.getElementById("enter3d");
       b && b.addEventListener("click", () => V3D.enter(0));
-      view.querySelectorAll("[data-stop]").forEach(el => el.addEventListener("click", () => V3D.enter(+el.dataset.stop)));
     });
     return `
       <div class="wip">${ic("cone")}<div><h2>3Dの会場は仮組みです</h2><p>残っていた会場見取り図(寸法入り)と写真をもとに組んだ仮の3Dです。機材や壁の色などは推測で、思い出や写真が集まるほど本物に近づけていきます。</p></div></div>
@@ -399,15 +397,8 @@
           <line class="dl" x1="-${0.5 * s}" y1="0" x2="-${0.5 * s}" y2="${3.7 * s}"/><line class="dl" x1="-${0.5 * s}" y1="${3.7 * s}" x2="-${0.5 * s}" y2="${9.1 * s}"/>
           <text class="dim" transform="translate(${-0.75 * s} ${1.85 * s}) rotate(-90)">3.7m</text>
           <text class="dim" transform="translate(${-0.75 * s} ${6.4 * s}) rotate(-90)">5.4m</text>
-          <polyline class="route" points="${stops.map(([x, y]) => `${x * s},${y * s}`).join(" ")}"/>
-          ${stops.map(([x, y], i) => `<g class="stop"><circle cx="${x * s}" cy="${y * s}" r="10"/><text x="${x * s}" y="${y * s}">${i + 1}</text></g>`).join("")}
         </svg></div>
         <p class="note">寸法は当時の公式サイトの見取り図の記載どおり。部屋の大きさや位置は見取り図からの読み取りで、おおよそです。</p>
-      </section>
-      <section class="sec">
-        ${sh("歩く順路", "ROUTE")}
-        <ol class="stops">${STOPS.map((p, i) => `<li><span><a href="#venue" data-stop="${i}" style="text-decoration:underline;text-underline-offset:3px">${p.name}</a><small>${p.note}</small></span></li>`).join("")}</ol>
-        <p class="note" style="margin-top:8px">地点名を押すと、その場所から3Dに入ります。</p>
       </section>
       <section class="sec">
         ${sh("もとにした資料", "REFERENCE")}
@@ -417,12 +408,6 @@
           <figure><img src="img/venue/entrance.jpg" alt="赤い床の入口と、ポスターで埋まった壁" loading="lazy"><figcaption>入口の階段</figcaption></figure>
           <figure><img src="img/venue/greenroom.jpg" alt="鏡とカウンター、丸椅子のある楽屋" loading="lazy"><figcaption>楽屋(公式サイト、2016年)</figcaption></figure>
         </div>
-      </section>
-      <section class="sec">
-        ${sh("覚えていることを教えてください", "MEMORIES")}
-        <ul class="ask">
-          <li>柵の位置と高さ</li><li>防音扉の色と重さ</li><li>ドリンクカウンターの様子</li><li>楽屋の壁(ステッカーや落書き)</li><li>当時の写真(客席側・楽屋・入口など)</li>
-        </ul>
       </section>`;
   }
 
