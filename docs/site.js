@@ -3,7 +3,7 @@
   const view = document.getElementById("view");
   const DOW = ["日", "月", "火", "水", "木", "金", "土"];
   const DOW_EN = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
-  let rawList = [], events = [], byDate = new Map(), artists = [], artistByName = new Map(), months = [];
+  let baseList = [], rawList = [], events = [], byDate = new Map(), artists = [], artistByName = new Map(), months = [];
   // 投稿・反応まわりは既存の部品(supabase-config.js と各モジュール)に任せる
   const Vd = window.SixDogVideos, Lk = window.SixDogLinks, Tw = window.SixDogTweets, Hy = window.SixDogHype, Em = window.SixDogEmoi;
   const Ed = window.SixDogEditor, Sh = window.SixDogShare, Rf = window.SixDogRecentFeed;
@@ -233,6 +233,7 @@
         <span>ログインなしで誰でも追加・修正できます。間違えて登録したものは、追加の欄を開くと解除できます。</span>
       </div>
       <div id="editSlot"></div>
+      ${window.SixDogAdmin && SixDogAdmin.isIn() ? `<p class="adm-jump"><a href="#admin-${d}">この日の投稿を管理する ›</a></p>` : ""}
       <nav class="pn" aria-label="前後の公演">
         ${pv ? `<a href="#event-${pv.d}"><small>‹ PREV ${fmtD(pv.d)}</small><span>${esc(title(pv))}</span></a>` : "<span></span>"}
         ${nx ? `<a class="nx" href="#event-${nx.d}"><small>NEXT ${fmtD(nx.d)} ›</small><span>${esc(title(nx))}</span></a>` : "<span></span>"}
@@ -582,6 +583,125 @@
         <div id="changelog"><p class="note">読み込んでいます…</p></div>
       </section>`;
   }
+  // ---------- 管理(投稿の削除) ----------
+  const Ad = window.SixDogAdmin;
+  let admData = null;
+  async function refreshData() {
+    const overrides = Ed ? await Ed.fetchOverridesPublic().catch(() => ({})) : {};
+    rawList = Ed ? Ed.applyOverrides(baseList, overrides) : baseList;
+    await Promise.all([Vd && Vd.loadVideoIndex(), Lk && Lk.loadLinkIndex(), Tw && Tw.loadTweetIndex(), Hy && Hy.loadHypeIndex(), Em && Em.loadEmoiIndex()].map(x => Promise.resolve(x).catch(() => null)));
+    build();
+  }
+  function vAdmin(filter) {
+    after(() => bindAdmin(filter));
+    return `
+      <section class="sec">
+        ${sh("投稿の管理", "ADMIN")}
+        <p class="note" style="margin:-6px 0 16px;font-size:.88rem">みんなが登録した動画・関連URL・告知ポスト・公演情報の修正や追加・反応を、管理者だけが削除できます。パスワードはサーバー側で確かめます。</p>
+        <div id="adm"><p class="note">読み込んでいます…</p></div>
+      </section>`;
+  }
+  async function bindAdmin(filter) {
+    const box = document.getElementById("adm");
+    if (!Ad) { box.innerHTML = `<p class="empty">管理機能を読み込めませんでした。</p>`; return; }
+    if (!Ad.isIn()) {
+      let set = true;
+      try { set = await Ad.status(); } catch (e) { box.innerHTML = `<p class="empty">接続できませんでした。時間をおいてもう一度お試しください。</p>`; return; }
+      if (!box.isConnected) return;
+      box.innerHTML = set ? `
+        <form class="adm-form" id="admLogin">
+          <label>管理パスワード<input type="password" id="admPw" autocomplete="current-password" required></label>
+          <button type="submit">ログイン</button><span class="adm-msg" id="admMsg"></span>
+        </form>` : `
+        <form class="adm-form" id="admSetup">
+          <p class="note">最初に管理パスワードを決めてください(8文字以上)。決められるのは1回だけで、あとから変えるには今のパスワードが必要です。</p>
+          <label>新しいパスワード<input type="password" id="admNew" autocomplete="new-password" minlength="8" required></label>
+          <label>もう一度<input type="password" id="admNew2" autocomplete="new-password" minlength="8" required></label>
+          <button type="submit">設定する</button><span class="adm-msg" id="admMsg"></span>
+        </form>`;
+      const msg = document.getElementById("admMsg");
+      const fl = document.getElementById("admLogin"), fs = document.getElementById("admSetup");
+      fl && fl.addEventListener("submit", async e => {
+        e.preventDefault(); const v = document.getElementById("admPw").value; msg.textContent = "確認中…";
+        try { const r = await Ad.login(v); if (r === "ok") { Ad.setPw(v); bindAdmin(filter); } else msg.textContent = Ad.MSG[r] || r; }
+        catch (err) { msg.textContent = "接続できませんでした。"; }
+      });
+      fs && fs.addEventListener("submit", async e => {
+        e.preventDefault(); const a = document.getElementById("admNew").value, b = document.getElementById("admNew2").value;
+        if (a !== b) { msg.textContent = "2つのパスワードが一致しません。"; return; }
+        msg.textContent = "設定中…";
+        try { const r = await Ad.setup(a); if (r === "ok") { Ad.setPw(a); bindAdmin(filter); } else msg.textContent = Ad.MSG[r] || r; }
+        catch (err) { msg.textContent = "接続できませんでした。"; }
+      });
+      return;
+    }
+    box.innerHTML = `<p class="note">読み込んでいます…</p>`;
+    admData = await Ad.fetchAll();
+    if (!box.isConnected) return;
+    box.innerHTML = `
+      <div class="adm-bar">
+        <label class="search filter">${ic("search")}<input id="admQ" type="search" placeholder="日付(2015-09 など)や言葉でしぼりこむ" value="${esc(filter)}" autocomplete="off"></label>
+        <button type="button" class="adm-out" id="admOut">ログアウト</button>
+      </div>
+      <div id="admList"></div>
+      <details class="adm-pw"><summary>管理パスワードを変える</summary>
+        <form class="adm-form" id="admChange">
+          <label>新しいパスワード<input type="password" id="admNew" autocomplete="new-password" minlength="8" required></label>
+          <button type="submit">変える</button><span class="adm-msg" id="admMsg2"></span>
+        </form>
+      </details>`;
+    const q = document.getElementById("admQ");
+    q.addEventListener("input", () => renderAdmin(q.value.trim()));
+    document.getElementById("admOut").addEventListener("click", () => { Ad.setPw(""); render(); });
+    document.getElementById("admChange").addEventListener("submit", async e => {
+      e.preventDefault(); const m2 = document.getElementById("admMsg2"), n = document.getElementById("admNew").value;
+      try { const r = await Ad.change(Ad.pw(), n); if (r === "ok") { Ad.setPw(n); m2.textContent = "変えました。"; } else m2.textContent = Ad.MSG[r] || r; }
+      catch (err) { m2.textContent = "接続できませんでした。"; }
+    });
+    document.getElementById("admList").addEventListener("click", onAdminDelete);
+    renderAdmin(filter);
+  }
+  const when = iso => { const t = new Date(iso); return isNaN(t) ? "" : `${t.getFullYear()}.${pad(t.getMonth() + 1)}.${pad(t.getDate())} ${pad(t.getHours())}:${pad(t.getMinutes())}`; };
+  function renderAdmin(f) {
+    const out = document.getElementById("admList");
+    if (!out || !admData) return;
+    const hit = (d, text) => !f || d.startsWith(f) || (text || "").toLowerCase().includes(f.toLowerCase());
+    const base = new Set(baseList.map(e => e.event_date));
+    const row = (kind, key, d, main, sub, at) => `
+      <div class="adm-row"><a href="#event-${esc(d)}" class="adm-d en num">${esc(d.replace(/-/g, "."))}</a>
+        <div class="adm-main"><b>${main}</b>${sub ? `<small>${sub}</small>` : ""}<small>${esc(when(at))}</small></div>
+        <button type="button" class="adm-del" data-kind="${kind}" data-key="${esc(key)}">削除</button></div>`;
+    const group = (title, en, list) => `<section class="adm-sec"><h3>${title} <span class="en">${en}</span> <small>${list.length}件</small></h3>${list.length ? list.join("") : `<p class="note">ありません。</p>`}</section>`;
+    const D = admData;
+    const vids = D.videos.filter(v => hit(v.event_date, [v.performer_name, v.video_title, v.video_url, v.submitted_by].join(" "))).map(v => row("video", v.id, v.event_date, esc(v.video_title || v.video_url), `${esc(v.performer_name || "")} ・ <a href="${esc(v.video_url)}" target="_blank" rel="noopener noreferrer nofollow">${esc(v.video_url)}</a>${v.submitted_by ? ` ・ 投稿者:${esc(v.submitted_by)}` : ""}`, v.submitted_at));
+    const lks = D.links.filter(l => hit(l.event_date, [l.title, l.url].join(" "))).map(l => row("link", l.id, l.event_date, esc(l.title || l.url), `<a href="${esc(l.url)}" target="_blank" rel="noopener noreferrer nofollow">${esc(l.url)}</a>`, l.submitted_at));
+    const tws = D.tweets.filter(t => hit(t.event_date, t.tweet_id)).map(t => row("tweet", t.id, t.event_date, `Xの投稿 ${esc(t.tweet_id)}`, `<a href="https://x.com/i/status/${esc(t.tweet_id)}" target="_blank" rel="noopener noreferrer">開く</a>`, t.submitted_at));
+    const ovs = D.overrides.filter(o => hit(o.event_date, [o.title, (o.performers || []).join(" ")].join(" "))).map(o => row("override", o.event_date, o.event_date, esc(o.title || "(タイトルなし)"), `${base.has(o.event_date) ? "元の記録への修正(削除すると元の記録に戻ります)" : "みんなが追加した公演(削除するとこの日の公演が消えます)"}${(o.performers || []).length ? ` ・ ${esc(o.performers.join(" / "))}` : ""}`, o.updated_at));
+    const rx = [...D.hype.map(h => ["hype", h]), ...D.emoi.map(e => ["emoi", e])].filter(([, r]) => hit(r.event_date, "")).sort((a, b) => b[1].created_at.localeCompare(a[1].created_at))
+      .map(([k, r]) => row(k, r.id, r.event_date, k === "hype" ? "アツかった" : "エモい", "", r.created_at));
+    out.innerHTML = group("動画", "VIDEO", vids) + group("関連ページ", "SOURCE", lks) + group("告知ポスト", "POST", tws) + group("公演情報の修正・追加", "EDIT", ovs) + group("反応", "REACTION", rx);
+  }
+  async function onAdminDelete(e) {
+    const b = e.target.closest(".adm-del");
+    if (!b) return;
+    const kind = b.dataset.kind, key = b.dataset.key, label = b.closest(".adm-row").querySelector(".adm-main b").textContent;
+    if (!confirm(`削除しますか?元に戻せません。\n\n${label}`)) return;
+    b.disabled = true; b.textContent = "削除中…";
+    try {
+      const r = await Ad.remove(kind, key);
+      if (String(r).startsWith("ok")) {
+        const k = { video: "videos", link: "links", tweet: "tweets", hype: "hype", emoi: "emoi", override: "overrides" }[kind];
+        admData[k] = admData[k].filter(x => String(kind === "override" ? x.event_date : x.id) !== key);
+        renderAdmin((document.getElementById("admQ") || {}).value || "");
+        toast("削除しました。");
+        refreshData();
+      } else {
+        b.disabled = false; b.textContent = "削除";
+        if (r === "wrong" || r === "not_set") { Ad.setPw(""); toast(Ad.MSG[r]); render(); } else toast(Ad.MSG[r] || "削除できませんでした。");
+      }
+    } catch (err) { b.disabled = false; b.textContent = "削除"; toast("接続できませんでした。"); }
+  }
+
   // 更新履歴(data/changelog.json)。新しい順。最初の数日分だけ開いておく
   let logP = null;
   function fillChangelog() {
@@ -614,6 +734,7 @@
     else if (h === "data") { html = vData(); tab = "data"; }
     else if ((m = h.match(/^encounter-(.+)$/))) { html = vData(m[1]); tab = "data"; }
     else if (h === "howto") { html = vHowto(); tab = "howto"; }
+    else if ((m = h.match(/^admin(?:-(.+))?$/))) { html = vAdmin(m[1] || ""); tab = "admin"; name = "管理"; }
     else html = vTop();
     document.body.classList.toggle("compact", tab !== "top");
     view.classList.remove("fade", "adding"); void view.offsetWidth; view.classList.add("fade");
@@ -1500,6 +1621,7 @@
       return;
     }
     const overrides = Ed ? await Ed.fetchOverridesPublic().catch(() => ({})) : {};
+    baseList = base;
     rawList = Ed ? Ed.applyOverrides(base, overrides) : base;
     await Promise.all([
       Vd && Vd.loadVideoIndex(), Lk && Lk.loadLinkIndex(), Tw && Tw.loadTweetIndex(),

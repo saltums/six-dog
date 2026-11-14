@@ -29,6 +29,7 @@ data/
   six-dog-data.xlsx        目視レビュー用スプレッドシート(下記参照)
 supabase/
   schema.sql              Supabaseのテーブル定義と権限(Row Level Security)
+  admin.sql               管理者だけが投稿を削除できる関数(パスワードはbcryptのハッシュだけを保存)
 docs/                     GitHub Pages 公開ルート(素のHTML/CSS/JS、ビルド不要)
   index.html / site.css / site.js    公開ページ(TOP・SCHEDULE・ARTISTS・VENUE・DATA・HOW TO を1ページで切り替え)
   editor.js / tweets.js / event-links.js / videos.js / hype.js / emoi.js / share.js / recent-feed.js

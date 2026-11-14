@@ -547,3 +547,34 @@ body.compact .dogbar{margin-top:26px}
 .joy-home i{width:46px;height:46px;border-radius:50%;background:rgba(56,200,200,.75)}
 .joy-home span{position:absolute;top:-22px;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:.7rem;color:#bcc6c6;text-shadow:0 1px 4px #000}
 .joy-home.off{opacity:0}
+
+/* 管理(投稿の削除) */
+.adm-form{display:flex;flex-wrap:wrap;gap:10px 12px;align-items:flex-end;padding:16px;border-radius:12px;background:var(--paper-2)}
+.adm-form .note{flex-basis:100%;margin:0}
+.adm-form label{display:grid;gap:4px;font-size:.8rem;color:var(--ink-2);flex:1 1 200px}
+.adm-form input{font:inherit;font-size:.95rem;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink);padding:9px 11px}
+.adm-form button,.adm-out{border:0;border-radius:999px;background:var(--ink);color:var(--paper);padding:9px 18px;cursor:pointer;font-size:.86rem}
+.adm-msg{flex-basis:100%;font-size:.84rem;color:var(--ink-2)}
+.adm-msg:empty{display:none}
+.adm-bar{display:flex;gap:10px;align-items:center;margin:0 0 18px}
+.adm-bar .search{flex:1;margin:0}
+.adm-out{background:none;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line);white-space:nowrap}
+.adm-sec{margin:0 0 30px}
+.adm-sec h3{font-size:1rem;margin:0 0 8px;display:flex;gap:8px;align-items:baseline}
+.adm-sec h3 .en{font-size:.85rem;color:var(--ink-2)}
+.adm-sec h3 small{font-size:.78rem;color:var(--ink-2);font-weight:400}
+.adm-row{display:grid;grid-template-columns:6.4em minmax(0,1fr) auto;gap:12px;align-items:center;padding:9px 10px;border-radius:8px;border-bottom:1px solid var(--line)}
+.adm-row:hover{background:var(--paper-2)}
+.adm-d{font-size:.95rem;color:var(--ink-2);text-decoration:underline;text-underline-offset:3px}
+.adm-main{min-width:0;display:grid;gap:1px}
+.adm-main b{font-weight:500;font-size:.9rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.adm-main small{font-size:.74rem;color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.adm-main small a{text-decoration:underline;text-underline-offset:2px}
+.adm-del{border:0;border-radius:999px;background:#f3d6d6;color:#7a1717;padding:6px 14px;cursor:pointer;font-size:.8rem}
+.adm-del:hover{background:#e9b9b9}
+.adm-del[disabled]{opacity:.5;cursor:default}
+.adm-pw{margin-top:10px;font-size:.88rem}
+.adm-pw summary{cursor:pointer;color:var(--ink-2);margin-bottom:10px}
+.adm-jump{margin:-14px 0 24px;font-size:.84rem}
+.adm-jump a{color:var(--dog-deep);text-decoration:underline;text-underline-offset:3px}
+@media (max-width:560px){.adm-row{grid-template-columns:minmax(0,1fr) auto}.adm-d{grid-column:1 / -1}}
