@@ -1,8 +1,8 @@
 (function () {
   "use strict";
 
-  const PASSWORD = "1640925a";
-  const SESSION_KEY = "sixdog_debug_unlocked";
+  // パスワードはサーバー側(supabase/admin.sql)で確かめる。投稿の管理と同じ管理パスワード
+  const ADMIN = window.SixDogAdmin;
 
   const SUPABASE = window.SixDogSupabase;
   function supabaseHeaders() {
@@ -307,13 +307,18 @@
     loadData();
   }
 
-  gateForm.addEventListener("submit", e => {
+  gateForm.addEventListener("submit", async e => {
     e.preventDefault();
-    if (gatePassword.value === PASSWORD) {
-      sessionStorage.setItem(SESSION_KEY, "1");
+    const v = gatePassword.value;
+    gateStatus.textContent = "確認中...";
+    let r;
+    try { r = await ADMIN.login(v); } catch (err) { gateStatus.textContent = "接続できませんでした。"; return; }
+    if (r === "ok") {
+      ADMIN.setPw(v);
+      gateStatus.textContent = "";
       unlock();
     } else {
-      gateStatus.textContent = "パスワードが違います。";
+      gateStatus.textContent = r === "not_set" ? "管理パスワードがまだありません。トップページ下の「投稿の管理」で設定してください。" : (ADMIN.MSG[r] || "パスワードが違います。");
       gatePassword.value = "";
       gatePassword.focus();
     }
@@ -322,7 +327,7 @@
   debugFilter.addEventListener("input", () => renderTable(debugFilter.value));
   changelogFilter.addEventListener("input", () => renderChangelog(changelogFilter.value));
 
-  if (sessionStorage.getItem(SESSION_KEY) === "1") {
+  if (ADMIN && ADMIN.isIn()) {
     unlock();
   }
 })();

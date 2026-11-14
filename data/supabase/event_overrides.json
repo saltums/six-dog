@@ -2889,8 +2889,8 @@
                            "Hello hillbilly",
                            "COLLIE"
                        ],
-        "notes":  "テスト編集(Claude動作確認・削除して問題ありません)",
-        "updated_at":  "2026-07-25T07:56:26.395+00:00"
+        "notes":  null,
+        "updated_at":  "2026-11-14T00:17:35.453+00:00"
     },
     {
         "event_date":  "2015-05-05",
@@ -3492,17 +3492,22 @@
     },
     {
         "event_date":  "2016-03-16",
-        "title":  null,
-        "open_time":  null,
-        "start_time":  null,
-        "price_adv":  null,
-        "price_door":  null,
+        "title":  "《Music A Hero Acostic》",
+        "open_time":  "18:00",
+        "start_time":  "18:30",
+        "price_adv":  1500,
+        "price_door":  2000,
         "price_note":  null,
         "performers":  [
-                           "萌花"
+                           "萌花",
+                           "いずみ",
+                           "水咲加奈",
+                           "渡辺えりか(東京)",
+                           "アオミドリ凸凹",
+                           "里緒"
                        ],
-        "notes":  "YouTube検索経由で発見した公演。ライブ映像がYouTubeに公開されている。全出演者は未確認。",
-        "updated_at":  "2026-07-26T09:55:00+00:00"
+        "notes":  "YouTube検索経由で発見した公演。ライブ映像がYouTubeに公開されている。全出演者は未確認。\n\nXの告知で確認\nhttps://x.com/rio_oir0/status/703230394678665216?a=26fb04_aHiLtd2ocPQ4\u0026s=19",
+        "updated_at":  "2026-11-12T13:42:37.047+00:00"
     },
     {
         "event_date":  "2016-03-18",

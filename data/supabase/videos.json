@@ -668,5 +668,55 @@
         "submitted_by":  null,
         "submitted_at":  "2026-08-08T00:39:43.226587+00:00",
         "notes":  "YouTube「永遠の二番手ロックフェス」チャンネルより"
+    },
+    {
+        "id":  75,
+        "event_date":  "2014-12-18",
+        "performer_name":  "早織",
+        "video_url":  "https://youtu.be/7PzoYsNMd9g?si=kCypEXmwRH5y7BCH",
+        "video_title":  "早織 -saori- /ゆめ　2014/12/18Six-Dog",
+        "submitted_by":  null,
+        "submitted_at":  "2026-11-12T14:50:30.418799+00:00",
+        "notes":  null
+    },
+    {
+        "id":  76,
+        "event_date":  "2014-05-16",
+        "performer_name":  "早織",
+        "video_url":  "https://youtu.be/KOS077veXuo?si=U7MSV305iSeXAIL5",
+        "video_title":  "早織 -saori- /ゆめ　2014/5/16Six-Dog",
+        "submitted_by":  null,
+        "submitted_at":  "2026-11-12T14:54:14.286625+00:00",
+        "notes":  null
+    },
+    {
+        "id":  77,
+        "event_date":  "2014-06-13",
+        "performer_name":  "早織",
+        "video_url":  "https://youtu.be/i_DbI7xIM84?si=IB_4eJm-D8gVHZeR",
+        "video_title":  "早織-saori-幻　2014/6/13Six-Dog",
+        "submitted_by":  null,
+        "submitted_at":  "2026-11-12T15:01:28.599157+00:00",
+        "notes":  null
+    },
+    {
+        "id":  78,
+        "event_date":  "2014-12-18",
+        "performer_name":  "早織",
+        "video_url":  "https://youtu.be/U47I1hzg8uw?si=Bu19uQqmIzWq6TLy",
+        "video_title":  "早織 -saori- /現　2014/12/18Six-Dog",
+        "submitted_by":  null,
+        "submitted_at":  "2026-11-12T15:12:32.100816+00:00",
+        "notes":  null
+    },
+    {
+        "id":  79,
+        "event_date":  "2014-02-13",
+        "performer_name":  "まあまあいい藍",
+        "video_url":  "https://youtu.be/kObsoy7Dqok?si=iBEs52UiwIFZXrQc",
+        "video_title":  "いい藍　ルージュの伝言/やさしさに包まれたなら　2014/12/17デイトライブトリム",
+        "submitted_by":  null,
+        "submitted_at":  "2026-11-13T01:25:21.522796+00:00",
+        "notes":  null
     }
 ]
