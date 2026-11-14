@@ -11,6 +11,7 @@
   const linksOn = d => (Lk ? Lk.getLinks(d) : []);
   const hypeOn = d => (Hy ? Hy.getCount(d) : 0), emoiOn = d => (Em ? Em.getCount(d) : 0);
   const post = [];
+  const isAdmin = () => !!(window.SixDogAdmin && window.SixDogAdmin.isIn());
   const after = fn => post.push(fn);
 
   const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -219,7 +220,7 @@
       </section>
       <section class="sec slot${vids.length ? "" : " is-empty"}">
         ${sh("動画", "VIDEO")}
-        <ul class="links">${vids.map(v => `<li><a href="${esc(v.video_url)}" target="_blank" rel="noopener noreferrer nofollow">${ic("play")}<span>${esc(v.video_title || v.video_url)}</span><small>${esc(v.performer_name || "")}</small></a></li>`).join("")}</ul>
+        <ul class="links">${vids.map(v => `<li><a href="${esc(v.video_url)}" target="_blank" rel="noopener noreferrer nofollow">${ic("play")}<span>${esc(v.video_title || v.video_url)}</span><small>${esc(v.performer_name || "")}</small></a>${isAdmin() ? `<button type="button" class="adm-del" data-kind="video" data-key="${v.id}">削除</button>` : ""}</li>`).join("")}</ul>
         ${ev.p.length ? `<div class="vadd">
           <label class="vpick"><span>動画を足す・直す出演者</span><select id="vpick"><option value="">選んでください</option>${ev.p.map(n => `<option>${esc(n)}</option>`).join("")}</select></label>
           <div id="vpanel"></div>
@@ -255,6 +256,19 @@
         b.disabled = false;
         toast("送信できませんでした。通信状況を確かめて、もう一度押してください。");
       }
+    }));
+    // 管理者としてログイン中は、動画の行の「削除」で紐づけをその場で消せる
+    view.querySelectorAll(".links .adm-del").forEach(b => b.addEventListener("click", async () => {
+      const li = b.closest("li"), label = li.querySelector("span").textContent;
+      if (!confirm(`この動画の紐づけを削除しますか?元に戻せません。
+
+${label}`)) return;
+      b.disabled = true; b.textContent = "削除中…";
+      try {
+        const r = await window.SixDogAdmin.remove("video", b.dataset.key);
+        if (String(r).startsWith("ok")) { await refreshData(); toast("削除しました。"); render(); }
+        else { b.disabled = false; b.textContent = "削除"; if (r === "wrong" || r === "not_set") window.SixDogAdmin.setPw(""); toast(window.SixDogAdmin.MSG[r] || "削除できませんでした。"); }
+      } catch (e) { b.disabled = false; b.textContent = "削除"; toast("接続できませんでした。"); }
     }));
     const share = view.querySelector(".share-slot");
     if (Sh && share) share.appendChild(Sh.buildShareButtons(ev.raw));
@@ -738,6 +752,7 @@
     else html = vTop();
     document.body.classList.toggle("compact", tab !== "top");
     view.classList.remove("fade", "adding"); void view.offsetWidth; view.classList.add("fade");
+    view.classList.toggle("admin", isAdmin());
     view.innerHTML = html;
     document.title = [name || TAB_TITLE[tab], "SiX-DOG ARCHIVE"].filter(Boolean).join(" — ");
     document.querySelectorAll("#tabs a").forEach(a => a.removeAttribute("aria-current"));

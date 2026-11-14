@@ -578,3 +578,9 @@ body.compact .dogbar{margin-top:26px}
 .adm-jump{margin:-14px 0 24px;font-size:.84rem}
 .adm-jump a{color:var(--dog-deep);text-decoration:underline;text-underline-offset:3px}
 @media (max-width:560px){.adm-row{grid-template-columns:minmax(0,1fr) auto}.adm-d{grid-column:1 / -1}}
+
+/* 管理者ログイン中:公演ページの動画・関連ページ・告知ポストに削除ボタンを出す */
+.links li{display:flex;align-items:center;gap:8px}
+.links li > a{flex:1;min-width:0}
+#view.admin .tweet-unlink{display:inline-block}
+#view.admin .slot:has(.tweet-panel:not(.is-empty)){display:block}
