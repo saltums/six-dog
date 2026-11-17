@@ -474,7 +474,7 @@ picto(11.35, 7.1, { h: 1.62, ry: Math.PI + 0.25, raise: 0 }); picto(8.95, 6.9, {
   picto(11.55, 5.25, { h: 1.66, ry: Math.PI / 2, lean: 0, raise: 0, mat: PICTO[1] });
   // 明かり: 裸電球(ロビー、受付の中、階段)と、地上から差す光
   const bulb = (x, y, z, c, i, d) => { const l = new THREE.PointLight(c, i, d, 2); l.position.set(x, y, z); add(l); cyl(0.022, 0.028, 0.05, std(0x1a1a1c, 0.4, 0.8), x, y + 0.12, z, 12); const b = new THREE.Mesh(new THREE.SphereGeometry(0.036, 14, 10), glow(c, 2.4)); b.position.set(x, y + 0.06, z); add(b); };
-  bulb(9.8, 2.14, 2.2, 0xffd9a8, 10, 6.5); bulb(12.2, 2.14, 1.9, 0xffe2c0, 8, 6); bulb(9.7, 2.14, 4.7, 0xffd9a8, 8, 5.5); bulb(12.3, 2.1, 5.6, 0xffe8d0, 6, 4.5);
+  bulb(9.8, 2.14, 2.2, 0xffd9a8, 10, 6.5); bulb(12.2, 2.14, 1.9, 0xffe2c0, 8, 6); bulb(9.7, 2.14, 4.7, 0xffd9a8, 12, 6); bulb(11.75, 2.1, 5.25, 0xffecd8, 15, 5);
   bulb(13.0, 3.5, 3.63, 0xffe2c0, 12, 7.5); bulb(15.54, 4.4, 6.2, 0xffe8d0, 14, 8.5);
   { const l = new THREE.PointLight(0xcfe0ff, 16, 8, 2); l.position.set(15.54, 4.0, 8.7); add(l); }
 }
