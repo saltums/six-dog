@@ -12,14 +12,17 @@
   canvas{display:block;width:100%;height:100%;touch-action:none}
   #hud{position:fixed;left:12px;top:12px;font-size:12px;line-height:1.5;background:rgba(0,0,0,.45);padding:8px 12px;border-radius:10px;max-width:70vw}
   #hud b{font-size:14px}
-  #bar{position:fixed;left:0;right:0;bottom:max(12px,env(safe-area-inset-bottom,0px));display:flex;gap:6px;justify-content:center;flex-wrap:wrap;padding:0 10px}
+  #bar{position:fixed;left:0;right:0;bottom:max(12px,env(safe-area-inset-bottom,0px));display:flex;gap:6px;justify-content:safe center;flex-wrap:nowrap;overflow-x:auto;padding:0 10px 2px;pointer-events:none;scrollbar-width:none}
+  #bar::-webkit-scrollbar{display:none}
+  #bar > *{pointer-events:auto;flex:none;white-space:nowrap}
   #bar button{font:inherit;font-size:13px;color:#e9e7df;background:rgba(10,12,18,.72);border:1px solid rgba(233,231,223,.25);border-radius:999px;padding:8px 13px;cursor:pointer}
   #bar a{font-size:13px;color:#e9e7df;background:rgba(10,12,18,.72);border:1px solid rgba(233,231,223,.25);border-radius:999px;padding:8px 13px;text-decoration:none}
   #bar button.on{background:#ffc857;border-color:#ffc857;color:#1b1503;font-weight:700}
   /* 待ち画面: 地上の看板から、赤い階段を地下へ降りていく。降りきったら防音扉を開ける。待つあいだは「○年前の今日」のチケット */
-  #joy{position:fixed;left:max(22px,env(safe-area-inset-left,0px));bottom:calc(84px + env(safe-area-inset-bottom,0px));width:104px;height:104px;border-radius:50%;border:1.5px solid rgba(233,231,223,.45);background:rgba(10,12,18,.28);pointer-events:none}
+  #joy{position:fixed;left:max(22px,env(safe-area-inset-left,0px));bottom:calc(76px + env(safe-area-inset-bottom,0px));width:112px;height:112px;border-radius:50%;border:1.5px solid rgba(233,231,223,.45);background:rgba(10,12,18,.28);pointer-events:none}
   #joy i{position:absolute;left:50%;top:50%;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;background:#38c8c8;opacity:.85}
   #how{position:fixed;left:50%;top:max(12px,env(safe-area-inset-top,0px));transform:translateX(-50%);font-size:12px;color:#e9e7df;background:rgba(10,12,18,.72);padding:7px 14px;border-radius:999px;white-space:nowrap;max-width:92vw;overflow:hidden;text-overflow:ellipsis;transition:opacity 1s}
+  @media (max-width:640px){#how{top:auto;bottom:calc(206px + env(safe-area-inset-bottom,0px));white-space:normal;text-align:center;border-radius:14px}}
   /* 当時のつぶやき: ときどき、だれかの声が小さく浮かんで消える */
   #voice{position:fixed;left:50%;bottom:calc(74px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);max-width:min(560px,86vw);text-align:center;font-size:13.5px;line-height:1.6;color:#f2f0e6;text-shadow:0 1px 8px rgba(0,0,0,.9);opacity:0;transition:opacity 1.6s ease;pointer-events:none}
   #voice.on{opacity:.92}
@@ -91,7 +94,7 @@ renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure
 document.body.appendChild(renderer.domElement);
 const scene = new THREE.Scene(); scene.background = new THREE.Color(0x020203); scene.fog = new THREE.FogExp2(0x0a0b10, 0.028);
 const camera = new THREE.PerspectiveCamera(64, 1, 0.05, 60);
-const EYE = new THREE.Vector3(3.4, 1.55, 4.75);
+const EYE = new THREE.Vector3(3.4, 1.55, 6.7);
 // 行き先(立つ場所と、最初に向く方向)
 const STOPS = [{ p: [3.4, 1.55, 4.75], yaw: 0, pitch: 0.03 }, { p: [5.3, 1.6, 8.3], yaw: 0.33, pitch: -0.02 }, { p: [6.0, 1.6, 7.1], yaw: 0.5, pitch: -0.02 }, { p: [3.4, 1.92, 2.0], yaw: Math.PI, pitch: -0.1 }, { p: [10.35, 1.56, 6.95], yaw: Math.PI, pitch: 0.02 }];
 
@@ -450,7 +453,7 @@ const floorAt = (x, z) => { for (const b of BLOCK) if (x > b[0] && x < b[2] && z
 const onStage = () => EYE.z < 3.5, atCounter = () => EYE.x > 8.6 && EYE.z > 6.3;
 const joyEl = $("#joy"), knob = joyEl.firstElementChild;
 cv.addEventListener("pointerdown", e => { walkTo = null;
-  if (e.pointerType !== "mouse" && !joy && e.clientX < innerWidth * 0.45 && e.clientY > innerHeight * 0.52) { joy = { id: e.pointerId, x: e.clientX, y: e.clientY, dx: 0, dy: 0 }; return; }
+  if (e.pointerType !== "mouse" && !joy && e.clientX < innerWidth * 0.5 && e.clientY > innerHeight * 0.5) { joy = { id: e.pointerId, x: e.clientX, y: e.clientY, dx: 0, dy: 0 }; joyEl.style.left = e.clientX - 56 + "px"; joyEl.style.bottom = innerHeight - e.clientY - 56 + "px"; try { cv.setPointerCapture(e.pointerId); } catch (err) { /* つかめない端末 */ } return; }
   down = { x: e.clientX, y: e.clientY, id: e.pointerId }; drag = { x: e.clientX, y: e.clientY, yaw, pitch, id: e.pointerId }; try { cv.setPointerCapture(e.pointerId); } catch (err) { /* つかめない端末 */ } });
 cv.addEventListener("pointermove", e => {
   if (joy && e.pointerId === joy.id) { const dx = e.clientX - joy.x, dy = e.clientY - joy.y, m = Math.hypot(dx, dy) || 1, k = Math.min(1, m / 46); joy.dx = dx / m * k; joy.dy = dy / m * k; knob.style.transform = `translate(${joy.dx * 30}px,${joy.dy * 30}px)`; return; }
@@ -461,9 +464,9 @@ addEventListener("keyup", e => keys.delete(e.code)); addEventListener("blur", ()
 const groundRay = new THREE.Raycaster(), groundPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0), hitP = new THREE.Vector3();
 function tapAt(cx, cy) { groundRay.setFromCamera(new THREE.Vector2(cx / innerWidth * 2 - 1, -(cy / innerHeight) * 2 + 1), camera);
   if (onStage()) { throwPick(cx, cy); return; }
-  const h = groundRay.ray.intersectPlane(groundPlane, hitP), ok = h && floorAt(hitP.x, hitP.z) === 0 && Math.hypot(hitP.x - EYE.x, hitP.z - EYE.z) < 9;
-  if (ok) { walkTo = { x: hitP.x, z: hitP.z }; return; }
-  if (atCounter()) orderBeer(); }
+  const h = groundRay.ray.intersectPlane(groundPlane, hitP), ok = h && floorAt(hitP.x, hitP.z) === 0;
+  if (atCounter() && !ok) { orderBeer(); return; }                       // カウンターの前で、棚やサーバーを押したらビール
+  if (h && groundRay.ray.direction.y < -0.04) { const d = Math.hypot(hitP.x - EYE.x, hitP.z - EYE.z), k = Math.min(1, 9 / Math.max(d, 0.01)); walkTo = { x: EYE.x + (hitP.x - EYE.x) * k, z: EYE.z + (hitP.z - EYE.z) * k }; } }
 // 1コマぶん歩く。壁や機材にぶつかったら、動ける向きにだけ進む
 function walkStep(dt) { if (move) return; let fx = 0, fz = 0;
   if (keys.has("KeyW") || keys.has("ArrowUp")) fz -= 1; if (keys.has("KeyS") || keys.has("ArrowDown")) fz += 1; if (keys.has("KeyA") || keys.has("ArrowLeft")) fx -= 1; if (keys.has("KeyD") || keys.has("ArrowRight")) fx += 1;
@@ -492,9 +495,9 @@ const zoneLights = { hall: [], bar: [] };
 let zoneKey = ""; const setZone = () => { const hall = EYE.x < 8.2, bar = EYE.x > 5.6, k = hall + ":" + bar; if (k === zoneKey) return; zoneKey = k; zoneLights.hall.forEach(l => l.visible = hall); zoneLights.bar.forEach(l => l.visible = bar); };
 const setQ = v => { high = v; gtao.enabled = v; renderer.shadowMap.enabled = v; L.forEach(l => l.castShadow = v && l.userData.shadow); renderer.shadowMap.needsUpdate = true; renderer.setPixelRatio(v ? Math.min(devicePixelRatio || 1, 1.25) : Math.min(devicePixelRatio || 1, 1) * 0.8); bloom.enabled = v; scene.traverse(o => { if (o.material) o.material.needsUpdate = true; }); size(); $("#q").textContent = "画質: " + (v ? "高" : "軽"); };
 $("#q").onclick = () => setQ(!high);
-const release = e => { if (joy && e.pointerId === joy.id) { joy = null; knob.style.transform = ""; return; }
+const release = e => { if (joy && e.pointerId === joy.id) { joy = null; knob.style.transform = ""; joyEl.style.left = ""; joyEl.style.bottom = ""; return; }
   const tap = down && e.pointerId === down.id && Math.hypot(e.clientX - down.x, e.clientY - down.y) < 8; if (down && e.pointerId === down.id) { down = null; drag = null; } if (tap) tapAt(e.clientX, e.clientY); };
-cv.addEventListener("pointerup", release); cv.addEventListener("pointercancel", e => { if (joy && e.pointerId === joy.id) { joy = null; knob.style.transform = ""; } down = null; drag = null; });
+cv.addEventListener("pointerup", release); cv.addEventListener("pointercancel", e => { if (joy && e.pointerId === joy.id) { joy = null; knob.style.transform = ""; joyEl.style.left = ""; joyEl.style.bottom = ""; } down = null; drag = null; });
 /* ---- 遊び: ドリンクカウンターで生ビールを頼む(押す → 注がれる → 目の前に出てくる → もう一度押すと飲む) ---- */
 function orderBeer() { const b = barState, t = clock.getElapsedTime();
   if (b.phase === "idle") { b.phase = "pour"; b.t = t; b.level = 0; b.drops.count = 0; b.beer.visible = true; b.beer.position.copy(b.tap); b.beer.rotation.set(0, 0, 0.62); $("#tip").textContent = "注いでいます…"; }
