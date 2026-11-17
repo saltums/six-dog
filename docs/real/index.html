@@ -17,6 +17,13 @@
   #bar a{font-size:13px;color:#e9e7df;background:rgba(10,12,18,.72);border:1px solid rgba(233,231,223,.25);border-radius:999px;padding:8px 13px;text-decoration:none}
   #bar button.on{background:#ffc857;border-color:#ffc857;color:#1b1503;font-weight:700}
   /* 待ち画面: 地上の看板から、赤い階段を地下へ降りていく。降りきったら防音扉を開ける。待つあいだは「○年前の今日」のチケット */
+  #joy{position:fixed;left:max(22px,env(safe-area-inset-left,0px));bottom:calc(84px + env(safe-area-inset-bottom,0px));width:104px;height:104px;border-radius:50%;border:1.5px solid rgba(233,231,223,.45);background:rgba(10,12,18,.28);pointer-events:none}
+  #joy i{position:absolute;left:50%;top:50%;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;background:#38c8c8;opacity:.85}
+  #how{position:fixed;left:50%;top:max(12px,env(safe-area-inset-top,0px));transform:translateX(-50%);font-size:12px;color:#e9e7df;background:rgba(10,12,18,.72);padding:7px 14px;border-radius:999px;white-space:nowrap;max-width:92vw;overflow:hidden;text-overflow:ellipsis;transition:opacity 1s}
+  /* 当時のつぶやき: ときどき、だれかの声が小さく浮かんで消える */
+  #voice{position:fixed;left:50%;bottom:calc(74px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);max-width:min(560px,86vw);text-align:center;font-size:13.5px;line-height:1.6;color:#f2f0e6;text-shadow:0 1px 8px rgba(0,0,0,.9);opacity:0;transition:opacity 1.6s ease;pointer-events:none}
+  #voice.on{opacity:.92}
+  #voice small{display:block;font-size:11px;color:#a6aec6;margin-top:2px}
   #load{position:fixed;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;background:#050608;padding:20px max(16px,env(safe-area-inset-right,0px)) 24px max(16px,env(safe-area-inset-left,0px));transition:opacity .9s ease;overflow:auto}
   #load.out{opacity:0;pointer-events:none}
   .lg{font-family:"Squada One",Impact,sans-serif;font-size:54px;line-height:1;letter-spacing:.02em;color:#f3f7f7;text-align:center}
@@ -30,7 +37,14 @@
   .tk{width:min(360px,100%);background:#ebe7da;color:#191919;border-radius:4px;padding:14px 16px 12px;font-family:"Zen Kaku Gothic New",system-ui,sans-serif;position:relative;transform:rotate(-1.2deg);box-shadow:0 10px 30px rgba(0,0,0,.5)}
   .tk::before,.tk::after{content:"";position:absolute;top:50%;width:14px;height:14px;border-radius:50%;background:#050608;transform:translateY(-50%)}
   .tk::before{left:-7px}.tk::after{right:-7px}
-  .tk .ago{font-size:11.5px;letter-spacing:.08em;color:#8b1c21;font-weight:700}
+  .tk{cursor:pointer;transform:rotate(var(--rot,-1.2deg));overflow:hidden;min-height:150px}
+  .tk.in{animation:tkin .7s cubic-bezier(.2,.8,.2,1)}
+  @keyframes tkin{from{opacity:0;transform:translateX(46px) rotate(calc(var(--rot,-1.2deg) + 4deg))}to{opacity:1;transform:rotate(var(--rot,-1.2deg))}}
+  .tk .bar{position:absolute;left:0;bottom:0;height:3px;width:100%;background:#8b1c21;transform-origin:left;animation:tkbar 4.2s linear}
+  @keyframes tkbar{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+  @media (prefers-reduced-motion:reduce){.tk.in{animation:none}.tk .bar{animation:none;display:none}}
+  .tk .ago{font-size:11.5px;letter-spacing:.08em;color:#8b1c21;font-weight:700;display:flex;justify-content:space-between;gap:8px}
+  .tk .ago span{color:#8a867a;font-weight:500;letter-spacing:0}
   .tk .dt{font-family:"Squada One",Impact,sans-serif;font-size:30px;line-height:1.1;margin-top:2px}
   .tk .ti{font-size:14px;font-weight:700;line-height:1.45;margin-top:6px;overflow-wrap:anywhere}
   .tk .ac{font-size:12.5px;line-height:1.6;margin-top:6px;color:#333;overflow-wrap:anywhere}
@@ -51,7 +65,10 @@
   <button id="enter" type="button" hidden>防音扉を開ける</button>
   <button id="enterMute" type="button" hidden>音を出さずに入る</button>
 </div>
-<div id="hud" hidden><b>SiX-DOG</b><br>画面をなぞると見回せます。<span id="fps"></span><div id="tip" style="color:#ffc857;font-weight:700"></div><div id="now"></div></div>
+<div id="hud" hidden><b>SiX-DOG</b><br><span id="fps"></span><div id="tip" style="color:#ffc857;font-weight:700"></div><div id="now"></div><div id="heard" style="color:#a6aec6"></div></div>
+<div id="voice" aria-live="off"></div>
+<div id="joy" hidden><i></i></div>
+<div id="how" hidden></div>
 <div id="bar" hidden><a id="back" href="../#venue">× 出る</a><button data-i="0" class="on">柵の前</button><button data-i="1">PA卓の横</button><button data-i="2">ホールの入口</button><button data-i="3">ステージの上</button><button data-i="4">ドリンク</button><button id="snd" aria-pressed="false">音 OFF</button><button id="q">画質: 高</button></div>
 <script type="module">
 /* 試作: 「柵の前からステージを見る」1か所だけを、最新の three.js と写真ベースの素材(Poly Haven, CC0)で作り直したもの。
@@ -120,7 +137,7 @@ const SY = 0.35;
 { const f = new THREE.Mesh(new THREE.PlaneGeometry(6.8, 5.4), M.floor); f.geometry.attributes.uv.array.forEach((v, i, a) => a[i] = v * (i % 2 ? 5.4 : 6.8) / 2.4); f.rotation.x = -Math.PI / 2; f.position.set(3.4, 0, 6.4); f.receiveShadow = true; add(f); }
 box(6.8, SY, 3.7, M.stage, 3.4, SY / 2, 1.85);
 box(6.8, 0.012, 0.05, std(0xc9b23a, 0.9), 3.4, SY + 0.004, 3.66);                    // ステージの端の黄色いテープ
-box(6.9, 2.4, 0.12, M.wall, 3.4, 1.2, -0.06); box(0.12, 2.4, 9.2, M.wall, -0.06, 1.2, 4.55); box(0.12, 2.4, 9.2, M.wall, 6.86, 1.2, 4.55); box(6.9, 2.4, 0.12, M.wall, 3.4, 1.2, 9.16);
+box(6.9, 2.4, 0.12, M.wall, 3.4, 1.2, -0.06); box(0.12, 2.4, 9.2, M.wall, -0.06, 1.2, 4.55); box(0.12, 2.4, 6.75, M.wall, 6.86, 1.2, 3.325); box(0.12, 2.4, 1.6, M.wall, 6.86, 1.2, 8.36); box(0.12, 0.36, 0.9, M.wall, 6.86, 2.22, 7.13); box(6.9, 2.4, 0.12, M.wall, 3.4, 1.2, 9.16);
 { const c = box(6.9, 0.12, 9.2, M.ceil, 3.4, 2.46, 4.55); c.castShadow = false; }
 // 天井: ダクト、配管、梁、たるんだ配線
 [1.2, 5.6].forEach(x => { const d = cyl(0.12, 0.12, 5.4, M.metalPlate, x, 2.22, 6.4, 28); d.rotation.x = Math.PI / 2; for (let z = 4.2; z < 9; z += 1.2) { const b = cyl(0.126, 0.126, 0.03, steel, x, 2.22, z, 28); b.rotation.x = Math.PI / 2; } });
@@ -420,23 +437,64 @@ composer.addPass(grade);
 function size() { const w = innerWidth, h = innerHeight; renderer.setSize(w, h, false); composer.setSize(w, h); camera.aspect = w / h; camera.fov = h > w ? 86 : 64; camera.updateProjectionMatrix(); }
 addEventListener("resize", size); size();
 
-/* ---- 見回す ---- */
-let yaw = 0, pitch = 0.03, drag = null;
+/* ---- 見回す・歩く ---- */
+// パソコン: W A S D / 矢印キーで歩く、ドラッグで見回す、床をクリックするとそこへ歩く
+// スマホ: 左下のスティックで歩く、画面をなぞって見回す、床をタップするとそこへ歩く
+let yaw = 0, pitch = 0.03, drag = null, down = null, joy = null, walkTo = null;
+const keys = new Set(), coarse = matchMedia("(pointer:coarse)").matches;
 const cv = renderer.domElement;
-let down = null;
-cv.addEventListener("pointerdown", e => { down = { x: e.clientX, y: e.clientY }; drag = { x: e.clientX, y: e.clientY, yaw, pitch }; try { cv.setPointerCapture(e.pointerId); } catch (err) { /* つかめない端末 */ } });
-cv.addEventListener("pointermove", e => { if (!drag) return; yaw = drag.yaw + (e.clientX - drag.x) * 0.004; pitch = Math.max(-0.7, Math.min(0.6, drag.pitch + (e.clientY - drag.y) * 0.004)); });
+// 歩ける範囲 [x0, z0, x1, z1, 床の高さ]。ホール、ステージの前のほう、扉の通り道、ドリンクカウンターの前
+const WALK = [[0.35, 4.35, 6.45, 8.85, 0], [0.4, 1.95, 6.4, 3.3, 0.35], [6.3, 6.6, 7.05, 7.56, 0], [6.95, 5.4, 12.3, 7.55, 0]];
+const BLOCK = [[1.9, 7.3, 4.9, 9.2]];                                   // PA卓
+const floorAt = (x, z) => { for (const b of BLOCK) if (x > b[0] && x < b[2] && z > b[1] && z < b[3]) return null; for (const r of WALK) if (x >= r[0] && x <= r[2] && z >= r[1] && z <= r[3]) return r[4]; return null; };
+const onStage = () => EYE.z < 3.5, atCounter = () => EYE.x > 8.6 && EYE.z > 6.3;
+const joyEl = $("#joy"), knob = joyEl.firstElementChild;
+cv.addEventListener("pointerdown", e => { walkTo = null;
+  if (e.pointerType !== "mouse" && !joy && e.clientX < innerWidth * 0.45 && e.clientY > innerHeight * 0.52) { joy = { id: e.pointerId, x: e.clientX, y: e.clientY, dx: 0, dy: 0 }; return; }
+  down = { x: e.clientX, y: e.clientY, id: e.pointerId }; drag = { x: e.clientX, y: e.clientY, yaw, pitch, id: e.pointerId }; try { cv.setPointerCapture(e.pointerId); } catch (err) { /* つかめない端末 */ } });
+cv.addEventListener("pointermove", e => {
+  if (joy && e.pointerId === joy.id) { const dx = e.clientX - joy.x, dy = e.clientY - joy.y, m = Math.hypot(dx, dy) || 1, k = Math.min(1, m / 46); joy.dx = dx / m * k; joy.dy = dy / m * k; knob.style.transform = `translate(${joy.dx * 30}px,${joy.dy * 30}px)`; return; }
+  if (!drag || e.pointerId !== drag.id) return; yaw = drag.yaw + (e.clientX - drag.x) * 0.004; pitch = Math.max(-0.7, Math.min(0.6, drag.pitch + (e.clientY - drag.y) * 0.004)); });
+addEventListener("keydown", e => { if (/^(Arrow|Key[WASD])/.test(e.code)) { keys.add(e.code); walkTo = null; e.preventDefault(); } });
+addEventListener("keyup", e => keys.delete(e.code)); addEventListener("blur", () => keys.clear());
+// 床を押した所へ歩く。床でない所(ステージの上なら客席、カウンターなら棚やサーバー)を押したら、その場の遊び
+const groundRay = new THREE.Raycaster(), groundPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0), hitP = new THREE.Vector3();
+function tapAt(cx, cy) { groundRay.setFromCamera(new THREE.Vector2(cx / innerWidth * 2 - 1, -(cy / innerHeight) * 2 + 1), camera);
+  if (onStage()) { throwPick(cx, cy); return; }
+  const h = groundRay.ray.intersectPlane(groundPlane, hitP), ok = h && floorAt(hitP.x, hitP.z) === 0 && Math.hypot(hitP.x - EYE.x, hitP.z - EYE.z) < 9;
+  if (ok) { walkTo = { x: hitP.x, z: hitP.z }; return; }
+  if (atCounter()) orderBeer(); }
+// 1コマぶん歩く。壁や機材にぶつかったら、動ける向きにだけ進む
+function walkStep(dt) { if (move) return; let fx = 0, fz = 0;
+  if (keys.has("KeyW") || keys.has("ArrowUp")) fz -= 1; if (keys.has("KeyS") || keys.has("ArrowDown")) fz += 1; if (keys.has("KeyA") || keys.has("ArrowLeft")) fx -= 1; if (keys.has("KeyD") || keys.has("ArrowRight")) fx += 1;
+  if (joy) { fx += joy.dx; fz += joy.dy; }
+  let vx = 0, vz = 0; const sp = 1.7;
+  if (fx || fz) { const m = Math.max(1, Math.hypot(fx, fz)), c = Math.cos(yaw), sn = Math.sin(yaw); fx /= m; fz /= m; vx = (fx * c + fz * sn) * sp; vz = (-fx * sn + fz * c) * sp; walkTo = null; }
+  else if (walkTo) { const dx = walkTo.x - EYE.x, dz = walkTo.z - EYE.z, d = Math.hypot(dx, dz); if (d < 0.12) walkTo = null; else { vx = dx / d * sp; vz = dz / d * sp; } }
+  if (!vx && !vz) return;
+  const nx = EYE.x + vx * dt, nz = EYE.z + vz * dt;
+  if (floorAt(nx, nz) !== null) { EYE.x = nx; EYE.z = nz; } else if (floorAt(nx, EYE.z) !== null) EYE.x = nx; else if (floorAt(EYE.x, nz) !== null) EYE.z = nz; else walkTo = null;
+  const f = floorAt(EYE.x, EYE.z); if (f !== null) EYE.y += (f + 1.55 + Math.sin(performance.now() * 0.011) * 0.012 - EYE.y) * 0.2;
+  if (walked < 1 && (walked += dt) >= 1) $("#how").style.opacity = 0;
+  nearStop(); }
+let walked = 0;
+// 歩いて近づいたら、行き先のボタンも合わせて切り替える
+function nearStop() { document.body.dataset.pos = EYE.x.toFixed(2) + "," + EYE.z.toFixed(2); let best = -1, bd = 1.6; STOPS.forEach((st, i) => { const d = Math.hypot(st.p[0] - EYE.x, st.p[2] - EYE.z); if (d < bd) { bd = d; best = i; } }); document.querySelectorAll("#bar [data-i]").forEach(b => b.classList.toggle("on", +b.dataset.i === best));
+  $("#tip").textContent = onStage() ? (thrown ? `投げたピック ${thrown} 枚` : "画面を軽く押すと、客席へピックを投げます") : atCounter() ? (barState.phase !== "idle" ? $("#tip").textContent : barState.drunk ? `飲んだビール ${barState.drunk} 杯` : "カウンターを軽く押すと、生ビールを頼めます") : ""; }
 // 行き先: 押すと、その場所へすっと移る
 let move = null;
-const go = i => { const st = STOPS[i]; move = { t0: performance.now(), from: EYE.clone(), to: new THREE.Vector3(...st.p), y0: yaw, y1: st.yaw + Math.round((yaw - st.yaw) / (Math.PI * 2)) * Math.PI * 2, p0: pitch, p1: st.pitch }; document.querySelectorAll("#bar [data-i]").forEach(b => b.classList.toggle("on", +b.dataset.i === i)); if (i === 4 || at === 4) { zoneLights.hall.forEach(l => l.visible = true); zoneLights.bar.forEach(l => l.visible = true); move.zone = i === 4; } at = i; $("#tip").textContent = i === 3 ? (thrown ? `投げたピック ${thrown} 枚` : "画面を軽く押すと、客席へピックを投げます") : i === 4 ? (barState.drunk ? `飲んだビール ${barState.drunk} 杯` : "画面を軽く押すと、生ビールを頼めます") : ""; };
+const go = i => { const st = STOPS[i]; move = { t0: performance.now(), from: EYE.clone(), to: new THREE.Vector3(...st.p), y0: yaw, y1: st.yaw + Math.round((yaw - st.yaw) / (Math.PI * 2)) * Math.PI * 2, p0: pitch, p1: st.pitch }; document.querySelectorAll("#bar [data-i]").forEach(b => b.classList.toggle("on", +b.dataset.i === i)); walkTo = null; at = i; };
 document.querySelectorAll("#bar [data-i]").forEach(b => b.onclick = () => go(+b.dataset.i));
 // 画質: 高(陰と影を計算)／軽(スマホ向け。陰と影を止めて、解像度を下げる)
 let high = !matchMedia("(pointer:coarse)").matches;
 const zoneLights = { hall: [], bar: [] };
-const setZone = bar => { zoneLights.hall.forEach(l => l.visible = !bar); zoneLights.bar.forEach(l => l.visible = bar); };
+// 見えない側の光は消す(扉の近くでは両方つける)
+let zoneKey = ""; const setZone = () => { const hall = EYE.x < 8.2, bar = EYE.x > 5.6, k = hall + ":" + bar; if (k === zoneKey) return; zoneKey = k; zoneLights.hall.forEach(l => l.visible = hall); zoneLights.bar.forEach(l => l.visible = bar); };
 const setQ = v => { high = v; gtao.enabled = v; renderer.shadowMap.enabled = v; L.forEach(l => l.castShadow = v && l.userData.shadow); renderer.shadowMap.needsUpdate = true; renderer.setPixelRatio(v ? Math.min(devicePixelRatio || 1, 1.25) : Math.min(devicePixelRatio || 1, 1) * 0.8); bloom.enabled = v; scene.traverse(o => { if (o.material) o.material.needsUpdate = true; }); size(); $("#q").textContent = "画質: " + (v ? "高" : "軽"); };
 $("#q").onclick = () => setQ(!high);
-const release = e => { const tap = down && Math.hypot(e.clientX - down.x, e.clientY - down.y) < 8; down = null; drag = null; if (tap && at === 3) throwPick(e.clientX, e.clientY); if (tap && at === 4) orderBeer(); };
+const release = e => { if (joy && e.pointerId === joy.id) { joy = null; knob.style.transform = ""; return; }
+  const tap = down && e.pointerId === down.id && Math.hypot(e.clientX - down.x, e.clientY - down.y) < 8; if (down && e.pointerId === down.id) { down = null; drag = null; } if (tap) tapAt(e.clientX, e.clientY); };
+cv.addEventListener("pointerup", release); cv.addEventListener("pointercancel", e => { if (joy && e.pointerId === joy.id) { joy = null; knob.style.transform = ""; } down = null; drag = null; });
 /* ---- 遊び: ドリンクカウンターで生ビールを頼む(押す → 注がれる → 目の前に出てくる → もう一度押すと飲む) ---- */
 function orderBeer() { const b = barState, t = clock.getElapsedTime();
   if (b.phase === "idle") { b.phase = "pour"; b.t = t; b.level = 0; b.drops.count = 0; b.beer.visible = true; b.beer.position.copy(b.tap); b.beer.rotation.set(0, 0, 0.62); $("#tip").textContent = "注いでいます…"; }
@@ -469,7 +527,6 @@ function stepBeer(t) { const b = barState;
     B.position.lerpVectors(b.serve, near, Math.min(1, e)); const sip = Math.max(0, Math.min(1, (k - 0.3) / 0.5)); B.rotation.set(-Math.min(1, e) * (0.25 + sip * 0.95), 0, 0);
     set(0.8 * (1 - sip), 0.7 * (1 - sip * 0.85));
     if (k >= 1) { b.phase = "idle"; b.drunk++; B.visible = false; B.rotation.set(0, 0, 0); b.drops.count = 0; $("#tip").textContent = `飲んだビール ${b.drunk} 杯`; } } }
-cv.addEventListener("pointerup", release); cv.addEventListener("pointercancel", () => { down = null; drag = null; });
 /* ---- 遊び: ステージの上から、客席へピックを投げる ---- */
 let at = 0, thrown = 0; const picks = [], PICK_COL = [0x7a3d1d, 0xe9e6dc, 0xc9433f, 0xd8b23a, 0x2f5fb8, 0x1c1c1e];
 const pickG = (() => { const sh2 = new THREE.Shape(), r = 0.016; sh2.moveTo(0, -r * 1.25); sh2.quadraticCurveTo(r * 1.15, -r * 0.2, r * 0.95, r * 0.75); sh2.quadraticCurveTo(0, r * 1.25, -r * 0.95, r * 0.75); sh2.quadraticCurveTo(-r * 1.15, -r * 0.2, 0, -r * 1.25); return new THREE.ExtrudeGeometry(sh2, { depth: 0.0012, bevelEnabled: false, curveSegments: 8 }); })();
@@ -491,6 +548,20 @@ function stepPicks(dt, t) { for (const k of picks) { if (!k.live) continue;
     if (p.y <= ground + 0.004) { p.y = ground + 0.004; if (Math.abs(k.v.y) > 1.2) { k.v.y *= -0.28; k.v.x *= 0.5; k.v.z *= 0.5; } else { k.live = false; k.m.rotation.set(-Math.PI / 2, 0, Math.random() * 6); } } } }
 
 const clock = new THREE.Clock(); let frames = 0, last = performance.now(), baked = false;
+/* ---- つい長居してしまう仕掛け ---- */
+// 1) 当時のつぶやき(data/voices.json。当時の X の声を、名前を出さずに短く言い換えたもの)が、ときどき浮かんで消える
+function startVoices() { fetch("../data/voices.json").then(r => r.json()).then(vs => { if (!vs.length) return; let order = [], k = 0; const el = $("#voice");
+    const next = () => { if (k >= order.length) { order = vs.map((_, i) => i).sort(() => Math.random() - 0.5); k = 0; } const v = vs[order[k++]], [y, mo] = String(v.d || "").split("-");
+      el.innerHTML = ""; el.append(document.createTextNode("「" + v.t + "」")); if (y) { const sm = document.createElement("small"); sm.textContent = `${y}年${mo ? +mo + "月" : ""}`; el.append(sm); }
+      el.classList.add("on"); setTimeout(() => el.classList.remove("on"), 7000); };
+    setTimeout(next, 6000); setInterval(next, 15000); }).catch(() => { /* 読めなくても困らない */ }); }
+// 2) 聴いた曲を数える(この端末に覚えておく)。23曲そろえたくなるように
+const heard = new Set(); try { JSON.parse(localStorage.getItem("sixdog_real_heard") || "[]").forEach(f => heard.add(f)); } catch (e) { /* 読めない端末 */ }
+const markHeard = (f, total) => { heard.add(f); try { localStorage.setItem("sixdog_real_heard", JSON.stringify([...heard])); } catch (e) { /* 保存できない端末 */ } $("#heard").textContent = heard.size >= total ? `ここで聴いた曲 ${total} / ${total}　ぜんぶ聴きました` : `ここで聴いた曲 ${heard.size} / ${total}`; };
+// 3) 照明と客席が、流れている曲の音に合わせて動く(低い音の強さを測って、明るさと揺れに使う)
+let pulse = 0; const spec = new Uint8Array(32);
+function readPulse() { const m = music; if (!m.on || !m.an || m.el.paused) { pulse *= 0.9; return; } m.an.getByteFrequencyData(spec); let b = 0; for (let i = 1; i < 6; i++) b += spec[i]; b = b / 5 / 255; pulse = b > pulse ? pulse + (b - pulse) * 0.6 : pulse * 0.9; }
+
 /* ---- 箱で流れている曲 ---- */
 // music/music.json に並んだ曲を、順番をまぜて1曲ずつ流す(1曲 約1MB のモノラル MP3。読み込むのは流す曲だけ)。
 // 立っている場所で聞こえ方を変える: ホールははっきり(前へ行くほど近い)、ドリンクカウンターは壁ごしにこもる
@@ -499,16 +570,16 @@ const shuffle = n => { const a = [...Array(n).keys()]; for (let i = n - 1; i > 0
 function playNext() { const m = music; if (!m.on || !m.list || !m.list.length) return;
   if (m.i >= m.order.length) { const last = m.order[m.order.length - 1]; m.order = shuffle(m.list.length); if (m.order.length > 1 && m.order[0] === last) m.order.push(m.order.shift()); m.i = 0; }   // 一巡したらまぜ直す(同じ曲が続かないように)
   const t = m.list[m.order[m.i++]]; m.el.src = "music/" + t.f; m.el.play().catch(() => { /* 鳴らせない端末では、表示だけ */ });
-  m.label = `♪ ${t.t}（${t.a}）— ${m.artist}`; $("#now").textContent = m.label; }
+  m.label = `♪ ${t.t}（${t.a}）— ${m.artist}`; $("#now").textContent = m.label; markHeard(t.f, m.list.length); }
 // 音の大きさは、ステージ(スピーカーのあるあたり)からの距離で決める。近いほど大きく、高い音まではっきり。
 // 目安: ステージの上 0.9 ／ 柵の前 0.5 ／ PA卓の横 0.25 ／ ドリンクカウンター 0.13(壁ごしなので、さらにこもる)
 function musicLevel(x, z) { const d = Math.hypot(x - 3.4, z - 1.85), wall = x > 6.9, g = 0.95 / (1 + Math.pow(d / 3.2, 1.5)); return { gain: g * (wall ? 0.75 : 1), cut: wall ? 360 : 2600 + 8400 / (1 + Math.pow(d / 3.5, 2)) }; }
 function musicZone() { const m = music; if (!m.on) return; const L2 = musicLevel(EYE.x, EYE.z);
   if (m.ac) { const t = m.ac.currentTime; m.lp.frequency.setTargetAtTime(L2.cut, t, 0.25); m.gain.gain.setTargetAtTime(L2.gain, t, 0.25); } else if (m.el) m.el.volume = Math.min(1, L2.gain); }
 async function setSound(v) { const m = music; m.on = v; const b = $("#snd"); b.textContent = v ? "音 ON" : "音 OFF"; b.setAttribute("aria-pressed", v ? "true" : "false"); try { localStorage.setItem("sixdog_real_sound", v ? "1" : "0"); } catch (e) { /* 保存できない端末 */ }
-  if (!v) { if (m.el) m.el.pause(); $("#now").textContent = ""; return; }
+  if (!v) { if (m.el) m.el.pause(); $("#now").textContent = ""; $("#heard").textContent = ""; return; }
   if (!m.el) { m.el = new Audio(); m.el.preload = "none"; m.el.addEventListener("ended", playNext); m.el.addEventListener("error", () => { if (m.on) setTimeout(playNext, 800); });
-    try { const AC = window.AudioContext || window.webkitAudioContext; m.ac = new AC(); const src = m.ac.createMediaElementSource(m.el); m.lp = m.ac.createBiquadFilter(); m.lp.type = "lowpass"; m.lp.Q.value = 0.6; m.gain = m.ac.createGain(); src.connect(m.lp); m.lp.connect(m.gain); m.gain.connect(m.ac.destination); } catch (e) { m.ac = null; m.el.volume = 0.5; } }
+    try { const AC = window.AudioContext || window.webkitAudioContext; m.ac = new AC(); const src = m.ac.createMediaElementSource(m.el); m.lp = m.ac.createBiquadFilter(); m.lp.type = "lowpass"; m.lp.Q.value = 0.6; m.gain = m.ac.createGain(); src.connect(m.lp); m.lp.connect(m.gain); m.gain.connect(m.ac.destination); m.an = m.ac.createAnalyser(); m.an.fftSize = 64; m.an.smoothingTimeConstant = 0.5; src.connect(m.an); } catch (e) { m.ac = null; m.el.volume = 0.5; } }
   if (m.ac) m.ac.resume();
   if (!m.list) { try { const j = await (await fetch("music/music.json")).json(); m.list = j.tracks; m.artist = j.artist; } catch (e) { m.list = []; $("#now").textContent = "曲を読み込めませんでした"; return; } }
   musicZone(); if (m.el.src && m.el.paused && !m.el.ended) { m.el.play().catch(() => {}); $("#now").textContent = m.label || ""; } else if (!m.el.src) playNext(); }
@@ -519,45 +590,54 @@ $("#snd").onclick = () => setSound(!music.on);
 const STEPS = 14; { const st = $("#stairs"); for (let i = 0; i < STEPS; i++) { const e = document.createElement("i"); e.style.left = i * 17 + "px"; e.style.top = 4 + i * 7.4 + "px"; st.appendChild(e); } }
 const lightSteps = k => document.querySelectorAll("#stairs i").forEach((e, i) => e.classList.toggle("on", i < Math.round(k * STEPS)));
 THREE.DefaultLoadingManager.onProgress = (url, n, total) => { if (!baked) lightSteps(n / total * 0.95); };
-// チケット: ○年前の今日(なければいちばん近い日)にここであった公演。公演の記録(data/events.json)から
+// チケット: 「○年前の今日、ここでは」を、新しい年から昔へ向かって1枚ずつめくっていく(つい見てしまうように)。公演の記録(data/events.json)から
+let tkTimer = 0;
 fetch("../data/events.json").then(r => r.json()).then(list => {
-  const now = new Date(), doy = d => { const a = new Date(2024, d.getMonth(), d.getDate()); return Math.round((a - new Date(2024, 0, 1)) / 864e5); }, today = doy(now);
-  let best = null, bd = 999;
+  const now = new Date(), doy = d => Math.round((new Date(2024, d.getMonth(), d.getDate()) - new Date(2024, 0, 1)) / 864e5), today = doy(now), byYear = new Map();
   for (const e of list) { if (!e.event_date || !e.title) continue; const d = new Date(e.event_date + "T00:00:00"); if (isNaN(d) || d > now) continue; let diff = Math.abs(doy(d) - today); diff = Math.min(diff, 366 - diff);
-    const score = diff * 10 - Math.min((e.performers || []).length, 6) - Math.random() * 3; if (score < bd) { bd = score; best = { e, d, diff }; } }
-  if (!best) return; const { e, d, diff } = best, yrs = now.getFullYear() - d.getFullYear() - ((now.getMonth() < d.getMonth() || (now.getMonth() === d.getMonth() && now.getDate() < d.getDate())) ? 1 : 0), esc = x => String(x ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-  const ps = (e.performers || []).slice(0, 7), price = e.price_adv ? `前売 ¥${Number(e.price_adv).toLocaleString()}${e.price_note ? " " + e.price_note : ""}` : "";
-  const tk = $("#tk"); if (!tk) return;
-  tk.innerHTML = `<div class="ago">${diff === 0 ? `${yrs}年前の今日、ここでは` : `${Math.max(yrs, 0)}年前の ${d.getMonth() + 1}月${d.getDate()}日、ここでは`}</div>
-    <div class="dt">${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, "0")}.${String(d.getDate()).padStart(2, "0")} <span style="font-size:17px">${esc(e.weekday || "")}</span></div>
-    <div class="ti">${esc(e.title)}</div>${ps.length ? `<div class="ac">${ps.map(esc).join(" ／ ")}${(e.performers || []).length > ps.length ? " ほか" : ""}</div>` : ""}
-    <div class="ft"><span>${e.open_time ? "OPEN " + esc(e.open_time) : ""}${e.start_time ? "　START " + esc(e.start_time) : ""}</span><span>${esc(price)}</span></div>`;
-  tk.hidden = false;
+    const score = diff * 10 - Math.min((e.performers || []).length, 6), y = d.getFullYear(), cur = byYear.get(y); if (!cur || score < cur.score) byYear.set(y, { e, d, diff, score }); }
+  const cards = [...byYear.values()].filter(c => c.diff <= 21).sort((a, b) => b.d - a.d);           // その年の、今日にいちばん近い公演(3週間以内)。新しい年から
+  const tk = $("#tk"); if (!tk || !cards.length) return;
+  const esc = x => String(x ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  let i = -1;
+  const show = () => { i = (i + 1) % cards.length; const { e, d, diff } = cards[i], yrs = now.getFullYear() - d.getFullYear();   // 年の差で数える(同じ「○年前」が2枚続かないように)
+    const ps = (e.performers || []).slice(0, 7), price = e.price_adv ? `前売 ¥${Number(e.price_adv).toLocaleString()}` : "";
+    tk.innerHTML = `<div class="ago">${diff === 0 ? `${yrs}年前の今日、ここでは` : `${Math.max(yrs, 0)}年前の ${d.getMonth() + 1}月${d.getDate()}日、ここでは`}<span>${i + 1} / ${cards.length}</span></div>
+      <div class="dt">${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, "0")}.${String(d.getDate()).padStart(2, "0")} <span style="font-size:17px">${esc(e.weekday || "")}</span></div>
+      <div class="ti">${esc(e.title)}</div>${ps.length ? `<div class="ac">${ps.map(esc).join(" ／ ")}${(e.performers || []).length > ps.length ? " ほか" : ""}</div>` : ""}
+      <div class="ft"><span>${e.open_time ? "OPEN " + esc(e.open_time) : ""}${e.start_time ? "　START " + esc(e.start_time) : ""}</span><span>${esc(price)}</span></div><i class="bar"></i>`;
+    tk.style.setProperty("--rot", (i % 2 ? 1.1 : -1.2) + "deg"); tk.classList.remove("in"); void tk.offsetWidth; tk.classList.add("in"); };
+  const run = () => { clearInterval(tkTimer); tkTimer = setInterval(show, 4200); };
+  tk.hidden = false; show(); run(); tk.onclick = () => { show(); run(); };                           // 押すと次の年へ
 }).catch(() => { /* 記録を読めなくても、待ち画面はそのまま進む */ });
 THREE.DefaultLoadingManager.onLoad = () => { if (baked) return; bakeEnv(); baked = true;
-  scene.traverse(o => { if (o.isLight && !o.isHemisphereLight) (o.position.x > 7 ? zoneLights.bar : zoneLights.hall).push(o); }); setZone(false);
+  scene.traverse(o => { if (o.isLight && !o.isHemisphereLight) (o.position.x > 7 ? zoneLights.bar : zoneLights.hall).push(o); }); zoneKey = ""; setZone();
   setQ(high); lightSteps(1);
   $("#lmsg").textContent = "地下に着きました。"; const b = $("#enter"); b.hidden = false; b.focus({ preventScroll: true });
-  const open = snd => { const l = $("#load"); l.classList.add("out"); $("#hud").hidden = false; $("#bar").hidden = false; setTimeout(() => l.remove(), 950); setSound(snd); };
+  const open = snd => { clearInterval(tkTimer); startVoices(); const l = $("#load"); l.classList.add("out"); $("#hud").hidden = false; $("#bar").hidden = false; setTimeout(() => l.remove(), 950); setSound(snd);
+    joyEl.hidden = !coarse; const how = $("#how"); how.hidden = false; how.textContent = coarse ? "左下のスティックで歩く・なぞって見回す・床をタップしても歩けます" : "W A S D / 矢印キーで歩く・ドラッグで見回す・床をクリックしても歩けます"; setTimeout(() => how.style.opacity = 0, 9000); };
   b.onclick = () => open(true); const mu = $("#enterMute"); mu.hidden = false; mu.onclick = () => open(false); };
 let skip = false;
-renderer.setAnimationLoop(() => {
+const frame = () => {
   if (!high && (skip = !skip)) return;
   const t = clock.getElapsedTime();
-  if (move) { const k = Math.min(1, (performance.now() - move.t0) / 1400), e = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2; EYE.lerpVectors(move.from, move.to, e); yaw = move.y0 + (move.y1 - move.y0) * e; pitch = move.p0 + (move.p1 - move.p0) * e; if (k >= 1) { if (move.zone !== undefined) setZone(move.zone); move = null; } }
-  camera.position.copy(EYE); camera.position.y += Math.sin(t * 0.6) * 0.004; camera.rotation.set(pitch, yaw, 0, "YXZ");
-  L.forEach((l, i) => { l.intensity = l.userData.base ?? (l.userData.base = l.intensity); l.intensity = l.userData.base * (0.86 + 0.14 * Math.sin(t * (0.7 + i * 0.13) + i * 2.1)); });
-  beams.forEach((b, i) => b.material.uniforms.k.value = 0.8 + 0.2 * Math.sin(t * 0.5 + i));
+  if (move) { const k = Math.min(1, (performance.now() - move.t0) / 1400), e = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2; EYE.lerpVectors(move.from, move.to, e); yaw = move.y0 + (move.y1 - move.y0) * e; pitch = move.p0 + (move.p1 - move.p0) * e; if (k >= 1) { move = null; nearStop(); } }
+  camera.position.copy(EYE); camera.rotation.set(pitch, yaw, 0, "YXZ");
+  readPulse();
+  L.forEach((l, i) => { l.intensity = l.userData.base ?? (l.userData.base = l.intensity); l.intensity = l.userData.base * (0.8 + 0.12 * Math.sin(t * (0.7 + i * 0.13) + i * 2.1) + pulse * (i % 2 ? 0.75 : 0.45)); });
+  beams.forEach((b, i) => b.material.uniforms.k.value = 0.75 + 0.2 * Math.sin(t * 0.5 + i) + pulse * 0.9);
   // 曲に合わせて小さく揺れる(170bpm の半分の速さ)
   const beat = t * Math.PI * 2 * (170 / 60) / 2;
-  const dt = Math.min(0.05, t - (stepPicks.last ?? t)); stepPicks.last = t; stepPicks(dt, t); stepBeer(t);
-  people.forEach(o => { const b = Math.max(0, Math.sin(beat + o.ph)), r = o.react > t ? Math.min(1, (o.react - t) / 0.4) : 0; o.body.position.y = b * o.amp + r * Math.abs(Math.sin(t * 9 + o.ph)) * 0.09;
+  const dt = Math.min(0.05, t - (stepPicks.last ?? t)); stepPicks.last = t; walkStep(dt); if (frames % 10 === 0) setZone(); stepPicks(dt, t); stepBeer(t);
+  people.forEach(o => { const b = Math.max(0, Math.sin(beat + o.ph)), r = o.react > t ? Math.min(1, (o.react - t) / 0.4) : 0; o.body.position.y = b * o.amp * (1 + pulse * 2.2) + r * Math.abs(Math.sin(t * 9 + o.ph)) * 0.09;
     o.arms.forEach(a => { a.sh0.rotation.x = a.raised ? a.base + Math.sin(beat * 2 + o.ph) * 0.16 : a.base + r * (2.7 - a.base); }); });
   grade.uniforms.time.value = t % 10;
   composer.render();
   if (frames % 12 === 0) musicZone();
   if (++frames % 30 === 0) { const n = performance.now(); $("#fps").textContent = "　" + Math.round(30000 / (n - last)) + " fps"; last = n; }
-});
+};
+renderer.setAnimationLoop(frame);
+window.__frame = frame;   // 確認用: 画面が裏にあってコマが進まないときに、手でコマを進める
 </script>
 </body>
 </html>
