@@ -270,6 +270,7 @@ button.chip{border:0;cursor:pointer;font:inherit;font-size:.84rem}
 .enter p b{display:block;font-family:var(--en);font-weight:400;font-size:1.25rem;letter-spacing:.08em;color:var(--bar-ink)}
 .enter button{border:0;border-radius:999px;background:var(--dog);color:var(--on-dog);font-weight:700;padding:11px 20px;cursor:pointer;display:inline-flex;gap:8px;align-items:center}
 .enter button:hover{filter:brightness(1.08)}
+.enter button.sub{background:transparent;color:var(--bar-ink);box-shadow:inset 0 0 0 1px var(--bar-ink-2);font-weight:500}
 .photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
 .photos figure{margin:0}
 .photos img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:8px;background:var(--paper-2)}
