@@ -36,6 +36,8 @@
   .tk .ft{display:flex;justify-content:space-between;gap:8px;border-top:1px dashed #9a968a;margin-top:10px;padding-top:7px;font-size:11.5px;color:#444}
   #enter{font:inherit;font-family:"Zen Kaku Gothic New",system-ui,sans-serif;font-size:15px;font-weight:700;color:#1b1503;background:#ffc857;border:none;border-radius:999px;padding:12px 26px;cursor:pointer}
   #enter:focus-visible{outline:2px solid #f3f7f7;outline-offset:3px}
+  #enterMute{font:inherit;font-size:12.5px;color:#a6aec6;background:none;border:none;text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:6px 10px;margin-top:-8px}
+  #now{color:#a6aec6;margin-top:2px}
 </style>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 </head>
@@ -46,9 +48,10 @@
   <div id="lmsg" role="status">赤い階段を降りています…</div>
   <div class="tk" id="tk" hidden></div>
   <button id="enter" type="button" hidden>防音扉を開ける</button>
+  <button id="enterMute" type="button" hidden>音を出さずに入る</button>
 </div>
-<div id="hud" hidden><b>SiX-DOG ホール（高画質の試作）</b><br>画面をなぞると見回せます。<span id="fps"></span><div id="tip" style="color:#ffc857;font-weight:700"></div></div>
-<div id="bar" hidden><button data-i="0" class="on">柵の前</button><button data-i="1">PA卓の横</button><button data-i="2">ホールの入口</button><button data-i="3">ステージの上</button><button data-i="4">ドリンク</button><button id="q">画質: 高</button></div>
+<div id="hud" hidden><b>SiX-DOG ホール（高画質の試作）</b><br>画面をなぞると見回せます。<span id="fps"></span><div id="tip" style="color:#ffc857;font-weight:700"></div><div id="now"></div></div>
+<div id="bar" hidden><button data-i="0" class="on">柵の前</button><button data-i="1">PA卓の横</button><button data-i="2">ホールの入口</button><button data-i="3">ステージの上</button><button data-i="4">ドリンク</button><button id="snd" aria-pressed="false">音 OFF</button><button id="q">画質: 高</button></div>
 <script type="module">
 /* 試作: 「柵の前からステージを見る」1か所だけを、最新の three.js と写真ベースの素材(Poly Haven, CC0)で作り直したもの。
    今の3D(site.js)とは別のページ。光の跳ね返りの代わりに、物の隙間の陰(GTAO)・やわらかい影・床への映り込み(場面から作った環境マップ)を入れている */
@@ -487,6 +490,29 @@ function stepPicks(dt, t) { for (const k of picks) { if (!k.live) continue;
     if (p.y <= ground + 0.004) { p.y = ground + 0.004; if (Math.abs(k.v.y) > 1.2) { k.v.y *= -0.28; k.v.x *= 0.5; k.v.z *= 0.5; } else { k.live = false; k.m.rotation.set(-Math.PI / 2, 0, Math.random() * 6); } } } }
 
 const clock = new THREE.Clock(); let frames = 0, last = performance.now(), baked = false;
+/* ---- 箱で流れている曲 ---- */
+// music/music.json に並んだ曲を、順番をまぜて1曲ずつ流す(1曲 約1MB のモノラル MP3。読み込むのは流す曲だけ)。
+// 立っている場所で聞こえ方を変える: ホールははっきり(前へ行くほど近い)、ドリンクカウンターは壁ごしにこもる
+const music = { on: false, list: null, order: [], i: 0, el: null, ac: null, lp: null, gain: null, artist: "" };
+const shuffle = n => { const a = [...Array(n).keys()]; for (let i = n - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+function playNext() { const m = music; if (!m.on || !m.list || !m.list.length) return;
+  if (m.i >= m.order.length) { const last = m.order[m.order.length - 1]; m.order = shuffle(m.list.length); if (m.order.length > 1 && m.order[0] === last) m.order.push(m.order.shift()); m.i = 0; }   // 一巡したらまぜ直す(同じ曲が続かないように)
+  const t = m.list[m.order[m.i++]]; m.el.src = "music/" + t.f; m.el.play().catch(() => { /* 鳴らせない端末では、表示だけ */ });
+  m.label = `♪ ${t.t}（${t.a}）— ${m.artist}`; $("#now").textContent = m.label; }
+// 音の大きさは、ステージ(スピーカーのあるあたり)からの距離で決める。近いほど大きく、高い音まではっきり。
+// 目安: ステージの上 0.9 ／ 柵の前 0.5 ／ PA卓の横 0.25 ／ ドリンクカウンター 0.13(壁ごしなので、さらにこもる)
+function musicLevel(x, z) { const d = Math.hypot(x - 3.4, z - 1.85), wall = x > 6.9, g = 0.95 / (1 + Math.pow(d / 3.2, 1.5)); return { gain: g * (wall ? 0.75 : 1), cut: wall ? 360 : 2600 + 8400 / (1 + Math.pow(d / 3.5, 2)) }; }
+function musicZone() { const m = music; if (!m.on) return; const L2 = musicLevel(EYE.x, EYE.z);
+  if (m.ac) { const t = m.ac.currentTime; m.lp.frequency.setTargetAtTime(L2.cut, t, 0.25); m.gain.gain.setTargetAtTime(L2.gain, t, 0.25); } else if (m.el) m.el.volume = Math.min(1, L2.gain); }
+async function setSound(v) { const m = music; m.on = v; const b = $("#snd"); b.textContent = v ? "音 ON" : "音 OFF"; b.setAttribute("aria-pressed", v ? "true" : "false"); try { localStorage.setItem("sixdog_real_sound", v ? "1" : "0"); } catch (e) { /* 保存できない端末 */ }
+  if (!v) { if (m.el) m.el.pause(); $("#now").textContent = ""; return; }
+  if (!m.el) { m.el = new Audio(); m.el.preload = "none"; m.el.addEventListener("ended", playNext); m.el.addEventListener("error", () => { if (m.on) setTimeout(playNext, 800); });
+    try { const AC = window.AudioContext || window.webkitAudioContext; m.ac = new AC(); const src = m.ac.createMediaElementSource(m.el); m.lp = m.ac.createBiquadFilter(); m.lp.type = "lowpass"; m.lp.Q.value = 0.6; m.gain = m.ac.createGain(); src.connect(m.lp); m.lp.connect(m.gain); m.gain.connect(m.ac.destination); } catch (e) { m.ac = null; m.el.volume = 0.5; } }
+  if (m.ac) m.ac.resume();
+  if (!m.list) { try { const j = await (await fetch("music/music.json")).json(); m.list = j.tracks; m.artist = j.artist; } catch (e) { m.list = []; $("#now").textContent = "曲を読み込めませんでした"; return; } }
+  musicZone(); if (m.el.src && m.el.paused && !m.el.ended) { m.el.play().catch(() => {}); $("#now").textContent = m.label || ""; } else if (!m.el.src) playNext(); }
+$("#snd").onclick = () => setSound(!music.on);
+
 /* ---- 待ち画面 ---- */
 // 階段: 14段。読み込みが進むぶんだけ、上から順に灯る
 const STEPS = 14; { const st = $("#stairs"); for (let i = 0; i < STEPS; i++) { const e = document.createElement("i"); e.style.left = i * 17 + "px"; e.style.top = 4 + i * 7.4 + "px"; st.appendChild(e); } }
@@ -511,7 +537,8 @@ THREE.DefaultLoadingManager.onLoad = () => { if (baked) return; bakeEnv(); baked
   scene.traverse(o => { if (o.isLight && !o.isHemisphereLight) (o.position.x > 7 ? zoneLights.bar : zoneLights.hall).push(o); }); setZone(false);
   setQ(high); lightSteps(1);
   $("#lmsg").textContent = "地下に着きました。"; const b = $("#enter"); b.hidden = false; b.focus({ preventScroll: true });
-  b.onclick = () => { const l = $("#load"); l.classList.add("out"); $("#hud").hidden = false; $("#bar").hidden = false; setTimeout(() => l.remove(), 950); }; };
+  const open = snd => { const l = $("#load"); l.classList.add("out"); $("#hud").hidden = false; $("#bar").hidden = false; setTimeout(() => l.remove(), 950); setSound(snd); };
+  b.onclick = () => open(true); const mu = $("#enterMute"); mu.hidden = false; mu.onclick = () => open(false); };
 let skip = false;
 renderer.setAnimationLoop(() => {
   if (!high && (skip = !skip)) return;
@@ -527,6 +554,7 @@ renderer.setAnimationLoop(() => {
     o.arms.forEach(a => { a.sh0.rotation.x = a.raised ? a.base + Math.sin(beat * 2 + o.ph) * 0.16 : a.base + r * (2.7 - a.base); }); });
   grade.uniforms.time.value = t % 10;
   composer.render();
+  if (frames % 12 === 0) musicZone();
   if (++frames % 30 === 0) { const n = performance.now(); $("#fps").textContent = "　" + Math.round(30000 / (n - last)) + " fps"; last = n; }
 });
 </script>
