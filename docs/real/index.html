@@ -667,14 +667,13 @@ fetch("../data/events.json").then(r => r.json()).then(list => {
   const now = new Date(), doy = d => Math.round((new Date(2024, d.getMonth(), d.getDate()) - new Date(2024, 0, 1)) / 864e5), today = doy(now), byYear = new Map();
   for (const e of list) { if (!e.event_date || !e.title) continue; const d = new Date(e.event_date + "T00:00:00"); if (isNaN(d) || d > now) continue; let diff = Math.abs(doy(d) - today); diff = Math.min(diff, 366 - diff);
     const score = diff * 10 - Math.min((e.performers || []).length, 6), y = d.getFullYear(), cur = byYear.get(y); if (!cur || score < cur.score) byYear.set(y, { e, d, diff, score }); }
-  const all = [...byYear.values()].sort((a, b) => b.d - a.d), same = all.filter(c => c.diff === 0);
-  const cards = same.length ? same : all.filter(c => c.diff <= 21);                                  // 今日と同じ月日の公演だけ(新しい年から)。1つもない日だけ、3週間以内でいちばん近い日
+  const cards = [...byYear.values()].filter(c => c.diff === 0).sort((a, b) => b.d - a.d);           // 今日と同じ月日の公演だけ(新しい年から)。1つもない日は、チケットを出さない
   const tk = $("#tk"); if (!tk || !cards.length) return;
   const esc = x => String(x ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   let i = -1;
   const show = () => { i = (i + 1) % cards.length; const { e, d, diff } = cards[i], yrs = now.getFullYear() - d.getFullYear();   // 年の差で数える(同じ「○年前」が2枚続かないように)
     const ps = (e.performers || []).slice(0, 7), price = `前売 ${e.price_adv ? "¥" + Number(e.price_adv).toLocaleString() : "-"}`;
-    tk.innerHTML = `<div class="ago">${diff === 0 ? `${yrs}年前の今日、ここでは` : `${Math.max(yrs, 0)}年前の ${d.getMonth() + 1}月${d.getDate()}日、ここでは`}<span>${i + 1} / ${cards.length}</span></div>
+    tk.innerHTML = `<div class="ago">${yrs}年前の今日、ここでは<span>${i + 1} / ${cards.length}</span></div>
       <div class="dt">${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, "0")}.${String(d.getDate()).padStart(2, "0")} <span style="font-size:17px">${esc(e.weekday || "")}</span></div>
       <div class="ti">${esc(e.title)}</div><div class="ac">${ps.length ? ps.map(esc).join(" ／ ") + ((e.performers || []).length > ps.length ? " ほか" : "") : "出演 -"}</div>
       <div class="ft"><span>OPEN ${esc(e.open_time || "-")}　START ${esc(e.start_time || "-")}</span><span>${esc(price)}</span></div><i class="bar"></i>`;
