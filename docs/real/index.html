@@ -6,6 +6,7 @@
 <title>SiX-DOG ステージ（高画質の試作）</title>
 <style>
   html,body{margin:0;height:100%;background:#050608;color:#e9e7df;font-family:system-ui,-apple-system,"Hiragino Sans","Yu Gothic UI",sans-serif;overflow:hidden}
+  [hidden]{display:none!important}
   canvas{display:block;width:100%;height:100%;touch-action:none}
   #hud{position:fixed;left:12px;top:12px;font-size:12px;line-height:1.5;background:rgba(0,0,0,.45);padding:8px 12px;border-radius:10px;max-width:70vw}
   #hud b{font-size:14px}
@@ -18,7 +19,7 @@
 </head>
 <body>
 <div id="load">ステージを組み立てています…</div>
-<div id="hud" hidden><b>SiX-DOG ホール（高画質の試作）</b><br>画面をなぞると見回せます。<span id="fps"></span></div>
+<div id="hud" hidden><b>SiX-DOG ホール（高画質の試作）</b><br>画面をなぞると見回せます。<span id="fps"></span><div id="tip" style="color:#ffc857;font-weight:700"></div></div>
 <div id="bar" hidden><button data-i="0" class="on">柵の前</button><button data-i="1">PA卓の横</button><button data-i="2">ホールの入口</button><button data-i="3">ステージの上</button><button id="q">画質: 高</button></div>
 <script type="module">
 /* 試作: 「柵の前からステージを見る」1か所だけを、最新の three.js と写真ベースの素材(Poly Haven, CC0)で作り直したもの。
@@ -43,7 +44,7 @@ const scene = new THREE.Scene(); scene.background = new THREE.Color(0x020203); s
 const camera = new THREE.PerspectiveCamera(64, 1, 0.05, 60);
 const EYE = new THREE.Vector3(3.4, 1.55, 4.75);
 // 行き先(立つ場所と、最初に向く方向)
-const STOPS = [{ p: [3.4, 1.55, 4.75], yaw: 0, pitch: 0.03 }, { p: [5.3, 1.6, 8.3], yaw: 0.33, pitch: -0.02 }, { p: [6.0, 1.6, 7.1], yaw: 0.5, pitch: -0.02 }, { p: [3.4, 1.95, 2.5], yaw: Math.PI, pitch: -0.12 }];
+const STOPS = [{ p: [3.4, 1.55, 4.75], yaw: 0, pitch: 0.03 }, { p: [5.3, 1.6, 8.3], yaw: 0.33, pitch: -0.02 }, { p: [6.0, 1.6, 7.1], yaw: 0.5, pitch: -0.02 }, { p: [3.4, 1.92, 2.0], yaw: Math.PI, pitch: -0.1 }];
 
 /* ---- 素材 ---- */
 const TL = new THREE.TextureLoader(), maxA = renderer.capabilities.getMaxAnisotropy();
@@ -228,11 +229,11 @@ cyl(0.17, 0.17, 0.08, rubber, 3.4, SY + 0.5, 0.68, 24); cyl(0.014, 0.014, 0.46, 
 { const rg = new THREE.Mesh(new THREE.PlaneGeometry(2.5, 2.0), M.rug); rg.geometry.attributes.uv.array.forEach((v, i, a) => a[i] = v * (i % 2 ? 2.0 : 2.5) / 1.2); rg.rotation.x = -Math.PI / 2; rg.rotation.z = 0.03; rg.position.set(3.42, SY + 0.004, 1.32); rg.receiveShadow = true; add(rg); }
 // マイクスタンド(K&M のブーム)と SM58
 [2.2, 3.4, 4.6].forEach(x => { cyl(0.011, 0.011, 1.3, chrome, x, SY + 0.72, 2.95, 12); [0.5, 2.6, 4.7].forEach(a => { const l = cyl(0.009, 0.009, 0.36, blackM, x + Math.cos(a) * 0.14, SY + 0.09, 2.95 + Math.sin(a) * 0.14, 8); l.rotation.z = Math.cos(a) * 0.85; l.rotation.x = -Math.sin(a) * 0.85; });
-  const bm = cyl(0.008, 0.008, 0.62, chrome, x, SY + 1.42, 2.84, 10); bm.rotation.x = 1.22; cyl(0.022, 0.022, 0.06, blackM, x, SY + 1.37, 2.95, 12);
-  const body = cyl(0.016, 0.012, 0.13, std(0x2a2b2e, 0.45, 0.6), x, SY + 1.5, 3.11, 12); body.rotation.x = 1.0; const ball = new THREE.Mesh(new THREE.SphereGeometry(0.026, 20, 14), std(0x8a8e93, 0.6, 0.9, 0.6)); ball.position.set(x, SY + 1.545, 3.18); add(sh(ball)); });
+  const bm = cyl(0.008, 0.008, 0.62, chrome, x, SY + 1.42, 2.84, 10); bm.rotation.x = -1.22; cyl(0.022, 0.022, 0.06, blackM, x, SY + 1.37, 2.95, 12);
+  const body = cyl(0.016, 0.012, 0.13, std(0x2a2b2e, 0.45, 0.6), x, SY + 1.535, 2.52, 12); body.rotation.x = -1.0; const ball = new THREE.Mesh(new THREE.SphereGeometry(0.026, 20, 14), std(0x8a8e93, 0.6, 0.9, 0.6)); ball.position.set(x, SY + 1.582, 2.447); add(sh(ball)); });
 // 床のケーブル、テープ、セトリ、エフェクター
 const floorCable = (ax, az, bx, bz, wig = 0.12, r = 0.007, ay = 0) => { const p = [], n = 8, len = Math.hypot(bx - ax, bz - az) || 1, px = -(bz - az) / len, pz = (bx - ax) / len, ph = rnd() * 6; for (let i = 0; i <= n; i++) { const t = i / n, k = Math.sin(t * Math.PI) * wig * Math.sin(t * 7 + ph); p.push(new THREE.Vector3(ax + (bx - ax) * t + px * k, SY + r + (i === 0 ? ay : 0), az + (bz - az) * t + pz * k)); } tube(p, r); };
-[2.2, 3.4, 4.6].forEach(x => floorCable(x, 2.95, 0.98, 2.6, 0.16, 0.006, 0.08)); floorCable(3.0, 1.5, 0.95, 2.5, 0.2); floorCable(3.8, 1.3, 0.95, 2.48, 0.25); floorCable(4.9, 0.66, 4.6, 2.5, 0.22, 0.006, 0.2); floorCable(1.9, 0.7, 2.2, 2.5, 0.2, 0.006, 0.2); floorCable(5.95, 0.9, 5.5, 2.3, 0.15, 0.006, 0.1); floorCable(0.9, 3.5, 6.2, 3.52, 0.03, 0.009);
+[2.2, 3.4, 4.6].forEach(x => { floorCable(x, 2.95, 0.98, 2.6, 0.16, 0.006, 0.08); floorCable(x, 2.62, x + 0.1, 2.95, 0.02, 0.005, 1.48); }); floorCable(3.0, 1.5, 0.95, 2.5, 0.2); floorCable(3.8, 1.3, 0.95, 2.48, 0.25); floorCable(4.9, 0.66, 4.6, 2.5, 0.22, 0.006, 0.2); floorCable(1.9, 0.7, 2.2, 2.5, 0.2, 0.006, 0.2); floorCable(5.95, 0.9, 5.5, 2.3, 0.15, 0.006, 0.1); floorCable(0.9, 3.5, 6.2, 3.52, 0.03, 0.009);
 rbox(0.34, 0.09, 0.24, blackM, 0.95, SY + 0.045, 2.55, 0.008);
 const tapeM = std(0xd8d4c4, 0.9, 0, 0.2);
 const flat = (x, z, w, d, mat, rz = 0, y = SY + 0.003) => { const o = new THREE.Mesh(new THREE.PlaneGeometry(w, d), mat); o.rotation.x = -Math.PI / 2; o.rotation.z = rz; o.position.set(x, y, z); o.receiveShadow = true; return add(o); };
@@ -244,6 +245,64 @@ const board = (x, z, ry, cols) => { rbox(0.13 * cols.length + 0.04, 0.025, 0.3, 
 board(4.6, 2.5, 0.06, [0xc9a23a, 0x2f7a4a, 0x8a2a2a, 0x2a3f8a, 0xd8d4c4]); board(2.2, 2.52, -0.08, [0x1c1c1e, 0xd0661f, 0x3a7fae]);
 // 柵(手前)
 [1.2, 3.4, 5.6].forEach(x => cyl(0.02, 0.02, 1.0, chrome, x, 0.5, 4.05, 14)); [0.55, 1.0].forEach(y => { const r = cyl(0.018, 0.018, 4.6, chrome, 3.4, y, 4.05, 14); r.rotation.z = Math.PI / 2; });
+
+/* ---- お客さん ---- */
+// 本物の客席は、ほとんど逆光の影に見える。だから顔は作り込まず、後ろ姿の輪郭(なで肩、首、耳、髪、腕の下がり方、重心の傾き)を作る
+const people = [];
+{
+  const cloth = c => new THREE.MeshStandardMaterial({ color: c, roughness: 0.95, envMapIntensity: 0.25 });
+  const CL = [0x0e0e10, 0x121214, 0x17181b, 0x101216, 0x1c1d22, 0x23262d, 0x2a1618, 0x1f261d, 0x8a867c, 0x3a3c41].map(cloth);
+  const PT = [0x0f1012, 0x161b26, 0x1d1f23, 0x24262a].map(cloth);
+  const SK = [0xc49878, 0xb58868, 0xd2a688, 0xa2785c].map(c => new THREE.MeshStandardMaterial({ color: c, roughness: 0.65, envMapIntensity: 0.3 }));
+  const HR = [0x0c0b0a, 0x14100d, 0x241a12, 0x0a0a0a, 0x3a2a1c].map(c => new THREE.MeshStandardMaterial({ color: c, roughness: 0.5, envMapIntensity: 0.6 }));
+  const TW = [0xb9433f, 0xd9d5c8, 0x2f5fb8, 0xd8b23a].map(cloth);
+  const pick = a => a[(rnd() * a.length) | 0];
+  // 胴: 腰から肩へ広がり、首の付け根へすぼまる。回転体を前後につぶして、背中の丸みを出す
+  const torsoG = new THREE.LatheGeometry([[0, 0], [0.15, 0.005], [0.165, 0.06], [0.16, 0.2], [0.152, 0.3], [0.165, 0.4], [0.195, 0.48], [0.208, 0.53], [0.19, 0.575], [0.13, 0.605], [0.075, 0.625], [0.055, 0.64], [0, 0.64]].map(([x, y]) => new THREE.Vector2(x, y)), 28);
+  const cap = (r, len, mat) => { const g = new THREE.CapsuleGeometry(r, len, 6, 14); g.translate(0, -len / 2 - r * 0.2, 0); return new THREE.Mesh(g, mat); };
+  const person = (x, z) => {
+    const h = 1.56 + rnd() * 0.26, k = h / 1.7, root = new THREE.Group(); root.position.set(x, 0, z); root.rotation.y = (rnd() - 0.5) * 0.5; add(root);
+    const body = new THREE.Group(); root.add(body);
+    const cl = pick(CL), pt = pick(PT), sk = pick(SK), hr = pick(HR), lean = (rnd() - 0.5) * 0.09, legL = 0.82 * k, wide = 0.92 + rnd() * 0.2;
+    body.rotation.z = lean;
+    // 脚(片方に体重を乗せている)、靴
+    [-1, 1].forEach(sd => { const l = cap(0.074 * k, legL - 0.15, pt); l.position.set(sd * 0.085 * k, legL, 0); l.rotation.z = sd * 0.03 - lean * 0.8; l.scale.z = 0.92; body.add(l);
+      const shoe = new THREE.Mesh(new RoundedBoxGeometry(0.1 * k, 0.07, 0.27 * k, 2, 0.025), new THREE.MeshStandardMaterial({ color: 0x0c0c0d, roughness: 0.6 })); shoe.position.set(sd * 0.09 * k, 0.035, -0.04); shoe.rotation.y = sd * 0.12; body.add(shoe); });
+    const hip = new THREE.Mesh(new THREE.SphereGeometry(0.165 * k, 18, 12), pt); hip.scale.set(wide, 0.62, 0.72); hip.position.y = legL + 0.02; body.add(hip);
+    const torso = new THREE.Mesh(torsoG, cl); torso.scale.set(k * wide, k, k * 0.6); torso.position.y = legL - 0.02; body.add(torso);
+    const top = legL - 0.02 + 0.64 * k;
+    // 首、頭、耳、髪
+    const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.047 * k, 0.055 * k, 0.1 * k, 14), sk); neck.position.y = top + 0.03 * k; body.add(neck);
+    const hg = new THREE.Group(); hg.position.y = top + 0.15 * k; hg.rotation.z = (rnd() - 0.5) * 0.12; hg.rotation.x = (rnd() - 0.5) * 0.1; body.add(hg);
+    const head = new THREE.Mesh(new THREE.SphereGeometry(0.098 * k, 22, 18), sk); head.scale.set(0.88, 1.12, 1.0); hg.add(head);
+    const dark = new THREE.MeshStandardMaterial({ color: 0x1a120e, roughness: 0.7 });
+    [-1, 1].forEach(sd => { const eye = new THREE.Mesh(new THREE.SphereGeometry(0.013 * k, 10, 8), dark); eye.scale.set(1.5, 0.75, 0.5); eye.position.set(sd * 0.033 * k, 0.012 * k, -0.088 * k); hg.add(eye);
+      const brow = new THREE.Mesh(new THREE.BoxGeometry(0.034 * k, 0.006 * k, 0.01 * k), hr); brow.position.set(sd * 0.034 * k, 0.034 * k, -0.09 * k); brow.rotation.z = -sd * 0.12; hg.add(brow); });
+    { const nose = new THREE.Mesh(new THREE.SphereGeometry(0.015 * k, 10, 8), sk); nose.scale.set(0.8, 1.5, 1.1); nose.position.set(0, -0.012 * k, -0.098 * k); hg.add(nose);
+      const mouth = new THREE.Mesh(new THREE.BoxGeometry(0.036 * k, 0.005 * k, 0.008 * k), new THREE.MeshStandardMaterial({ color: 0x6a3a34, roughness: 0.6 })); mouth.position.set(0, -0.052 * k, -0.086 * k); hg.add(mouth); }
+    [-1, 1].forEach(sd => { const ear = new THREE.Mesh(new THREE.SphereGeometry(0.022 * k, 10, 8), sk); ear.scale.set(0.45, 1, 0.75); ear.position.set(sd * 0.086 * k, -0.005, 0.005); hg.add(ear); });
+    const style = rnd(), hair = new THREE.Mesh(new THREE.SphereGeometry(0.105 * k, 22, 18), hr); hair.scale.set(0.93, 1.1, 1.02); hair.position.set(0, 0.012 * k, 0.024 * k); hg.add(hair);
+    if (style < 0.3) { const back = cap(0.085 * k, (0.14 + rnd() * 0.2) * k, hr); back.position.set(0, 0.02 * k, 0.05 * k); back.scale.z = 0.55; hg.add(back); }
+    else if (style < 0.42) { const bun = new THREE.Mesh(new THREE.SphereGeometry(0.043 * k, 12, 10), hr); bun.position.set(0, 0.115 * k, 0.045 * k); hg.add(bun); }
+    else if (style < 0.5) { const brim = new THREE.Mesh(new THREE.CylinderGeometry(0.108 * k, 0.11 * k, 0.07 * k, 20), pick(CL)); brim.position.set(0, 0.07 * k, 0.01); hg.add(brim); }
+    if (rnd() < 0.32) { const tw = new THREE.Mesh(new THREE.TorusGeometry(0.078 * k, 0.027 * k, 8, 18), pick(TW)); tw.rotation.x = Math.PI / 2 + 0.22; tw.scale.set(1.22, 1, 1); tw.position.set(0, top + 0.03 * k, 0.004); body.add(tw); }
+    // 腕(肩の丸みからつなぐ)。下ろす／上げる／ドリンクを持つ
+    const sleeve = rnd() < 0.5 ? cl : sk, raise = rnd() < 0.28 ? (rnd() < 0.5 ? -1 : 1) : 0, hold = !raise && rnd() < 0.3 ? (rnd() < 0.5 ? -1 : 1) : 0, arms = [];
+    [-1, 1].forEach(sd => { const sh0 = new THREE.Group(); sh0.position.set(sd * 0.188 * k * wide, top - 0.105 * k, 0); body.add(sh0);
+      const ball = new THREE.Mesh(new THREE.SphereGeometry(0.06 * k, 12, 10), cl); sh0.add(ball);
+      const up = cap(0.05 * k, 0.24 * k, cl); sh0.add(up);
+      const fore = cap(0.04 * k, 0.22 * k, sleeve); fore.position.y = -0.3 * k; up.add(fore);
+      const hand = new THREE.Mesh(new THREE.SphereGeometry(0.042 * k, 10, 8), sk); hand.scale.set(0.8, 1.2, 0.55); hand.position.y = -0.31 * k; fore.add(hand);
+      if (raise === sd) { sh0.rotation.x = 2.6 + rnd() * 0.35; sh0.rotation.z = sd * 0.14; fore.rotation.x = 0.3; }
+      else if (hold === sd) { sh0.rotation.x = 0.25; sh0.rotation.z = sd * 0.08; fore.rotation.x = 1.45; const cup = new THREE.Mesh(new THREE.CylinderGeometry(0.036, 0.027, 0.1, 14), new THREE.MeshPhysicalMaterial({ color: 0xe9eef2, roughness: 0.1, transmission: 0.7, thickness: 0.01, transparent: true, opacity: 0.6 })); cup.position.set(0, -0.33 * k, -0.04); cup.rotation.x = -1.45; fore.add(cup); }
+      else { sh0.rotation.z = sd * (0.09 + rnd() * 0.05); sh0.rotation.x = 0.03 + rnd() * 0.14; fore.rotation.x = 0.1 + rnd() * 0.35; }
+      arms.push({ sh0, raised: raise === sd, base: sh0.rotation.x }); });
+    root.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+    people.push({ root, body, hg, arms, ph: rnd() * 6, amp: 0.01 + rnd() * 0.02, lean, react: 0 });
+  };
+  // 立ち位置(行き先に立つ場所のまわりは空ける)
+  [[1.0, 4.5], [1.8, 4.42], [2.55, 4.5], [4.35, 4.45], [5.05, 4.4], [5.8, 4.5], [0.9, 5.25], [1.7, 5.45], [2.5, 5.15], [3.3, 5.6], [4.2, 5.25], [5.1, 5.55], [5.9, 5.35], [1.2, 6.3], [2.2, 6.5], [3.6, 6.4], [4.6, 6.6], [1.6, 7.3], [0.8, 8.2], [5.6, 6.2]].forEach(([x, z]) => person(x + (rnd() - 0.5) * 0.14, z + (rnd() - 0.5) * 0.14));
+}
 
 /* ---- 床や金属に映る景色(場面そのものから一度だけ作る) ---- */
 const pm = new THREE.PMREMGenerator(renderer);
@@ -265,17 +324,38 @@ addEventListener("resize", size); size();
 /* ---- 見回す ---- */
 let yaw = 0, pitch = 0.03, drag = null;
 const cv = renderer.domElement;
-cv.addEventListener("pointerdown", e => { drag = { x: e.clientX, y: e.clientY, yaw, pitch }; cv.setPointerCapture(e.pointerId); });
+let down = null;
+cv.addEventListener("pointerdown", e => { down = { x: e.clientX, y: e.clientY }; drag = { x: e.clientX, y: e.clientY, yaw, pitch }; try { cv.setPointerCapture(e.pointerId); } catch (err) { /* つかめない端末 */ } });
 cv.addEventListener("pointermove", e => { if (!drag) return; yaw = drag.yaw + (e.clientX - drag.x) * 0.004; pitch = Math.max(-0.7, Math.min(0.6, drag.pitch + (e.clientY - drag.y) * 0.004)); });
 // 行き先: 押すと、その場所へすっと移る
 let move = null;
-const go = i => { const st = STOPS[i]; move = { t0: performance.now(), from: EYE.clone(), to: new THREE.Vector3(...st.p), y0: yaw, y1: st.yaw + Math.round((yaw - st.yaw) / (Math.PI * 2)) * Math.PI * 2, p0: pitch, p1: st.pitch }; document.querySelectorAll("#bar [data-i]").forEach(b => b.classList.toggle("on", +b.dataset.i === i)); };
+const go = i => { const st = STOPS[i]; move = { t0: performance.now(), from: EYE.clone(), to: new THREE.Vector3(...st.p), y0: yaw, y1: st.yaw + Math.round((yaw - st.yaw) / (Math.PI * 2)) * Math.PI * 2, p0: pitch, p1: st.pitch }; document.querySelectorAll("#bar [data-i]").forEach(b => b.classList.toggle("on", +b.dataset.i === i)); at = i; $("#tip").textContent = i === 3 ? (thrown ? `投げたピック ${thrown} 枚` : "画面を軽く押すと、客席へピックを投げます") : ""; };
 document.querySelectorAll("#bar [data-i]").forEach(b => b.onclick = () => go(+b.dataset.i));
 // 画質: 高(陰と影を計算)／軽(スマホ向け。陰と影を止めて、解像度を下げる)
 let high = !matchMedia("(pointer:coarse)").matches;
 const setQ = v => { high = v; gtao.enabled = v; renderer.shadowMap.enabled = v; L.forEach(l => l.castShadow = v); renderer.setPixelRatio(Math.min(devicePixelRatio || 1, v ? 1.5 : 1)); scene.traverse(o => { if (o.material) o.material.needsUpdate = true; }); size(); $("#q").textContent = "画質: " + (v ? "高" : "軽"); };
 $("#q").onclick = () => setQ(!high);
-cv.addEventListener("pointerup", () => drag = null);
+const release = e => { const tap = down && Math.hypot(e.clientX - down.x, e.clientY - down.y) < 8; down = null; drag = null; if (tap && at === 3) throwPick(e.clientX, e.clientY); };
+cv.addEventListener("pointerup", release); cv.addEventListener("pointercancel", () => { down = null; drag = null; });
+/* ---- 遊び: ステージの上から、客席へピックを投げる ---- */
+let at = 0, thrown = 0; const picks = [], PICK_COL = [0x7a3d1d, 0xe9e6dc, 0xc9433f, 0xd8b23a, 0x2f5fb8, 0x1c1c1e];
+const pickG = (() => { const sh2 = new THREE.Shape(), r = 0.016; sh2.moveTo(0, -r * 1.25); sh2.quadraticCurveTo(r * 1.15, -r * 0.2, r * 0.95, r * 0.75); sh2.quadraticCurveTo(0, r * 1.25, -r * 0.95, r * 0.75); sh2.quadraticCurveTo(-r * 1.15, -r * 0.2, 0, -r * 1.25); return new THREE.ExtrudeGeometry(sh2, { depth: 0.0012, bevelEnabled: false, curveSegments: 8 }); })();
+const ray = new THREE.Raycaster();
+function throwPick(cx, cy) {
+  ray.setFromCamera(new THREE.Vector2(cx / innerWidth * 2 - 1, -(cy / innerHeight) * 2 + 1), camera);
+  const d = ray.ray.direction.clone(), m = new THREE.Mesh(pickG, new THREE.MeshStandardMaterial({ color: PICK_COL[thrown % PICK_COL.length], roughness: 0.35, envMapIntensity: 1 }));
+  m.scale.setScalar(1.6); m.castShadow = true; m.position.copy(camera.position).addScaledVector(d, 0.35); m.position.y -= 0.25; add(m);
+  const power = 5.2 + Math.random() * 1.6; picks.push({ m, v: new THREE.Vector3(d.x * power, d.y * power + 2.6, d.z * power), w: new THREE.Vector3(Math.random() * 20 - 10, Math.random() * 24 - 12, Math.random() * 20 - 10), live: true });
+  thrown++; $("#tip").textContent = `投げたピック ${thrown} 枚`;
+  if (picks.length > 60) { const o = picks.shift(); scene.remove(o.m); }
+}
+function stepPicks(dt, t) { for (const k of picks) { if (!k.live) continue;
+    k.v.y -= 9.8 * dt; k.v.multiplyScalar(1 - 0.35 * dt); k.m.position.addScaledVector(k.v, dt); k.m.rotation.x += k.w.x * dt; k.m.rotation.y += k.w.y * dt; k.m.rotation.z += k.w.z * dt;
+    const p = k.m.position, ground = p.z < 3.7 ? SY : 0;
+    // 近くを通ると、その人が手を伸ばして跳ねる
+    if (p.y < 2.1 && p.y > 0.9) for (const o of people) if (Math.hypot(o.root.position.x - p.x, o.root.position.z - p.z) < 0.75) o.react = t + 1.4;
+    if (p.x < 0.1 || p.x > 6.7) { k.v.x *= -0.3; p.x = Math.max(0.1, Math.min(6.7, p.x)); } if (p.z > 9.0) { k.v.z *= -0.3; p.z = 9.0; }
+    if (p.y <= ground + 0.004) { p.y = ground + 0.004; if (Math.abs(k.v.y) > 1.2) { k.v.y *= -0.28; k.v.x *= 0.5; k.v.z *= 0.5; } else { k.live = false; k.m.rotation.set(-Math.PI / 2, 0, Math.random() * 6); } } } }
 
 const clock = new THREE.Clock(); let frames = 0, last = performance.now(), baked = false;
 THREE.DefaultLoadingManager.onLoad = () => { if (baked) return; bakeEnv(); baked = true; $("#load").remove(); $("#hud").hidden = false; $("#bar").hidden = false; setQ(high); };
@@ -285,6 +365,11 @@ renderer.setAnimationLoop(() => {
   camera.position.copy(EYE); camera.position.y += Math.sin(t * 0.6) * 0.004; camera.rotation.set(pitch, yaw, 0, "YXZ");
   L.forEach((l, i) => { l.intensity = l.userData.base ?? (l.userData.base = l.intensity); l.intensity = l.userData.base * (0.86 + 0.14 * Math.sin(t * (0.7 + i * 0.13) + i * 2.1)); });
   beams.forEach((b, i) => b.material.uniforms.k.value = 0.8 + 0.2 * Math.sin(t * 0.5 + i));
+  // 曲に合わせて小さく揺れる(170bpm の半分の速さ)
+  const beat = t * Math.PI * 2 * (170 / 60) / 2;
+  const dt = Math.min(0.05, t - (stepPicks.last ?? t)); stepPicks.last = t; stepPicks(dt, t);
+  people.forEach(o => { const b = Math.max(0, Math.sin(beat + o.ph)), r = o.react > t ? Math.min(1, (o.react - t) / 0.4) : 0; o.body.position.y = b * o.amp + r * Math.abs(Math.sin(t * 9 + o.ph)) * 0.09; o.hg.rotation.x = -b * 0.06 - r * 0.25;
+    o.arms.forEach(a => { a.sh0.rotation.x = a.raised ? a.base + Math.sin(beat * 2 + o.ph) * 0.16 : a.base + r * (2.7 - a.base); }); });
   grade.uniforms.time.value = t % 10;
   composer.render();
   if (++frames % 30 === 0) { const n = performance.now(); $("#fps").textContent = "　" + Math.round(30000 / (n - last)) + " fps"; last = n; }

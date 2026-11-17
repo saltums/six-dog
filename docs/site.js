@@ -1340,7 +1340,7 @@ ${label}`)) return;
       [[2.7, 1.25, 1.45, 0.18], [3.0, 1.62, 0.85, 0.22], [3.95, 1.45, 0.95, 0.25]].forEach(([x, y, z, r]) => { cyl(r, r, 0.01, m.gold, x, y, z); cyl(0.012, 0.012, y - 0.35, m.metal, x, 0.35 + (y - 0.35) / 2, z, 8); });
       cyl(0.17, 0.17, 0.08, m.black, 3.4, 0.82, 0.7);
       // マイクスタンド
-      [2.2, 3.4, 4.6].forEach(x => { cyl(0.012, 0.012, 1.45, m.metal, x, 0.35 + 0.72, 2.95, 8); cyl(0.13, 0.13, 0.02, m.black, x, 0.36, 2.95); const mic = cyl(0.022, 0.016, 0.16, m.black, x, 1.82, 3.02, 10); mic.rotation.x = 0.9; });
+      [2.2, 3.4, 4.6].forEach(x => { cyl(0.012, 0.012, 1.45, m.metal, x, 0.35 + 0.72, 2.95, 8); cyl(0.13, 0.13, 0.02, m.black, x, 0.36, 2.95); const mic = cyl(0.022, 0.016, 0.16, m.black, x, 1.87, 2.6, 10); mic.rotation.x = -0.9; });
       // ---- ステージの上の細かい物(ラグ、ケーブル、養生テープ、セトリ、足元の機材、アンプのつまみ、ドラムの金具、ギター) ----
       // 写真らしさは「物の密度」で決まるので、本番前のステージにあるものをひととおり置く
       {
@@ -1438,7 +1438,7 @@ ${label}`)) return;
         // マイクスタンドの三脚とブーム、マイクの線
         [2.2, 3.4, 4.6].forEach(x => {
           [0.5, 2.6, 4.7].forEach(a => { const l = cyl(0.008, 0.008, 0.34, m.metal, x + Math.cos(a) * 0.13, 0.44, 2.95 + Math.sin(a) * 0.13, 6); l.rotation.z = Math.cos(a) * 0.85; l.rotation.x = -Math.sin(a) * 0.85; });
-          const bm = cyl(0.008, 0.008, 0.5, m.metal, x, 1.8, 2.87, 6); bm.rotation.x = 1.25;
+          const bm = cyl(0.008, 0.008, 0.5, m.metal, x, 1.8, 2.79, 6); bm.rotation.x = -1.25;
           cyl(0.02, 0.02, 0.05, m.black, x, 1.75, 2.95, 8);
         });
         // スタンドに立てかけたギターとベース
@@ -1540,7 +1540,7 @@ ${label}`)) return;
         cyl(0.2, 0.2, 0.008, m.gold, 2.42, 1.5, 1.05); cyl(0.012, 0.012, 1.15, m.metal, 2.42, 0.925, 1.05, 8);
         // マイク: SM58 の銀色の丸い網。アンプとスネアには SM57(短いスタンド)
         const silver = P(0xb4b8bd, { metalness: 0.9, roughness: 0.35, envMapIntensity: 0.8 });
-        [2.2, 3.4, 4.6].forEach(x => { const b = new T.Mesh(new T.SphereGeometry(0.027, 12, 10), silver); b.position.set(x, 1.875, 3.085); b.scale.set(1, 1.1, 1); add(b); });
+        [2.2, 3.4, 4.6].forEach(x => { const b = new T.Mesh(new T.SphereGeometry(0.027, 12, 10), silver); b.position.set(x, 1.92, 2.535); b.scale.set(1, 1.1, 1); add(b); });
         const sm57 = (x, y, z, ry) => { const g = group(x, SY, z, ry); part(g, new T.CylinderGeometry(0.07, 0.07, 0.012, 12), m.black, 0, 0.006, 0); part(g, new T.CylinderGeometry(0.007, 0.007, y, 6), m.metal, 0, y / 2, 0);
           const mc = part(g, new T.CylinderGeometry(0.013, 0.016, 0.15, 8), P(0x2a2b2e, { roughness: 0.5, metalness: 0.5 }), 0, y, 0.06); mc.rotation.x = Math.PI / 2; part(g, new T.CylinderGeometry(0.016, 0.016, 0.03, 8), silver, 0, y, 0.145).rotation.x = Math.PI / 2; };
         sm57(4.72, 0.35, 0.84, Math.PI); sm57(1.75, 0.5, 0.86, Math.PI); sm57(5.78, 0.3, 1.1, Math.PI); sm57(0.85, 0.3, 0.84, Math.PI); sm57(2.72, 0.68, 1.72, 2.2);
