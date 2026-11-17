@@ -348,13 +348,33 @@ const barState = { cup: null, level: 0, phase: "idle", t: 0, drunk: 0 };
   // カウンターの上の裸電球(暖かい色)
   [9.3, 10.35, 11.4].forEach(x => { cyl(0.004, 0.004, 0.42, blackM, x, 2.19, 7.95, 6); cyl(0.022, 0.028, 0.05, std(0x1a1a1c, 0.4, 0.8), x, 1.97, 7.95, 12); const b = new THREE.Mesh(new THREE.SphereGeometry(0.038, 16, 12), glow(0xffc070, 2.6)); b.position.set(x, 1.915, 7.95); add(b); if (x === 10.35) { const l = new THREE.PointLight(0xffb060, 4.2, 4.6, 2); l.position.set(x, 1.86, 7.95); add(l); } });
   model("bar_chair_round_01", m2 => { [[9.9, 7.35, 0.4], [10.9, 7.4, -0.3]].forEach(([x, z, r]) => { const c = m2.clone(); c.position.set(x, 0, z); c.rotation.y = r; add(c); }); });
-  // 注ぐビール: カップ、中身、泡、注ぎ口からの流れ
+  // 注ぐビール: ここだけは手間をかける。光が透けて屈折する中身、立ちのぼる気泡、きめのある泡の層、冷えたカップの水滴、傾けて注ぐ動き
+  renderer.localClippingEnabled = true;
   const beer = new THREE.Group(); beer.visible = false; add(beer);
-  const bc = new THREE.Mesh(cupG, cupM); bc.rotation.x = Math.PI; beer.add(bc);
-  const liq = new THREE.Mesh(new THREE.CylinderGeometry(0.038, 0.0295, 0.1, 24), new THREE.MeshStandardMaterial({ color: 0xd8900c, roughness: 0.15, transparent: true, opacity: 0.9, envMapIntensity: 1.2, emissive: 0x4a2600, emissiveIntensity: 0.9 })); liq.position.y = -0.003; beer.add(liq);
-  const foam = new THREE.Mesh(new THREE.CylinderGeometry(0.0385, 0.0375, 0.018, 24), std(0xfff8e8, 0.9, 0, 0.3)); beer.add(foam);
-  const stream = new THREE.Mesh(new THREE.CylinderGeometry(0.004, 0.004, 0.2, 8), new THREE.MeshBasicMaterial({ color: 0xe8a020, transparent: true, opacity: 0.85 })); stream.visible = false; add(stream);
-  Object.assign(barState, { beer, liq, foam, stream, handles, tap: new THREE.Vector3(SVX - 0.06, 1.165, 7.925), serve: new THREE.Vector3(10.3, 1.155, 7.8) });
+  const BH = 0.112, BR0 = 0.0305, BR1 = 0.041, BT = 0.0012, rAt = y => BR0 + (BR1 - BR0) * (y / BH);   // カップ: 高さ、底と口の半径、厚み
+  const lat = (pts, seg = 56) => new THREE.LatheGeometry(pts.map(([r, y]) => new THREE.Vector2(r, y)), seg);
+  // カップ(薄い透明のプラスチック。口の巻き、胴の2本の段、底の厚み)
+  const bcup = new THREE.Mesh(lat([[0.012, 0.0015], [BR0 - 0.002, 0], [BR0, 0.001], [BR0 + 0.0006, 0.004], [rAt(0.03), 0.03], [rAt(0.032) + 0.0009, 0.032], [rAt(0.034), 0.034], [rAt(0.085), 0.085], [rAt(0.087) + 0.0009, 0.087], [rAt(0.089), 0.089], [BR1, BH - 0.002], [BR1 + 0.0017, BH - 0.0005], [BR1 + 0.0012, BH + 0.0008], [BR1 - BT, BH - 0.001], [BR0 - BT + 0.0004, BT], [0, BT]]),
+    new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: 0.05, transparent: true, opacity: 0.14, envMapIntensity: 2.4, clearcoat: 1, clearcoatRoughness: 0.04, side: THREE.DoubleSide, depthWrite: false })); bcup.renderOrder = 4; beer.add(bcup);
+  // 中身: 高画質では、向こう側の景色(棚の瓶や電球)が琥珀色に屈折して見える。水面の高さは「水平な切り口」で決めるので、カップを傾けても水面は水平のまま
+  const levelPlane = new THREE.Plane(new THREE.Vector3(0, -1, 0), 0);
+  const liqG = lat([[0, BT + 0.0006], [BR0 - BT - 0.0004, BT + 0.0006], [BR1 - BT - 0.0006, BH - 0.003], [0, BH - 0.003]]);
+  const liqHi = new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: 0, transmission: 1, thickness: 0.075, ior: 1.34, attenuationColor: new THREE.Color(0xe2890b), attenuationDistance: 0.05, envMapIntensity: 1.8, specularIntensity: 1, emissive: 0x3a1c00, emissiveIntensity: 0.55, clippingPlanes: [levelPlane], depthWrite: false });
+  const liqLo = new THREE.MeshStandardMaterial({ color: 0xc87a08, roughness: 0.08, transparent: true, opacity: 0.9, envMapIntensity: 1.6, emissive: 0x4a2600, emissiveIntensity: 0.9, clippingPlanes: [levelPlane], depthWrite: false });
+  const liq = new THREE.Mesh(liqG, liqHi); liq.renderOrder = 1; beer.add(liq);
+  // 泡: きめ(小さな気泡の凹凸)のある、こんもりした層。注ぎはじめは多く、落ち着くと薄くなる
+  const foamTex = canvasTex(256, 256, (g, w, h) => { g.fillStyle = "#f6efdc"; g.fillRect(0, 0, w, h); for (let i = 0; i < 2600; i++) { const r = 0.6 + rnd() * rnd() * 5, x = rnd() * w, y = rnd() * h; g.fillStyle = `rgba(${200 + rnd() * 40 | 0},${180 + rnd() * 40 | 0},${130 + rnd() * 40 | 0},${0.1 + rnd() * 0.2})`; g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); g.strokeStyle = "rgba(255,255,255,.55)"; g.lineWidth = 0.7; g.beginPath(); g.arc(x - r * 0.15, y - r * 0.15, r * 0.85, 3.4, 5.4); g.stroke(); } });
+  foamTex.wrapS = foamTex.wrapT = THREE.RepeatWrapping; foamTex.repeat.set(2, 1);
+  const foam = new THREE.Mesh(lat([[0, 0], [1, 0], [1.0, 0.72], [0.985, 0.86], [0.9, 0.96], [0.62, 1.03], [0.3, 1.06], [0, 1.07]]), new THREE.MeshStandardMaterial({ map: foamTex, bumpMap: foamTex, bumpScale: 0.0035, color: 0xfffaf0, roughness: 0.95, envMapIntensity: 0.5, emissive: 0x2a2418, emissiveIntensity: 0.5 })); foam.renderOrder = 2; beer.add(foam);
+  // 気泡: 底のいくつかの点から、細い列になって立ちのぼる
+  const NB = 90, bubSeed = [], bubPos = new Float32Array(NB * 3); for (let i = 0; i < NB; i++) { const col = i % 7, a = col * 0.9 + 0.3, rr = 0.25 + (col % 3) * 0.24; bubSeed.push({ a, rr, ph: rnd(), sp: 0.28 + rnd() * 0.3, wob: rnd() * 6 }); }
+  const bubG = new THREE.BufferGeometry(); bubG.setAttribute("position", new THREE.BufferAttribute(bubPos, 3));
+  const bub = new THREE.Points(bubG, new THREE.PointsMaterial({ size: 0.0032, sizeAttenuation: true, color: 0xfff2c8, transparent: true, opacity: 0.85, depthWrite: false, map: canvasTex(32, 32, (g, w) => { const gr = g.createRadialGradient(w / 2, w / 2, 0, w / 2, w / 2, w / 2); gr.addColorStop(0, "rgba(255,255,255,1)"); gr.addColorStop(0.5, "rgba(255,255,255,.7)"); gr.addColorStop(1, "rgba(255,255,255,0)"); g.fillStyle = gr; g.fillRect(0, 0, w, w); }) })); bub.renderOrder = 3; bub.frustumCulled = false; beer.add(bub);
+  // 水滴: 冷えたカップの外側に、だんだん増える
+  const ND = 130, drops = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 8, 6), new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: 0, transparent: true, opacity: 0.42, envMapIntensity: 3, depthWrite: false }), ND); { const d = new THREE.Object3D(); for (let i = 0; i < ND; i++) { const y = 0.006 + rnd() * 0.082, a = rnd() * 6.283, r = rAt(y) + 0.0009, sz = 0.0007 + rnd() * rnd() * 0.0022; d.position.set(Math.cos(a) * r, y, Math.sin(a) * r); d.rotation.set(0, -a, 0); d.scale.set(sz * 0.45, sz * (1 + rnd() * 0.9), sz); d.updateMatrix(); drops.setMatrixAt(i, d.matrix); } } drops.count = 0; drops.renderOrder = 5; beer.add(drops);
+  // 注ぎ口からの流れ(細くねじれながら落ちる)
+  const stream = new THREE.Mesh(new THREE.CylinderGeometry(0.0032, 0.0046, 1, 10, 6), new THREE.MeshStandardMaterial({ color: 0xd8900c, roughness: 0.1, transparent: true, opacity: 0.88, emissive: 0x5a3000, emissiveIntensity: 1, envMapIntensity: 1.5 })); stream.visible = false; add(stream);
+  Object.assign(barState, { beer, liq, liqHi, liqLo, foam, bub, bubSeed, drops, stream, handles, levelPlane, BH, BT, rAt, spout: new THREE.Vector3(SVX - 0.06, 1.325, 7.925), tap: new THREE.Vector3(SVX - 0.06, 1.124, 7.925), serve: new THREE.Vector3(10.3, 1.102, 7.8) });
 }
 
 /* ---- お客さん ---- */
@@ -415,19 +435,36 @@ $("#q").onclick = () => setQ(!high);
 const release = e => { const tap = down && Math.hypot(e.clientX - down.x, e.clientY - down.y) < 8; down = null; drag = null; if (tap && at === 3) throwPick(e.clientX, e.clientY); if (tap && at === 4) orderBeer(); };
 /* ---- 遊び: ドリンクカウンターで生ビールを頼む(押す → 注がれる → 目の前に出てくる → もう一度押すと飲む) ---- */
 function orderBeer() { const b = barState, t = clock.getElapsedTime();
-  if (b.phase === "idle") { b.phase = "pour"; b.t = t; b.level = 0; b.beer.visible = true; b.beer.position.copy(b.tap); b.beer.rotation.set(0, 0, 0); $("#tip").textContent = "注いでいます…"; }
+  if (b.phase === "idle") { b.phase = "pour"; b.t = t; b.level = 0; b.drops.count = 0; b.beer.visible = true; b.beer.position.copy(b.tap); b.beer.rotation.set(0, 0, 0.62); $("#tip").textContent = "注いでいます…"; }
   else if (b.phase === "ready") { b.phase = "drink"; b.t = t; $("#tip").textContent = "かんぱい"; } }
 function stepBeer(t) { const b = barState;
   // 中の人: 注ぐときはサーバーの前、出すときはお客さんの前、ふだんは少し離れて立つ
   if (b.staff) { b.staffX = b.phase === "pour" ? 9.62 : b.phase === "idle" ? 10.75 : 10.32; const r = b.staff.root; r.position.x += (b.staffX - r.position.x) * 0.07; const moving = Math.abs(b.staffX - r.position.x) > 0.03;
     r.rotation.y = moving ? (b.staffX < r.position.x ? 1.2 : -1.2) : 0; b.staff.body.position.y = moving ? Math.abs(Math.sin(t * 9)) * 0.02 : 0;
     const a = b.staff.arms[1].sh0; a.rotation.x += ((b.phase === "pour" && !moving ? 1.3 : b.phase === "ready" || b.phase === "slide" ? 1.1 : 0.05) - a.rotation.x) * 0.12; }
-  if (b.phase === "idle") return; const u = t - b.t, set = lv => { b.level = lv; b.liq.scale.y = Math.max(0.001, lv); b.liq.position.y = -0.055 + 0.05 * lv; b.liq.visible = lv > 0.01; b.foam.visible = lv > 0.05; b.foam.position.y = -0.055 + 0.1 * lv + 0.008; };
-  if (b.phase === "pour") { const k = Math.min(1, u / 2.4); set(k * 0.86); b.handles[0].rotation.x = Math.min(0.9, u * 4) * (k < 1 ? 1 : 0); b.stream.visible = k < 1 && u > 0.2; b.stream.position.set(b.tap.x, b.tap.y + 0.1, b.tap.z); if (k >= 1) { b.phase = "slide"; b.t = t; } }
-  else if (b.phase === "slide") { const k = Math.min(1, u / 0.9), e = 1 - Math.pow(1 - k, 3); b.beer.position.lerpVectors(b.tap, b.serve, e); b.beer.position.y += Math.sin(k * Math.PI) * 0.06; if (k >= 1) { b.phase = "ready"; $("#tip").textContent = "生ビールです。もう一度押すと飲みます"; } }
-  else if (b.phase === "drink") { const k = Math.min(1, u / 2.6), up = Math.min(1, k * 3), dn = Math.max(0, (k - 0.8) * 5), near = camera.position.clone().add(new THREE.Vector3(Math.sin(-yaw) * 0.0, -0.13, 0.32).applyAxisAngle(new THREE.Vector3(0, 1, 0), 0)), e = up * (1 - dn);
-    b.beer.position.lerpVectors(b.serve, near, e); b.beer.rotation.x = -e * Math.max(0, (k - 0.25)) * 1.5; set(0.86 * (1 - Math.min(1, Math.max(0, (k - 0.3) / 0.5))));
-    if (k >= 1) { b.phase = "idle"; b.drunk++; b.beer.visible = false; b.beer.rotation.set(0, 0, 0); $("#tip").textContent = `飲んだビール ${b.drunk} 杯`; } } }
+  if (b.phase === "idle") return;
+  const u = t - b.t, B = b.beer, H = b.BH;
+  // lv: 中身の高さ(0〜1)、fm: 泡の厚み(0〜1)。カップが傾いていても、水面と泡は水平に保つ
+  const set = (lv, fm) => { b.level = lv; const tilt = Math.hypot(B.rotation.x, B.rotation.z), yl = b.BT + (H - 0.006) * lv, c = Math.cos(tilt);
+    b.levelPlane.constant = B.position.y + yl * c + Math.sin(tilt) * b.rAt(yl) * 0.35; b.liq.visible = lv > 0.005;
+    const fh = Math.max(0.0001, fm * H * 0.34), r = b.rAt(Math.min(H, yl + fh * 0.5)) - b.BT - 0.0006; b.foam.visible = fm > 0.01 && lv > 0.01; b.foam.scale.set(r, fh, r); b.foam.position.set(0, yl / Math.max(0.4, c), 0); b.foam.rotation.set(-B.rotation.x, 0, -B.rotation.z);
+    const pos = b.bub.geometry.attributes.position; b.bubSeed.forEach((q, i) => { const f = (t * q.sp + q.ph) % 1, y = b.BT + 0.002 + f * Math.max(0.001, yl - b.BT - 0.003), rr = b.rAt(y) * 0.8 * q.rr; pos.setXYZ(i, Math.cos(q.a) * rr + Math.sin(t * 3 + q.wob) * 0.0012, y, Math.sin(q.a) * rr + Math.cos(t * 2.6 + q.wob) * 0.0012); }); pos.needsUpdate = true; b.bub.visible = lv > 0.06; };
+  b.liq.material = high ? b.liqHi : b.liqLo;
+  if (b.phase === "pour") { const D = 3.4, k = Math.min(1, u / D), e = k * k * (3 - 2 * k);
+    B.rotation.set(0, 0, 0.62 * (1 - Math.min(1, k * 1.25))); B.position.copy(b.tap); B.position.x += Math.sin(B.rotation.z) * H * 0.78;                      // カップを斜めに構えて、だんだん起こす
+    set(e * 0.8, k < 0.12 ? k / 0.12 * 0.5 : 0.5 + 0.5 * e);                                                // はじめに泡が立ち、あとから中身が上がる
+    b.handles[0].rotation.x = k < 1 ? Math.min(0.95, u * 5) : 0;
+    const top = b.levelPlane.constant, len = Math.max(0.02, b.spout.y - top); b.stream.visible = k < 0.97 && u > 0.18; b.stream.scale.set(1 + Math.sin(t * 31) * 0.12, len, 1 + Math.cos(t * 27) * 0.12); b.stream.position.set(b.spout.x + Math.sin(t * 13) * 0.0006, top + len / 2, b.spout.z); b.stream.rotation.y = t * 9;
+    b.drops.count = Math.floor(e * 50);
+    if (k >= 1) { b.phase = "slide"; b.t = t; b.handles[0].rotation.x = 0; b.stream.visible = false; } }
+  else if (b.phase === "slide") { const k = Math.min(1, u / 1.0), e = 1 - Math.pow(1 - k, 3); B.position.lerpVectors(b.tap, b.serve, e); B.position.y += Math.sin(k * Math.PI) * 0.07; B.rotation.set(0, 0, Math.sin(k * Math.PI) * -0.06); set(0.8, 1);
+    if (k >= 1) { b.phase = "ready"; b.t = t; $("#tip").textContent = "生ビールです。もう一度押すと飲みます"; } }
+  else if (b.phase === "ready") { B.position.copy(b.serve); B.rotation.set(0, 0, 0); set(0.8 + Math.min(0.03, u * 0.002), Math.max(0.62, 1 - u * 0.02)); b.drops.count = Math.min(130, 50 + Math.floor(u * 9)); }   // 泡がゆっくり落ち着き、水滴が増える
+  else if (b.phase === "drink") { const k = Math.min(1, u / 3.2), up = Math.min(1, k * 2.6), dn = Math.max(0, (k - 0.84) * 6.25), e = up * (1 - dn) * (2 - up * (1 - dn));
+    const fwd = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion), near = camera.position.clone().addScaledVector(fwd, 0.27).add(new THREE.Vector3(0, -0.105, 0));
+    B.position.lerpVectors(b.serve, near, Math.min(1, e)); const sip = Math.max(0, Math.min(1, (k - 0.3) / 0.5)); B.rotation.set(-Math.min(1, e) * (0.25 + sip * 0.95), 0, 0);
+    set(0.8 * (1 - sip), 0.7 * (1 - sip * 0.85));
+    if (k >= 1) { b.phase = "idle"; b.drunk++; B.visible = false; B.rotation.set(0, 0, 0); b.drops.count = 0; $("#tip").textContent = `飲んだビール ${b.drunk} 杯`; } } }
 cv.addEventListener("pointerup", release); cv.addEventListener("pointercancel", () => { down = null; drag = null; });
 /* ---- 遊び: ステージの上から、客席へピックを投げる ---- */
 let at = 0, thrown = 0; const picks = [], PICK_COL = [0x7a3d1d, 0xe9e6dc, 0xc9433f, 0xd8b23a, 0x2f5fb8, 0x1c1c1e];
