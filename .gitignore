@@ -1,2 +1,5 @@
 Thumbs.db
 .DS_Store
+
+# ダウンロードした素材の元ファイル(サイトには docs/real/ に圧縮したものを置く)
+assets-src/polyhaven/
