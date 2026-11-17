@@ -24,9 +24,11 @@
   #how{position:fixed;left:50%;top:max(12px,env(safe-area-inset-top,0px));transform:translateX(-50%);font-size:12px;color:#e9e7df;background:rgba(10,12,18,.72);padding:7px 14px;border-radius:999px;white-space:nowrap;max-width:92vw;overflow:hidden;text-overflow:ellipsis;transition:opacity 1s}
   @media (max-width:640px){#how{top:auto;bottom:calc(206px + env(safe-area-inset-bottom,0px));white-space:normal;text-align:center;border-radius:14px}}
   /* 当時のつぶやき: ときどき、だれかの声が小さく浮かんで消える */
-  #voice{position:fixed;left:50%;bottom:calc(74px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);max-width:min(560px,86vw);text-align:center;font-size:13.5px;line-height:1.6;color:#f2f0e6;text-shadow:0 1px 8px rgba(0,0,0,.9);opacity:0;transition:opacity 1.6s ease;pointer-events:none}
-  #voice.on{opacity:.92}
-  #voice small{display:block;font-size:11px;color:#a6aec6;margin-top:2px}
+  #voices{position:fixed;inset:0;pointer-events:none;overflow:hidden}
+  .voice{position:absolute;transform:translate(-50%,-100%);margin-top:-10px;max-width:min(240px,46vw);background:rgba(250,252,252,.94);color:#121515;font-size:12.8px;line-height:1.5;padding:7px 12px 6px;border-radius:12px;box-shadow:0 4px 14px rgba(0,0,0,.35);opacity:0;transition:opacity .4s ease;text-align:left}
+  .voice::after{content:"";position:absolute;left:50%;bottom:-6px;margin-left:-6px;border:6px solid transparent;border-bottom:0;border-top-color:rgba(250,252,252,.94)}
+  .voice small{display:block;margin-top:2px;font-family:"Squada One",Impact,sans-serif;font-size:11.5px;letter-spacing:.08em;color:#138585}
+  .voice.on{opacity:1}
   #load{position:fixed;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;background:#050608;padding:20px max(16px,env(safe-area-inset-right,0px)) 24px max(16px,env(safe-area-inset-left,0px));transition:opacity .9s ease;overflow:auto}
   #load.out{opacity:0;pointer-events:none}
   .lg{font-family:"Squada One",Impact,sans-serif;font-size:54px;line-height:1;letter-spacing:.02em;color:#f3f7f7;text-align:center}
@@ -69,7 +71,7 @@
   <button id="enterMute" type="button" hidden>音を出さずに入る</button>
 </div>
 <div id="hud" hidden><b>SiX-DOG</b><br><span id="fps"></span><div id="tip" style="color:#ffc857;font-weight:700"></div><div id="now"></div><div id="heard" style="color:#a6aec6"></div></div>
-<div id="voice" aria-live="off"></div>
+<div id="voices" aria-hidden="true"></div>
 <div id="joy" hidden><i></i></div>
 <div id="how" hidden></div>
 <div id="bar" hidden><a id="back" href="../#venue">× 出る</a><button data-i="5" class="on">入口</button><button data-i="6">受付</button><button data-i="0">柵の前</button><button data-i="1">PA卓の横</button><button data-i="2">ホールの入口</button><button data-i="3">ステージの上</button><button data-i="4">ドリンク</button><button id="snd" aria-pressed="false">音 OFF</button><button id="q">画質: 高</button></div>
@@ -612,11 +614,19 @@ function stepPicks(dt, t) { for (const k of picks) { if (!k.live) continue;
 const clock = new THREE.Clock(); let frames = 0, last = performance.now(), baked = false;
 /* ---- つい長居してしまう仕掛け ---- */
 // 1) 当時のつぶやき(data/voices.json。当時の X の声を、名前を出さずに短く言い換えたもの)が、ときどき浮かんで消える
-function startVoices() { fetch("../data/voices.json").then(r => r.json()).then(vs => { if (!vs.length) return; let order = [], k = 0; const el = $("#voice");
-    const next = () => { if (k >= order.length) { order = vs.map((_, i) => i).sort(() => Math.random() - 0.5); k = 0; } const v = vs[order[k++]], [y, mo] = String(v.d || "").split("-");
-      el.innerHTML = ""; el.append(document.createTextNode("「" + v.t + "」")); if (y) { const sm = document.createElement("small"); sm.textContent = `${y}年${mo ? +mo + "月" : ""}`; el.append(sm); }
-      el.classList.add("on"); setTimeout(() => el.classList.remove("on"), 7000); };
-    setTimeout(next, 6000); setInterval(next, 15000); }).catch(() => { /* 読めなくても困らない */ }); }
+let voiceList = [], nextVoice = 0; const talking = [], recentV = [], vTmp = new THREE.Vector3();
+function startVoices() { fetch("../data/voices.json").then(r => r.json()).then(vs => { voiceList = vs; nextVoice = performance.now() + 1500; }).catch(() => { /* 読めなくても困らない */ }); }
+function headOnScreen(p) { p.hg.getWorldPosition(vTmp); vTmp.y += 0.24; const dist = Math.hypot(vTmp.x - EYE.x, vTmp.z - EYE.z); vTmp.project(camera);
+  return { on: vTmp.z < 1 && Math.abs(vTmp.x) < 0.85 && vTmp.y < 0.9 && vTmp.y > -0.6, dist, x: (vTmp.x + 1) / 2 * innerWidth, y: (1 - vTmp.y) / 2 * innerHeight }; }
+function updateVoices(now) { if (!voiceList.length) return; camera.updateMatrixWorld();
+  if (now > nextVoice && talking.length < 3) { nextVoice = now + 1800 + Math.random() * 2200;
+    const cand = people.filter(q => !talking.some(t => t.p === q)).map(q => ({ p: q, s: headOnScreen(q) })).filter(c => c.s.on && c.s.dist < 6.5);
+    if (cand.length) { const c = cand[(Math.random() * cand.length) | 0]; let vi; for (let k = 0; k < 8; k++) { vi = (Math.random() * voiceList.length) | 0; if (!recentV.includes(vi)) break; }
+      recentV.push(vi); if (recentV.length > Math.min(20, voiceList.length - 1)) recentV.shift();
+      const v = voiceList[vi], el = document.createElement("div"), sm = document.createElement("small"); el.className = "voice"; el.textContent = v.t; sm.textContent = String(v.d || "").replace("-", "."); el.append(sm);
+      $("#voices").appendChild(el); requestAnimationFrame(() => el.classList.add("on")); setTimeout(() => el.classList.add("on"), 60); talking.push({ p: c.p, el, until: now + 4200 }); } }
+  for (let i = talking.length - 1; i >= 0; i--) { const t = talking[i], sc = headOnScreen(t.p); t.el.style.left = sc.x + "px"; t.el.style.top = sc.y + "px"; t.el.style.visibility = sc.on ? "visible" : "hidden";
+    if (now > t.until) { t.el.classList.remove("on"); const el = t.el; setTimeout(() => el.remove(), 400); talking.splice(i, 1); } } }
 // 2) 聴いた曲を数える(この端末に覚えておく)。23曲そろえたくなるように
 const heard = new Set(); try { JSON.parse(localStorage.getItem("sixdog_real_heard") || "[]").forEach(f => heard.add(f)); } catch (e) { /* 読めない端末 */ }
 const markHeard = (f, total) => { heard.add(f); try { localStorage.setItem("sixdog_real_heard", JSON.stringify([...heard])); } catch (e) { /* 保存できない端末 */ } $("#heard").textContent = heard.size >= total ? `ここで聴いた曲 ${total} / ${total}　ぜんぶ聴きました` : `ここで聴いた曲 ${heard.size} / ${total}`; };
@@ -696,6 +706,7 @@ const frame = () => {
   grade.uniforms.time.value = t % 10;
   composer.render();
   if (frames % 12 === 0) musicZone();
+  updateVoices(performance.now());
   if (++frames % 30 === 0) { const n = performance.now(); $("#fps").textContent = "　" + Math.round(30000 / (n - last)) + " fps"; last = n; }
 };
 renderer.setAnimationLoop(frame);
