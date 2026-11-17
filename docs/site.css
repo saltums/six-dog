@@ -584,3 +584,13 @@ body.compact .dogbar{margin-top:26px}
 .links li > a{flex:1;min-width:0}
 #view.admin .tweet-unlink{display:inline-block}
 #view.admin .slot:has(.tweet-panel:not(.is-empty)){display:block}
+
+/* 3D: 縦向きでも歩けるように(案内は折り返し、行き先の一覧は幅を抑える) */
+.v3d-btn[hidden]{display:none}
+@media (orientation: portrait){
+  .v3d-hint{white-space:normal;width:max-content;max-width:calc(100% - 32px);text-align:center;border-radius:14px;bottom:calc(160px + env(safe-area-inset-bottom,0px))}
+  .v3d-top{gap:6px}
+  .v3d-btn{padding:8px 11px;font-size:.8rem}
+  .v3d-place{font-size:1rem}
+  .v3d-stops{max-width:calc(100% - 24px)}
+}

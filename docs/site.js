@@ -395,7 +395,7 @@ ${label}`)) return;
     });
     return `
       <div class="wip">${ic("cone")}<div><h2>3Dの会場は仮組みです</h2><p>残っていた会場見取り図(寸法入り)と写真をもとに組んだ仮の3Dです。機材や壁の色などは推測で、思い出や写真が集まるほど本物に近づけていきます。</p></div></div>
-      <div class="enter">${ic("cube")}<p><b>ENTER SiX-DOG</b>スマホは横向きにすると、左手で歩いて右手で見回せます。パソコンは W A S D で歩いて、ドラッグで見回します。<br>お客さんのつぶやきは、当時のXに投稿されたSiX-DOGへの声を、名前を出さずに短く言い換えたものです。</p><button type="button" id="enter3d">${ic("cube", "s")}中に入る</button></div>
+      <div class="enter">${ic("cube")}<p><b>ENTER SiX-DOG</b>スマホは縦でも横でも歩けます(横向きのほうが広く見えます)。左下で歩いて、画面をなぞって見回します。パソコンは W A S D で歩いて、ドラッグで見回します。<br>お客さんのつぶやきは、当時のXに投稿されたSiX-DOGへの声を、名前を出さずに短く言い換えたものです。</p><button type="button" id="enter3d">${ic("cube", "s")}中に入る</button></div>
       <section class="sec">
         ${sh("会場の略図", "FLOOR MAP")}
         <div class="planbox"><svg class="plan" viewBox="-40 -110 650 470" role="img" aria-label="SiX-DOGの見取り図。左にステージとホール、右に楽屋・受付・ドリンクカウンター・階段">
@@ -1375,12 +1375,13 @@ ${label}`)) return;
         <div class="v3d-top">
           <button type="button" class="v3d-btn" data-x>× 出る</button>
           <div class="v3d-place"><span data-p>SiX-DOG</span><small data-n></small></div>
+          <button type="button" class="v3d-btn" data-o ${coarse() ? "" : "hidden"} aria-label="縦と横を切り替える">縦⇄横</button>
           <button type="button" class="v3d-btn" data-s aria-expanded="false">行き先</button>
         </div>
         <div class="v3d-stops" hidden>${STOPS.map((p, i) => `<button type="button" data-i="${i}"><b>${i + 1}</b>${p.name}</button>`).join("")}</div>
         <div class="joy" hidden><i></i></div>
         <div class="joy-home" ${coarse() ? "" : "hidden"}><i></i><span>ここを押して歩く</span></div>
-        <div class="v3d-hint">${coarse() ? "行きたい場所をタップすると歩きます・左下のスティックでも歩けます・右側をなぞって見回す" : "W A S D / 矢印キーで歩く・行きたい場所をクリックしても歩ける・ドラッグで見回す"}</div>
+        <div class="v3d-hint">${coarse() ? "行きたい場所をタップすると歩きます・左下のスティックでも歩けます・画面をなぞって見回す" : "W A S D / 矢印キーで歩く・行きたい場所をクリックしても歩ける・ドラッグで見回す"}</div>
         <div class="v3d-rot" hidden><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="7" width="19" height="10" rx="2"/><path d="M7 3.5a8 8 0 0 1 10 0M17 20.5a8 8 0 0 1-10 0"/></svg>スマホを横向きにすると、中を歩けます</div></div>
         <div class="v3d-load"><div>SiX-DOGへ向かっています…</div></div>
         <div class="v3d-voices" aria-hidden="true"></div>
@@ -1397,7 +1398,6 @@ ${label}`)) return;
       const settle = (fn, ms) => { let p; try { p = fn(); } catch (e) { p = null; } return Promise.race([Promise.resolve(p).catch(() => {}), new Promise(r => setTimeout(r, ms))]); };
       if (coarse()) {
         await settle(() => root.requestFullscreen(), 1500);
-        await settle(() => screen.orientation.lock("landscape"), 1500);
       }
       let T;
       try {
@@ -1442,10 +1442,11 @@ ${label}`)) return;
       }
       function resize() {
         const w = root.clientWidth, h = root.clientHeight;
-        renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+        // 縦長の画面は横が狭くなるので、上下の画角を広げて見える範囲を保つ
+        renderer.setSize(w, h, false); camera.aspect = w / h; camera.fov = h > w ? 96 : 72; camera.updateProjectionMatrix();
         if (fx) fx.setSize(w, h);
-        st.paused = coarse() && h > w;
-        $(".v3d-rot").hidden = !st.paused;
+        st.paused = false; st.tall = h > w;
+        $(".v3d-rot").hidden = true;
       }
       // つぶやき:近くにいて画面に映っているお客さんが、ときどき吹き出しでひとこと言う
       const voices = await voicesP, vLayer = $(".v3d-voices"), talking = [], recent = [];
@@ -1515,7 +1516,7 @@ ${label}`)) return;
       canvas.addEventListener("pointerdown", e => {
         hideHint(); canvas.setPointerCapture(e.pointerId);
         taps.set(e.pointerId, { x: e.clientX, y: e.clientY, t: performance.now() });
-        if (e.pointerType !== "mouse" && e.clientX < root.clientWidth * 0.45 && !st.joy) joyStart(e, e.clientX, e.clientY);
+        if (e.pointerType !== "mouse" && e.clientX < root.clientWidth * (st.tall ? 0.5 : 0.45) && (!st.tall || e.clientY > root.clientHeight * 0.55) && !st.joy) joyStart(e, e.clientX, e.clientY);
         else if (!st.look) st.look = { id: e.pointerId, x: e.clientX, y: e.clientY };
       });
       // 左下の台から始めたときは、台の真ん中を中心にする
@@ -1549,6 +1550,16 @@ ${label}`)) return;
       window.addEventListener("keydown", kd); window.addEventListener("keyup", ku);
       window.addEventListener("resize", resize);
       $("[data-x]").addEventListener("click", exit);
+      $("[data-o]").addEventListener("click", async () => {
+        const want = root.clientHeight > root.clientWidth ? "landscape" : "portrait";
+        try {
+          if (!document.fullscreenElement) await root.requestFullscreen();
+          await screen.orientation.lock(want);
+        } catch (e) {
+          hint.textContent = "この端末では切り替えられません。スマホを回してください(画面の回転を許可してください)";
+          hint.classList.remove("off"); setTimeout(hideHint, 4000);
+        }
+      });
       const stopsEl = $(".v3d-stops"), stopsBtn = $("[data-s]");
       stopsBtn.addEventListener("click", () => { stopsEl.hidden = !stopsEl.hidden; stopsBtn.setAttribute("aria-expanded", String(!stopsEl.hidden)); });
       stopsEl.addEventListener("click", e => { const b = e.target.closest("[data-i]"); if (!b) return; stopsEl.hidden = true; stopsBtn.setAttribute("aria-expanded", "false"); goTo(+b.dataset.i); });
@@ -1612,6 +1623,7 @@ ${label}`)) return;
         S.alive = false; cancelAnimationFrame(S.raf);
         window.removeEventListener("keydown", kd); window.removeEventListener("keyup", ku); window.removeEventListener("resize", resize);
         try { renderer.dispose(); } catch (e) { /* 何もしない */ }
+        try { screen.orientation.unlock(); } catch (e) { /* 対応していない端末 */ }
         if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
         root.remove(); document.documentElement.style.overflow = ""; S = null;
       }
