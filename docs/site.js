@@ -397,7 +397,7 @@ ${label}`)) return;
     });
     return `
       <div class="wip">${ic("cone")}<div><h2>3Dの会場は仮組みです</h2><p>残っていた会場見取り図(寸法入り)と写真をもとに組んだ仮の3Dです。機材や壁の色などは推測で、思い出や写真が集まるほど本物に近づけていきます。</p></div></div>
-      <div class="enter">${ic("cube")}<p><b>ENTER SiX-DOG</b>ホールとドリンクカウンターを、機材リストと写真ベースの素材で作り直しました。行き先を選んで、画面をなぞって見回します。入ると Aireal tram の曲が流れます(音を出さずに入ることもできます)。ステージの上ではピックを投げられ、ドリンクでは生ビールを頼めます。<br>以前の3Dでは、階段・受付・楽屋まで歩けます。お客さんのつぶやきは、当時のXに投稿されたSiX-DOGへの声を、名前を出さずに短く言い換えたものです。</p><button type="button" id="enter3d">${ic("cube", "s")}中に入る</button><button type="button" id="enter3dOld" class="sub">以前の3Dで歩く</button></div>
+      <div class="enter">${ic("cube")}<p><b>ENTER SiX-DOG</b>地上の入口から赤い階段を降りて、ロビー・受付・ホール・ドリンクカウンターまで歩けます(機材リストと写真ベースの素材で作り直しました)。スマホは左下のスティック、パソコンは W A S D で歩いて、画面をなぞって見回します。入ると Aireal tram の曲が流れます(音を出さずに入ることもできます)。ステージの上ではピックを投げられ、ドリンクでは生ビールを頼めます。<br>以前の3Dでは、楽屋にも入れます。お客さんのつぶやきは、当時のXに投稿されたSiX-DOGへの声を、名前を出さずに短く言い換えたものです。</p><button type="button" id="enter3d">${ic("cube", "s")}中に入る</button><button type="button" id="enter3dOld" class="sub">以前の3Dで歩く</button></div>
       <section class="sec">
         ${sh("会場の略図", "FLOOR MAP")}
         <div class="planbox"><svg class="plan" viewBox="-40 -110 650 470" role="img" aria-label="SiX-DOGの見取り図。左にステージとホール、右に楽屋・受付・ドリンクカウンター・階段">
