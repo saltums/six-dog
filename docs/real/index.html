@@ -358,60 +358,26 @@ const barState = { cup: null, level: 0, phase: "idle", t: 0, drunk: 0 };
 }
 
 /* ---- お客さん ---- */
-// 顔は作らない(作ると怖い)。体の形だけを本物に近づけて、全身を黒い影にする。暗い客席で、照明の照り返しに輪郭だけが浮く
-// 体は、輪切りの形を積んで、なめらかにつないだ面。rings: [高さ, 中心x, 中心z, 横の半径, 前後の半径, (前のふくらみ), (後ろのふくらみ)]。正面は -z
+// ピクトグラム(案内表示の人の形): 丸い頭、胴、手足だけ。光を受けない黒一色なので、照明の計算も影の計算もいらない
 const people = [];
-function loft(rings, seg = 24, capTop = true, capBot = true) {
-  const pos = [], idx = [];
-  rings.forEach(r => { const [y, cx, cz, rx, rz, fr = 1, bk = 1] = r; for (let i = 0; i <= seg; i++) { const a = i / seg * Math.PI * 2, sn = Math.sin(a), c = Math.cos(a); pos.push(cx + c * rx, y, cz + sn * rz * (sn < 0 ? fr : bk)); } });
-  for (let j = 0; j < rings.length - 1; j++) for (let i = 0; i < seg; i++) { const a = j * (seg + 1) + i, b = a + seg + 1; idx.push(a, b, a + 1, a + 1, b, b + 1); }
-  const cap = (j, flip) => { const [y, cx, cz] = rings[j], c = pos.length / 3; pos.push(cx, y, cz); for (let i = 0; i < seg; i++) { const a = j * (seg + 1) + i; flip ? idx.push(c, a + 1, a) : idx.push(c, a, a + 1); } };
-  if (capTop) cap(rings.length - 1, true); if (capBot) cap(0, false);
-  const g = new THREE.BufferGeometry(); g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3)); g.setIndex(idx); g.computeVertexNormals(); return g;
+const PICTO = [0x060607, 0x0a0a0c, 0x0e0e11, 0x121216].map(c => new THREE.MeshBasicMaterial({ color: c }));
+const pG = { head: new THREE.SphereGeometry(0.115, 18, 14), torso: new THREE.CapsuleGeometry(0.15, 0.36, 6, 16), leg: (() => { const g = new THREE.CapsuleGeometry(0.068, 0.62, 4, 10); g.translate(0, -0.37, 0); return g; })(), arm: (() => { const g = new THREE.CapsuleGeometry(0.052, 0.46, 4, 10); g.translate(0, -0.27, 0); return g; })() };
+function picto(x, z, o = {}) {
+  const k = (o.h ?? (1.56 + rnd() * 0.26)) / 1.7, m = o.mat ?? PICTO[(rnd() * PICTO.length) | 0], root = new THREE.Group(); root.position.set(x, 0, z); root.rotation.y = o.ry ?? (rnd() - 0.5) * 0.5; root.scale.setScalar(k); add(root);
+  const body = new THREE.Group(); root.add(body); const lean = o.lean ?? (rnd() - 0.5) * 0.08; body.rotation.z = lean;
+  [-1, 1].forEach(sd => { const l = new THREE.Mesh(pG.leg, m); l.position.set(sd * 0.085, 0.84, 0); body.add(l); });
+  const t = new THREE.Mesh(pG.torso, m); t.scale.set(1.12, 1, 0.7); t.position.y = 1.13; body.add(t);
+  const hg = new THREE.Mesh(pG.head, m); hg.position.y = 1.6; body.add(hg);          // 頭は胴から少し離す(ピクトグラムの形)
+  const raise = o.raise ?? (rnd() < 0.28 ? (rnd() < 0.5 ? -1 : 1) : 0), arms = [];
+  [-1, 1].forEach(sd => { const sh0 = new THREE.Group(); sh0.position.set(sd * 0.215, 1.38, 0); body.add(sh0); sh0.add(new THREE.Mesh(pG.arm, m));
+    if (raise === sd) { sh0.rotation.x = 2.7 + rnd() * 0.3; sh0.rotation.z = sd * 0.14; } else { sh0.rotation.z = sd * (0.12 + rnd() * 0.06); sh0.rotation.x = 0.02 + rnd() * 0.1; }
+    arms.push({ sh0, raised: raise === sd, base: sh0.rotation.x }); });
+  return { root, body, hg, arms, ph: rnd() * 6, amp: 0.01 + rnd() * 0.02, lean, react: 0 };
 }
-{
-  // 影の素材: ほぼ黒。服と髪でわずかにつやを変えるだけ(髪は照明をすこし拾う)
-  const SH = [0x050506, 0x070708, 0x0a0a0c, 0x08090b].map(c => new THREE.MeshStandardMaterial({ color: c, roughness: 0.92, envMapIntensity: 0.35 }));
-  const HAIR = new THREE.MeshStandardMaterial({ color: 0x050505, roughness: 0.45, envMapIntensity: 0.9 }), SKIN = new THREE.MeshStandardMaterial({ color: 0x0c0a09, roughness: 0.6, envMapIntensity: 0.5 });
-  const TW = [0x5a1f1d, 0x6a6862, 0x18305c, 0x6a561c].map(c => new THREE.MeshStandardMaterial({ color: c, roughness: 1, envMapIntensity: 0.2 }));
-  const pick = a => a[(rnd() * a.length) | 0];
-  const person = (x, z) => {
-    const h = 1.56 + rnd() * 0.26, k = h / 1.7, fem = rnd() < 0.42, w = (fem ? 0.9 : 1) * (0.94 + rnd() * 0.16), sh = fem ? 0.9 : 1, hp = fem ? 1.08 : 1;
-    const root = new THREE.Group(); root.position.set(x, 0, z); root.rotation.y = (rnd() - 0.5) * 0.5; add(root);
-    const body = new THREE.Group(); root.add(body); const lean = (rnd() - 0.5) * 0.08; body.rotation.z = lean;
-    const m = pick(SH), S = r => r.map((v, i) => i < 5 ? v * k : v), mk = (rings, seg, mat, ct, cb) => { const o = new THREE.Mesh(loft(rings.map(S), seg, ct, cb), mat); body.add(o); return o; };
-    [-1, 1].forEach(sd => { const lx = sd * 0.092 * w;
-      mk([[0.07, lx * 1.05, 0.01, 0.052, 0.058], [0.2, lx * 1.04, 0.012, 0.056, 0.062], [0.34, lx * 1.03, 0.018, 0.062, 0.07, 0.9, 1.15], [0.48, lx * 1.02, 0.006, 0.056, 0.062], [0.56, lx * 1.01, -0.004, 0.06, 0.066, 1.1, 1], [0.72, lx, 0, 0.078 * w, 0.086], [0.84, lx * 0.98, 0.004, 0.09 * w, 0.096], [0.9, lx * 0.9, 0.006, 0.094 * w, 0.1]], 14, m);
-      const shoe = new THREE.Mesh(loft([[0, 0, 0, 0.05, 0.134, 1.05, 0.9], [0.035, 0, 0, 0.05, 0.135, 1.05, 0.9], [0.07, 0, 0.025, 0.046, 0.1, 0.8, 1], [0.1, 0, 0.05, 0.042, 0.062]].map(S), 12), m); shoe.position.set(lx * 1.05 * k, 0, -0.03 * k); shoe.rotation.y = sd * 0.14; body.add(shoe); });
-    mk([[0.84, 0, 0.004, 0.172 * w * hp, 0.118], [0.9, 0, 0.004, 0.176 * w * hp, 0.12], [1.0, 0, 0.006, 0.158 * w, 0.108, 1, 1.05], [1.1, 0, 0.004, 0.16 * w, 0.106, 1.02, 1.08], [1.2, 0, 0, 0.176 * w, 0.112, fem ? 1.14 : 1.06, 1.12], [1.3, 0, -0.002, 0.19 * w * sh, 0.118, fem ? 1.12 : 1.08, 1.16], [1.38, 0, 0.004, 0.2 * w * sh, 0.108, 1, 1.12], [1.425, 0, 0.01, 0.176 * w * sh, 0.092, 0.95, 1.05], [1.455, 0, 0.014, 0.11, 0.078], [1.475, 0, 0.016, 0.066, 0.064]], 24, m, false, false);
-    mk([[1.44, 0, 0.012, 0.052, 0.054], [1.5, 0, 0.004, 0.047, 0.05], [1.545, 0, -0.004, 0.05, 0.055]], 12, SKIN, false, false);
-    // 頭: あご→ほお→こめかみ→頭頂。後頭部が出る。耳だけ付ける(後ろ姿の決め手)
-    const hg = new THREE.Group(); hg.position.y = 1.53 * k; hg.rotation.z = (rnd() - 0.5) * 0.12; hg.rotation.y = (rnd() - 0.5) * 0.3; body.add(hg);
-    const hk = (rings, seg, mat) => { const o = new THREE.Mesh(loft(rings.map(S), seg), mat); hg.add(o); return o; };
-    hk([[0, 0, -0.022, 0.036, 0.048, 1.1, 0.8], [0.03, 0, -0.012, 0.056, 0.072, 1.08, 0.9], [0.07, 0, -0.002, 0.068, 0.088, 1.02, 1], [0.11, 0, 0.004, 0.074, 0.096, 0.98, 1.04], [0.15, 0, 0.008, 0.075, 0.098, 0.96, 1.06], [0.185, 0, 0.012, 0.068, 0.09, 0.95, 1.05], [0.21, 0, 0.014, 0.05, 0.068], [0.225, 0, 0.014, 0.022, 0.03]], 20, SKIN);
-    [-1, 1].forEach(sd => { const ear = new THREE.Mesh(new THREE.SphereGeometry(0.01 * k, 8, 6), SKIN); ear.scale.set(0.9, 2.6, 1.8); ear.position.set(sd * 0.076 * k, 0.105 * k, 0.012 * k); hg.add(ear); });
-    hk([[0.085, 0, 0.03, 0.074, 0.076, 0.25, 1.1], [0.12, 0, 0.022, 0.08, 0.09, 0.55, 1.1], [0.155, 0, 0.012, 0.082, 0.1, 0.92, 1.1], [0.19, 0, 0.012, 0.076, 0.096, 1, 1.08], [0.22, 0, 0.014, 0.058, 0.076], [0.24, 0, 0.014, 0.026, 0.034]], 20, HAIR);
-    const style = rnd();
-    if (fem && style < 0.5) hk([[-0.26, 0, 0.07, 0.085, 0.03], [-0.14, 0, 0.066, 0.1, 0.038], [-0.02, 0, 0.056, 0.092, 0.05], [0.09, 0, 0.04, 0.08, 0.07, 0.2, 1.1]], 16, HAIR);
-    else if (fem && style < 0.8) hk([[-0.02, 0, 0.03, 0.09, 0.085, 0.5, 1.05], [0.05, 0, 0.03, 0.088, 0.09, 0.4, 1.08], [0.1, 0, 0.03, 0.08, 0.08, 0.3, 1.1]], 16, HAIR);
-    else if (style > 0.88) { hk([[0.15, 0, 0.008, 0.084, 0.104], [0.2, 0, 0.012, 0.078, 0.098], [0.232, 0, 0.014, 0.06, 0.078], [0.25, 0, 0.014, 0.026, 0.034]], 18, m); const br = new THREE.Mesh(new THREE.CylinderGeometry(0.075 * k, 0.075 * k, 0.008 * k, 16, 1, false, Math.PI, Math.PI), m); br.position.set(0, 0.158 * k, -0.088 * k); br.scale.z = 1.25; hg.add(br); }
-    if (rnd() < 0.3) { const tw = new THREE.Mesh(new THREE.TorusGeometry(0.082 * k, 0.03 * k, 8, 18), pick(TW)); tw.rotation.x = Math.PI / 2 + 0.2; tw.scale.set(1.2, 1, 1); tw.position.set(0, 1.47 * k, 0.008 * k); body.add(tw); }
-    // 腕
-    const raise = rnd() < 0.28 ? (rnd() < 0.5 ? -1 : 1) : 0, hold = !raise && rnd() < 0.3 ? (rnd() < 0.5 ? -1 : 1) : 0, arms = [];
-    [-1, 1].forEach(sd => { const sh0 = new THREE.Group(); sh0.position.set(sd * 0.2 * w * sh * k, 1.385 * k, 0.004 * k); body.add(sh0);
-      sh0.add(new THREE.Mesh(loft([[-0.3, 0, 0, 0.038, 0.04], [-0.2, 0, 0, 0.05, 0.052], [-0.06, 0, 0, 0.06, 0.06], [0, 0, 0, 0.062, 0.056], [0.035, sd * -0.02, 0, 0.04, 0.044]].map(S), 12), m));
-      const fore = new THREE.Group(); fore.position.y = -0.3 * k; sh0.add(fore);
-      fore.add(new THREE.Mesh(loft([[-0.27, 0, 0, 0.026, 0.022], [-0.2, 0, 0, 0.032, 0.03], [-0.08, 0, 0, 0.04, 0.04], [0, 0, 0, 0.039, 0.041]].map(S), 12), SKIN));
-      const hand = new THREE.Mesh(loft([[-0.11, 0, 0, 0.018, 0.008], [-0.07, 0, 0, 0.036, 0.013], [-0.02, 0, 0, 0.04, 0.016], [0, 0, 0, 0.028, 0.02]].map(S), 10), SKIN); hand.position.y = -0.27 * k; hand.rotation.y = Math.PI / 2; fore.add(hand);
-      if (raise === sd) { sh0.rotation.x = 2.6 + rnd() * 0.35; sh0.rotation.z = sd * 0.14; fore.rotation.x = 0.3; }
-      else if (hold === sd) { sh0.rotation.x = 0.22; sh0.rotation.z = sd * 0.08; fore.rotation.x = 1.5; const cup = new THREE.Mesh(new THREE.CylinderGeometry(0.036, 0.027, 0.1, 14), new THREE.MeshPhysicalMaterial({ color: 0xe9eef2, roughness: 0.1, transparent: true, opacity: 0.35, envMapIntensity: 1.2 })); cup.position.set(0, -0.34 * k, -0.045); cup.rotation.x = -1.5; fore.add(cup); }
-      else { sh0.rotation.z = sd * (0.09 + rnd() * 0.05); sh0.rotation.x = 0.03 + rnd() * 0.14; fore.rotation.x = 0.1 + rnd() * 0.35; }
-      arms.push({ sh0, raised: raise === sd, base: sh0.rotation.x }); });
-    root.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
-    people.push({ root, body, hg, arms, ph: rnd() * 6, amp: 0.01 + rnd() * 0.02, lean, react: 0 });
-  };
-  [[1.0, 4.5], [1.8, 4.42], [2.55, 4.5], [4.35, 4.45], [5.05, 4.4], [5.8, 4.5], [0.9, 5.25], [1.7, 5.45], [2.5, 5.15], [3.3, 5.6], [4.2, 5.25], [5.1, 5.55], [5.9, 5.35], [1.2, 6.3], [2.2, 6.5], [3.6, 6.4], [4.6, 6.6], [1.6, 7.3], [0.8, 8.2], [5.6, 6.2]].forEach(([x, z]) => person(x + (rnd() - 0.5) * 0.14, z + (rnd() - 0.5) * 0.14));
-}
+[[1.0, 4.5], [1.8, 4.42], [2.55, 4.5], [4.35, 4.45], [5.05, 4.4], [5.8, 4.5], [0.9, 5.25], [1.7, 5.45], [2.5, 5.15], [3.3, 5.6], [4.2, 5.25], [5.1, 5.55], [5.9, 5.35], [1.2, 6.3], [2.2, 6.5], [3.6, 6.4], [4.6, 6.6], [1.6, 7.3], [0.8, 8.2], [5.6, 6.2]].forEach(([x, z]) => people.push(picto(x + (rnd() - 0.5) * 0.14, z + (rnd() - 0.5) * 0.14)));
+// ドリンクカウンターの中の人(注文を受けると、サーバーの前へ動いて注ぎ、カップを差し出す)と、並んでいるお客さん
+barState.staff = picto(10.75, 8.5, { h: 1.68, ry: 0, lean: 0, raise: 0, mat: PICTO[1] }); barState.staffX = 10.75;
+picto(11.35, 7.1, { h: 1.62, ry: Math.PI + 0.25, raise: 0 }); picto(8.95, 6.9, { h: 1.76, ry: Math.PI - 0.5, raise: 0 });
 
 /* ---- 床や金属に映る景色(場面そのものから一度だけ作る) ---- */
 const pm = new THREE.PMREMGenerator(renderer);
@@ -451,7 +417,12 @@ const release = e => { const tap = down && Math.hypot(e.clientX - down.x, e.clie
 function orderBeer() { const b = barState, t = clock.getElapsedTime();
   if (b.phase === "idle") { b.phase = "pour"; b.t = t; b.level = 0; b.beer.visible = true; b.beer.position.copy(b.tap); b.beer.rotation.set(0, 0, 0); $("#tip").textContent = "注いでいます…"; }
   else if (b.phase === "ready") { b.phase = "drink"; b.t = t; $("#tip").textContent = "かんぱい"; } }
-function stepBeer(t) { const b = barState; if (b.phase === "idle") return; const u = t - b.t, set = lv => { b.level = lv; b.liq.scale.y = Math.max(0.001, lv); b.liq.position.y = -0.055 + 0.05 * lv; b.liq.visible = lv > 0.01; b.foam.visible = lv > 0.05; b.foam.position.y = -0.055 + 0.1 * lv + 0.008; };
+function stepBeer(t) { const b = barState;
+  // 中の人: 注ぐときはサーバーの前、出すときはお客さんの前、ふだんは少し離れて立つ
+  if (b.staff) { b.staffX = b.phase === "pour" ? 9.62 : b.phase === "idle" ? 10.75 : 10.32; const r = b.staff.root; r.position.x += (b.staffX - r.position.x) * 0.07; const moving = Math.abs(b.staffX - r.position.x) > 0.03;
+    r.rotation.y = moving ? (b.staffX < r.position.x ? 1.2 : -1.2) : 0; b.staff.body.position.y = moving ? Math.abs(Math.sin(t * 9)) * 0.02 : 0;
+    const a = b.staff.arms[1].sh0; a.rotation.x += ((b.phase === "pour" && !moving ? 1.3 : b.phase === "ready" || b.phase === "slide" ? 1.1 : 0.05) - a.rotation.x) * 0.12; }
+  if (b.phase === "idle") return; const u = t - b.t, set = lv => { b.level = lv; b.liq.scale.y = Math.max(0.001, lv); b.liq.position.y = -0.055 + 0.05 * lv; b.liq.visible = lv > 0.01; b.foam.visible = lv > 0.05; b.foam.position.y = -0.055 + 0.1 * lv + 0.008; };
   if (b.phase === "pour") { const k = Math.min(1, u / 2.4); set(k * 0.86); b.handles[0].rotation.x = Math.min(0.9, u * 4) * (k < 1 ? 1 : 0); b.stream.visible = k < 1 && u > 0.2; b.stream.position.set(b.tap.x, b.tap.y + 0.1, b.tap.z); if (k >= 1) { b.phase = "slide"; b.t = t; } }
   else if (b.phase === "slide") { const k = Math.min(1, u / 0.9), e = 1 - Math.pow(1 - k, 3); b.beer.position.lerpVectors(b.tap, b.serve, e); b.beer.position.y += Math.sin(k * Math.PI) * 0.06; if (k >= 1) { b.phase = "ready"; $("#tip").textContent = "生ビールです。もう一度押すと飲みます"; } }
   else if (b.phase === "drink") { const k = Math.min(1, u / 2.6), up = Math.min(1, k * 3), dn = Math.max(0, (k - 0.8) * 5), near = camera.position.clone().add(new THREE.Vector3(Math.sin(-yaw) * 0.0, -0.13, 0.32).applyAxisAngle(new THREE.Vector3(0, 1, 0), 0)), e = up * (1 - dn);
@@ -515,7 +486,7 @@ renderer.setAnimationLoop(() => {
   // 曲に合わせて小さく揺れる(170bpm の半分の速さ)
   const beat = t * Math.PI * 2 * (170 / 60) / 2;
   const dt = Math.min(0.05, t - (stepPicks.last ?? t)); stepPicks.last = t; stepPicks(dt, t); stepBeer(t);
-  people.forEach(o => { const b = Math.max(0, Math.sin(beat + o.ph)), r = o.react > t ? Math.min(1, (o.react - t) / 0.4) : 0; o.body.position.y = b * o.amp + r * Math.abs(Math.sin(t * 9 + o.ph)) * 0.09; o.hg.rotation.x = -b * 0.06 - r * 0.25;
+  people.forEach(o => { const b = Math.max(0, Math.sin(beat + o.ph)), r = o.react > t ? Math.min(1, (o.react - t) / 0.4) : 0; o.body.position.y = b * o.amp + r * Math.abs(Math.sin(t * 9 + o.ph)) * 0.09;
     o.arms.forEach(a => { a.sh0.rotation.x = a.raised ? a.base + Math.sin(beat * 2 + o.ph) * 0.16 : a.base + r * (2.7 - a.base); }); });
   grade.uniforms.time.value = t % 10;
   composer.render();
