@@ -20,7 +20,7 @@
 <body>
 <div id="load">ステージを組み立てています…</div>
 <div id="hud" hidden><b>SiX-DOG ホール（高画質の試作）</b><br>画面をなぞると見回せます。<span id="fps"></span><div id="tip" style="color:#ffc857;font-weight:700"></div></div>
-<div id="bar" hidden><button data-i="0" class="on">柵の前</button><button data-i="1">PA卓の横</button><button data-i="2">ホールの入口</button><button data-i="3">ステージの上</button><button id="q">画質: 高</button></div>
+<div id="bar" hidden><button data-i="0" class="on">柵の前</button><button data-i="1">PA卓の横</button><button data-i="2">ホールの入口</button><button data-i="3">ステージの上</button><button data-i="4">ドリンク</button><button id="q">画質: 高</button></div>
 <script type="module">
 /* 試作: 「柵の前からステージを見る」1か所だけを、最新の three.js と写真ベースの素材(Poly Haven, CC0)で作り直したもの。
    今の3D(site.js)とは別のページ。光の跳ね返りの代わりに、物の隙間の陰(GTAO)・やわらかい影・床への映り込み(場面から作った環境マップ)を入れている */
@@ -44,7 +44,7 @@ const scene = new THREE.Scene(); scene.background = new THREE.Color(0x020203); s
 const camera = new THREE.PerspectiveCamera(64, 1, 0.05, 60);
 const EYE = new THREE.Vector3(3.4, 1.55, 4.75);
 // 行き先(立つ場所と、最初に向く方向)
-const STOPS = [{ p: [3.4, 1.55, 4.75], yaw: 0, pitch: 0.03 }, { p: [5.3, 1.6, 8.3], yaw: 0.33, pitch: -0.02 }, { p: [6.0, 1.6, 7.1], yaw: 0.5, pitch: -0.02 }, { p: [3.4, 1.92, 2.0], yaw: Math.PI, pitch: -0.1 }];
+const STOPS = [{ p: [3.4, 1.55, 4.75], yaw: 0, pitch: 0.03 }, { p: [5.3, 1.6, 8.3], yaw: 0.33, pitch: -0.02 }, { p: [6.0, 1.6, 7.1], yaw: 0.5, pitch: -0.02 }, { p: [3.4, 1.92, 2.0], yaw: Math.PI, pitch: -0.1 }, { p: [10.35, 1.56, 6.95], yaw: Math.PI, pitch: 0.02 }];
 
 /* ---- 素材 ---- */
 const TL = new THREE.TextureLoader(), maxA = renderer.capabilities.getMaxAnisotropy();
@@ -246,61 +246,142 @@ board(4.6, 2.5, 0.06, [0xc9a23a, 0x2f7a4a, 0x8a2a2a, 0x2a3f8a, 0xd8d4c4]); board
 // 柵(手前)
 [1.2, 3.4, 5.6].forEach(x => cyl(0.02, 0.02, 1.0, chrome, x, 0.5, 4.05, 14)); [0.55, 1.0].forEach(y => { const r = cyl(0.018, 0.018, 4.6, chrome, 3.4, y, 4.05, 14); r.rotation.z = Math.PI / 2; });
 
-/* ---- お客さん ---- */
-// 本物の客席は、ほとんど逆光の影に見える。だから顔は作り込まず、後ろ姿の輪郭(なで肩、首、耳、髪、腕の下がり方、重心の傾き)を作る
-const people = [];
+/* ---- ドリンクバー(ロビー) ---- */
+// よくあるライブハウスのドリンクカウンターを手本に: 奥の棚に洋酒の瓶(下から照らす)、割りものの2Lペットと紙パック、
+// カウンターに生ビールのサーバー、重ねたプラカップ、氷の入れ物、ドリンクチケットの箱、ガラス扉の冷蔵庫
+// (どの銘柄が置いてあったかの記録はないので、瓶の形と色は「よくある並び」。ラベルに銘柄は書かない)
+const barState = { cup: null, level: 0, phase: "idle", t: 0, drunk: 0 };
 {
-  const cloth = c => new THREE.MeshStandardMaterial({ color: c, roughness: 0.95, envMapIntensity: 0.25 });
-  const CL = [0x0e0e10, 0x121214, 0x17181b, 0x101216, 0x1c1d22, 0x23262d, 0x2a1618, 0x1f261d, 0x8a867c, 0x3a3c41].map(cloth);
-  const PT = [0x0f1012, 0x161b26, 0x1d1f23, 0x24262a].map(cloth);
-  const SK = [0xc49878, 0xb58868, 0xd2a688, 0xa2785c].map(c => new THREE.MeshStandardMaterial({ color: c, roughness: 0.65, envMapIntensity: 0.3 }));
-  const HR = [0x0c0b0a, 0x14100d, 0x241a12, 0x0a0a0a, 0x3a2a1c].map(c => new THREE.MeshStandardMaterial({ color: c, roughness: 0.5, envMapIntensity: 0.6 }));
-  const TW = [0xb9433f, 0xd9d5c8, 0x2f5fb8, 0xd8b23a].map(cloth);
+  const tile = pbr("floor_tiles_06", { tile: 1.2, tint: 0x6a6c72, rough: 0.6, env: 0.9 }), wood = pbr("wood_table_worn", { tile: 1.4, tint: 0x8a6a4a, rough: 0.7, env: 0.6 }), plasterD = pbr("painted_plaster_wall", { tile: 2.2, tint: 0x18181b, rough: 1, env: 0.3 }), steelTop = pbr("metal_plate", { tile: 0.9, tint: 0xb0b4b8, rough: 0.45, metal: 1, env: 1.2 });
+  { const f = new THREE.Mesh(new THREE.PlaneGeometry(5.6, 4.3), tile); f.geometry.attributes.uv.array.forEach((v, i, a) => a[i] = v * (i % 2 ? 4.3 : 5.6) / 1.2); f.rotation.x = -Math.PI / 2; f.position.set(9.72, 0, 7.05); f.receiveShadow = true; add(f); }
+  box(5.7, 2.4, 0.12, plasterD, 9.72, 1.2, 9.26); box(0.12, 2.4, 4.4, plasterD, 12.56, 1.2, 7.05); { const c = box(5.7, 0.12, 4.4, M.ceil, 9.72, 2.46, 7.05); c.castShadow = false; }
+  // カウンター(黒い腰板に木の天板)。天板の手前にはステッカー
+  box(3.6, 1.05, 0.5, blackWood, 10.35, 0.525, 8.0); { const t = rbox(3.72, 0.05, 0.62, wood, 10.35, 1.075, 8.0, 0.012); t.material = wood; }
+  box(3.6, 0.1, 0.04, std(0x0c0c0d, 0.6), 10.35, 0.08, 7.74);
+  // 奥の作業台(ステンレス)と棚。棚の下に白い光の帯を仕込んで、瓶を下と後ろから光らせる
+  box(3.0, 0.9, 0.45, std(0x15161a, 0.5, 0.4, 0.6), 10.05, 0.45, 8.98); rbox(3.02, 0.03, 0.47, steelTop, 10.05, 0.915, 8.98, 0.004);
+  [1.36, 1.72].forEach(y => { box(3.3, 0.03, 0.24, wood, 10.2, y, 9.07); const led = new THREE.Mesh(new THREE.BoxGeometry(3.2, 0.012, 0.02), glow(0xfff0d8, 1.6)); led.position.set(10.2, y + 0.022, 9.17); add(led); });
+  [[9.0, 1.5], [10.2, 1.5], [11.4, 1.5], [9.0, 1.86], [10.2, 1.86], [11.4, 1.86], [9.6, 1.05], [10.8, 1.05]].forEach(([x, y]) => { const l = new THREE.PointLight(0xffe6c0, 0.3, 1.5, 2); l.position.set(x, y, 9.0); add(l); });
+  // 瓶: 回転体の輪郭でガラスを作る。中身の色は、ガラスの厚みで色が付く計算に任せる
+  const glassM = (col, op = 1) => new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: 0.06, transmission: 1, thickness: 0.05, ior: 1.5, attenuationColor: new THREE.Color(col), attenuationDistance: 0.045 * op, envMapIntensity: 1.3, specularIntensity: 1 });
+  const PROFILE = {   // [半径, 高さ] を下から
+    round: [[0, 0], [0.036, 0.004], [0.038, 0.02], [0.038, 0.17], [0.034, 0.2], [0.016, 0.235], [0.013, 0.29], [0.015, 0.3], [0, 0.3]],
+    tall: [[0, 0], [0.033, 0.004], [0.034, 0.02], [0.034, 0.2], [0.03, 0.23], [0.013, 0.265], [0.012, 0.32], [0.014, 0.33], [0, 0.33]],
+    stout: [[0, 0], [0.044, 0.004], [0.046, 0.02], [0.046, 0.13], [0.04, 0.16], [0.016, 0.19], [0.014, 0.24], [0.016, 0.25], [0, 0.25]],
+    slope: [[0, 0], [0.04, 0.004], [0.042, 0.02], [0.04, 0.12], [0.028, 0.2], [0.014, 0.25], [0.013, 0.3], [0.015, 0.31], [0, 0.31]],
+    beer: [[0, 0], [0.036, 0.004], [0.037, 0.02], [0.037, 0.15], [0.03, 0.19], [0.014, 0.23], [0.013, 0.27], [0.015, 0.28], [0, 0.28]],
+    pet: [[0, 0], [0.05, 0.006], [0.052, 0.03], [0.05, 0.11], [0.052, 0.13], [0.052, 0.24], [0.045, 0.27], [0.016, 0.3], [0.015, 0.32], [0, 0.32]],
+  };
+  const lathe = Object.fromEntries(Object.entries(PROFILE).map(([k, v]) => [k, new THREE.LatheGeometry(v.map(([r, y]) => new THREE.Vector2(r, y)), 24)]));
+  const labelTex = (bg, ink, kind) => canvasTex(128, 96, (g, w, h) => { g.fillStyle = bg; g.fillRect(0, 0, w, h); g.fillStyle = ink; if (kind === 0) { g.fillRect(w * 0.15, h * 0.2, w * 0.7, h * 0.16); g.fillRect(w * 0.25, h * 0.5, w * 0.5, h * 0.06); g.fillRect(w * 0.3, h * 0.66, w * 0.4, h * 0.05); } else if (kind === 1) { g.beginPath(); g.ellipse(w / 2, h * 0.42, w * 0.3, h * 0.26, 0, 0, 7); g.fill(); g.fillRect(w * 0.2, h * 0.78, w * 0.6, h * 0.06); } else { g.fillRect(w * 0.1, h * 0.1, w * 0.8, h * 0.04); g.fillRect(w * 0.1, h * 0.86, w * 0.8, h * 0.04); g.fillRect(w * 0.3, h * 0.35, w * 0.4, h * 0.3); } });
+  const bottle = (x, y, z, shape, col, lab, capCol = 0x111113, liquid = 1, scale = 1) => { const g = new THREE.Group(); g.position.set(x, y, z); g.rotation.y = rnd() * 6; g.scale.setScalar(scale); add(g);
+    const b = new THREE.Mesh(lathe[shape], glassM(col, liquid)); b.castShadow = true; g.add(b);
+    const top = PROFILE[shape][PROFILE[shape].length - 2][1], cap = new THREE.Mesh(new THREE.CylinderGeometry(0.0155, 0.0155, 0.022, 14), std(capCol, 0.4, 0.6, 0.9)); cap.position.y = top + 0.004; g.add(cap);
+    if (lab) { const r = PROFILE[shape][2][0] + 0.0008, hgt = shape === "pet" ? 0.08 : 0.075, l = new THREE.Mesh(new THREE.CylinderGeometry(r, r, hgt, 24, 1, true, 0, Math.PI * 1.25), new THREE.MeshStandardMaterial({ map: labelTex(...lab), color: 0x9a9a9a, roughness: 0.8, side: THREE.DoubleSide })); l.position.y = shape === "pet" ? 0.18 : 0.095; g.add(l); }
+    return g; };
+  // 角瓶(ウイスキーや薬草酒によくある四角い胴)
+  const square = (x, y, z, col, lab, hgt = 0.2) => { const g = new THREE.Group(); g.position.set(x, y, z); g.rotation.y = (rnd() - 0.5) * 0.5; add(g); const b = new THREE.Mesh(new RoundedBoxGeometry(0.075, hgt, 0.075, 3, 0.012), glassM(col)); b.position.y = hgt / 2; b.castShadow = true; g.add(b);
+    const n = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.022, 0.07, 14), glassM(col)); n.position.y = hgt + 0.03; g.add(n); const c = new THREE.Mesh(new THREE.CylinderGeometry(0.016, 0.016, 0.022, 14), std(0x111113, 0.4, 0.6)); c.position.y = hgt + 0.072; g.add(c);
+    const l = new THREE.Mesh(new THREE.PlaneGeometry(0.062, hgt * 0.5), new THREE.MeshStandardMaterial({ map: labelTex(...lab), color: 0x9a9a9a, roughness: 0.8 })); l.position.set(0, hgt * 0.5, 0.0385); g.add(l); return g; };
+  const AMBER = 0xb5651d, DARK = 0x3a1608, CLEAR = 0xdfeef2, GREEN = 0x1f6a3a, BLUE = 0x2f7fc8, RED = 0x6a1220, GOLD = 0xd8a030, BROWN = 0x4a2a14;
+  // 上の棚: ウイスキー、バーボン、ウォッカ、ジン、ラム、テキーラ
+  [["round", AMBER, ["#111", "#d8c690", 0]], ["sq", AMBER, ["#111", "#e8e4d6", 2]], ["round", AMBER, ["#e8e2d0", "#7a1a1a", 0]], ["tall", CLEAR, ["#c8202a", "#f4f4f4", 1]], ["tall", CLEAR, ["#e8e8e8", "#1a3a8a", 0]], ["stout", GREEN, ["#f0ece0", "#a01818", 1]], ["slope", BLUE, ["#f4f4f4", "#1a3a8a", 2]],
+   ["round", DARK, ["#d8b23a", "#111", 0]], ["tall", CLEAR, ["#f4f4f4", "#2a8a4a", 1]], ["stout", GOLD, ["#111", "#d8b23a", 2]], ["sq", GREEN, ["#d8601a", "#111", 1]], ["round", AMBER, ["#1a1a1a", "#c9a34a", 2]], ["tall", AMBER, ["#f0ece0", "#111", 0]]].forEach(([sh2, col, lab], i) => { const x = 8.72 + i * 0.245; sh2 === "sq" ? square(x, 1.735, 9.08, col, lab) : bottle(x, 1.735, 9.08, sh2, col, lab, i % 3 ? 0x111113 : 0x8a1a1a); });
+  // 下の棚: リキュール(カシス、ピーチ、ココナッツ、コーヒー)、焼酎、梅酒
+  [["slope", RED, ["#2a0a14", "#d8b23a", 1]], ["slope", 0xe8a0a0, ["#f4d0d8", "#a02040", 1]], ["round", 0xf4f4f0, ["#f4f4f0", "#2a6a8a", 0], 0.2], ["stout", BROWN, ["#d8b23a", "#7a1a1a", 0]], ["tall", 0x2f8a4a, ["#f4f4f4", "#1a5a2a", 2]], ["round", 0x8ab04a, ["#f4f4f4", "#3a6a1a", 1]],
+   ["tall", CLEAR, ["#1a3a8a", "#f4f4f4", 0]], ["slope", 0xd86a1a, ["#f4f4f4", "#d86a1a", 1]], ["round", 0x4a8ad8, ["#f4f4f4", "#1a3a8a", 2]], ["stout", AMBER, ["#e8e2d0", "#111", 0]], ["slope", 0x8a2a6a, ["#f4f4f4", "#6a1a4a", 1]], ["tall", GOLD, ["#111", "#f4f4f4", 2]], ["round", CLEAR, ["#f4f4f4", "#c8202a", 0]]].forEach(([sh2, col, lab, liq], i) => bottle(8.72 + i * 0.245, 1.375, 9.08, sh2, col, lab, 0x111113, liq || 1));
+  // 作業台: 割りものの2Lペット(コーラ、ジンジャーエール、ウーロン茶、緑茶、水)と紙パック(オレンジ、グレープフルーツ)、業務用の大きいボトル
+  [[0x2a0e06, ["#c8202a", "#f4f4f4", 0], 0xc8202a], [0xd8a840, ["#1f6a3a", "#f4f4f4", 1], 0x1f6a3a], [0x6a3a14, ["#3a2a1a", "#d8b23a", 2], 0xe8e8e8], [0x9ab040, ["#2f8a4a", "#f4f4f4", 0], 0x2f8a4a], [0xdfeef2, ["#3a8ad8", "#f4f4f4", 1], 0x3a8ad8]].forEach(([col, lab, cap2], i) => bottle(8.85 + i * 0.16, 0.93, 9.06, "pet", col, lab, cap2, 1, 0.95));
+  const carton = (x, z, col, ink) => { const g = new THREE.Group(); g.position.set(x, 0.93, z); g.rotation.y = (rnd() - 0.5) * 0.4; add(g); const t = canvasTex(64, 128, (c, w, h) => { c.fillStyle = col; c.fillRect(0, 0, w, h); c.fillStyle = ink; c.beginPath(); c.arc(w / 2, h * 0.45, w * 0.3, 0, 7); c.fill(); c.fillStyle = "#f4f4f4"; c.fillRect(w * 0.15, h * 0.1, w * 0.7, h * 0.1); });
+    const b = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.19, 0.07), new THREE.MeshStandardMaterial({ map: t, roughness: 0.6 })); b.position.y = 0.095; b.castShadow = true; g.add(b); const r = new THREE.Mesh(new THREE.CylinderGeometry(0.0005, 0.05, 0.035, 4), new THREE.MeshStandardMaterial({ color: col, roughness: 0.6 })); r.rotation.y = Math.PI / 4; r.scale.z = 0.3; r.position.y = 0.207; g.add(r); };
+  carton(9.75, 9.05, "#f08a1a", "#f8c040"); carton(9.86, 9.08, "#f4d040", "#f8e890"); carton(9.97, 9.04, "#f08a1a", "#f8c040");
+  bottle(10.3, 0.93, 9.02, "pet", AMBER, ["#111", "#d8b23a", 2], 0x111113, 1, 1.5); bottle(10.55, 0.93, 9.05, "pet", CLEAR, ["#1f6a3a", "#f4f4f4", 0], 0x1f6a3a, 1, 1.5);
+  // 冷蔵庫(ガラス扉。中の瓶ビールと缶に白い光)
+  rbox(0.62, 0.9, 0.52, std(0x16171a, 0.45, 0.6, 0.8), 11.95, 0.45, 8.94, 0.01); { const inner = new THREE.Mesh(new THREE.BoxGeometry(0.54, 0.78, 0.4), glow(0xdfeeff, 0.22)); inner.position.set(11.95, 0.46, 8.92); add(inner);
+    for (let r = 0; r < 3; r++) { box(0.54, 0.008, 0.38, std(0x9aa0a6, 0.4, 0.9), 11.95, 0.12 + r * 0.26, 8.9); for (let i = 0; i < 6; i++) { if (r === 1) { const can = cyl(0.033, 0.033, 0.12, std([0xc8c8cc, 0xd8b23a, 0x1a3a8a][i % 3], 0.3, 0.9, 1.1), 11.72 + i * 0.09, 0.19 + r * 0.26, 8.78, 16); } else bottle(11.72 + i * 0.09, 0.125 + r * 0.26, 8.78, "beer", BROWN, ["#f4f4f4", i % 2 ? "#c8202a" : "#1a1a1a", i % 3], 0xd8b23a, 1, 0.82); } }
+    const door = new THREE.Mesh(new THREE.PlaneGeometry(0.56, 0.82), new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: 0.03, transmission: 1, thickness: 0.01, ior: 1.5, envMapIntensity: 1.5 })); door.position.set(11.95, 0.46, 8.675); door.rotation.y = Math.PI; add(door);
+    const l = new THREE.PointLight(0xdfeeff, 1.6, 2.6, 2); l.position.set(11.95, 0.75, 8.5); add(l); }
+  // 生ビールのサーバー: ステンレスの塔に注ぎ口が2つ、黒いレバー、下に受け皿
+  const SVX = 9.3;
+  rbox(0.2, 0.36, 0.16, steelTop, SVX, 1.1 + 0.18, 8.08, 0.02); rbox(0.26, 0.05, 0.2, steelTop, SVX, 1.1 + 0.385, 8.06, 0.02);
+  const handles = [];
+  [-0.06, 0.06].forEach(dx => { const sp = cyl(0.011, 0.011, 0.07, chrome, SVX + dx, 1.4, 7.96, 12); sp.rotation.x = Math.PI / 2; cyl(0.009, 0.007, 0.07, chrome, SVX + dx, 1.36, 7.925, 12);
+    const hgp = new THREE.Group(); hgp.position.set(SVX + dx, 1.42, 7.93); add(hgp); const hd2 = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.011, 0.12, 12), std(0x0c0c0d, 0.35, 0.2, 0.9)); hd2.position.y = 0.06; hd2.castShadow = true; hgp.add(hd2); const kn = new THREE.Mesh(new THREE.SphereGeometry(0.018, 12, 10), std(dx < 0 ? 0xd8b23a : 0xe8e8e8, 0.3, 0.6, 1)); kn.position.y = 0.125; hgp.add(kn); handles.push(hgp); });
+  rbox(0.3, 0.02, 0.16, steelTop, SVX, 1.11, 7.9, 0.006); rbox(0.26, 0.004, 0.12, std(0x0c0c0d, 0.5, 0.6), SVX, 1.123, 7.9, 0.002);
+  // 重ねたプラカップ、氷、チケットの箱、メニュー、灰皿のかわりの小皿
+  const cupM = new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: 0.08, transmission: 1, thickness: 0.004, ior: 1.45, envMapIntensity: 1.4, side: THREE.DoubleSide });
+  const cupG = new THREE.CylinderGeometry(0.04, 0.03, 0.11, 24, 1, true);
+  [[9.72, 8.14, 14], [9.83, 8.17, 9], [9.94, 8.13, 17]].forEach(([x, z, n]) => { for (let i = 0; i < n; i++) { const c = new THREE.Mesh(cupG, cupM); c.position.set(x, 1.1 + 0.055 + i * 0.011, z); c.rotation.x = Math.PI; add(c); } });
+  rbox(0.34, 0.2, 0.26, steelTop, 10.75, 1.2, 8.12, 0.012); { for (let i = 0; i < 40; i++) { const ic = new THREE.Mesh(new RoundedBoxGeometry(0.03, 0.026, 0.03, 2, 0.006), new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: 0.15, transmission: 1, thickness: 0.03, ior: 1.31 })); ic.position.set(10.62 + rnd() * 0.26, 1.29 + rnd() * 0.03, 8.02 + rnd() * 0.2); ic.rotation.set(rnd() * 3, rnd() * 3, rnd() * 3); add(ic); } cyl(0.012, 0.012, 0.2, chrome, 10.86, 1.34, 8.1, 10).rotation.z = 0.5; }
+  rbox(0.2, 0.14, 0.16, std(0x1f3f6a, 0.5, 0.2), 11.3, 1.17, 8.1, 0.01); box(0.1, 0.004, 0.02, std(0x0a0a0a, 0.8), 11.3, 1.242, 8.1);
+  { const t = canvasTex(256, 360, (g, w, h) => { g.fillStyle = "#101312"; g.fillRect(0, 0, w, h); g.strokeStyle = "#7a5a34"; g.lineWidth = 10; g.strokeRect(0, 0, w, h); g.fillStyle = "#e8e6dc"; g.font = "700 34px sans-serif"; g.textAlign = "center"; g.fillText("DRINK", w / 2, 56); g.fillStyle = "#ffc857"; g.font = "700 26px sans-serif"; g.fillText("ALL ¥500", w / 2, 92);
+      g.fillStyle = "#e8e6dc"; g.font = "22px sans-serif"; g.textAlign = "left"; ["生ビール", "ハイボール", "ジントニック", "カシスオレンジ", "ウーロンハイ", "コーラ", "ジンジャーエール", "ウーロン茶"].forEach((s2, i) => g.fillText("・" + s2, 30, 136 + i * 28)); });
+    const o = new THREE.Mesh(new THREE.PlaneGeometry(0.42, 0.59), new THREE.MeshStandardMaterial({ map: t, roughness: 0.9 })); o.position.set(12.49, 1.5, 7.9); o.rotation.y = -Math.PI / 2; add(o); }
+  // カウンターの上の裸電球(暖かい色)
+  [9.3, 10.35, 11.4].forEach(x => { cyl(0.004, 0.004, 0.42, blackM, x, 2.19, 7.95, 6); cyl(0.022, 0.028, 0.05, std(0x1a1a1c, 0.4, 0.8), x, 1.97, 7.95, 12); const b = new THREE.Mesh(new THREE.SphereGeometry(0.038, 16, 12), glow(0xffc070, 2.6)); b.position.set(x, 1.915, 7.95); add(b); const l = new THREE.PointLight(0xffb060, 1.5, 3.4, 2); l.position.set(x, 1.86, 7.95); add(l); });
+  model("bar_chair_round_01", m2 => { [[9.9, 7.35, 0.4], [10.9, 7.4, -0.3]].forEach(([x, z, r]) => { const c = m2.clone(); c.position.set(x, 0, z); c.rotation.y = r; add(c); }); });
+  // 注ぐビール: カップ、中身、泡、注ぎ口からの流れ
+  const beer = new THREE.Group(); beer.visible = false; add(beer);
+  const bc = new THREE.Mesh(cupG, cupM); bc.rotation.x = Math.PI; beer.add(bc);
+  const liq = new THREE.Mesh(new THREE.CylinderGeometry(0.038, 0.0295, 0.1, 24), new THREE.MeshPhysicalMaterial({ color: 0xe8a020, roughness: 0.15, transmission: 0.6, thickness: 0.06, attenuationColor: new THREE.Color(0xc87a10), attenuationDistance: 0.08, emissive: 0x3a1e00, emissiveIntensity: 0.5 })); liq.position.y = -0.003; beer.add(liq);
+  const foam = new THREE.Mesh(new THREE.CylinderGeometry(0.0385, 0.0375, 0.018, 24), std(0xfff8e8, 0.9, 0, 0.3)); beer.add(foam);
+  const stream = new THREE.Mesh(new THREE.CylinderGeometry(0.004, 0.004, 0.2, 8), new THREE.MeshBasicMaterial({ color: 0xe8a020, transparent: true, opacity: 0.85 })); stream.visible = false; add(stream);
+  Object.assign(barState, { beer, liq, foam, stream, handles, tap: new THREE.Vector3(SVX - 0.06, 1.165, 7.925), serve: new THREE.Vector3(10.3, 1.155, 7.8) });
+}
+
+/* ---- お客さん ---- */
+// 顔は作らない(作ると怖い)。体の形だけを本物に近づけて、全身を黒い影にする。暗い客席で、照明の照り返しに輪郭だけが浮く
+// 体は、輪切りの形を積んで、なめらかにつないだ面。rings: [高さ, 中心x, 中心z, 横の半径, 前後の半径, (前のふくらみ), (後ろのふくらみ)]。正面は -z
+const people = [];
+function loft(rings, seg = 24, capTop = true, capBot = true) {
+  const pos = [], idx = [];
+  rings.forEach(r => { const [y, cx, cz, rx, rz, fr = 1, bk = 1] = r; for (let i = 0; i <= seg; i++) { const a = i / seg * Math.PI * 2, sn = Math.sin(a), c = Math.cos(a); pos.push(cx + c * rx, y, cz + sn * rz * (sn < 0 ? fr : bk)); } });
+  for (let j = 0; j < rings.length - 1; j++) for (let i = 0; i < seg; i++) { const a = j * (seg + 1) + i, b = a + seg + 1; idx.push(a, b, a + 1, a + 1, b, b + 1); }
+  const cap = (j, flip) => { const [y, cx, cz] = rings[j], c = pos.length / 3; pos.push(cx, y, cz); for (let i = 0; i < seg; i++) { const a = j * (seg + 1) + i; flip ? idx.push(c, a + 1, a) : idx.push(c, a, a + 1); } };
+  if (capTop) cap(rings.length - 1, true); if (capBot) cap(0, false);
+  const g = new THREE.BufferGeometry(); g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3)); g.setIndex(idx); g.computeVertexNormals(); return g;
+}
+{
+  // 影の素材: ほぼ黒。服と髪でわずかにつやを変えるだけ(髪は照明をすこし拾う)
+  const SH = [0x050506, 0x070708, 0x0a0a0c, 0x08090b].map(c => new THREE.MeshStandardMaterial({ color: c, roughness: 0.92, envMapIntensity: 0.35 }));
+  const HAIR = new THREE.MeshStandardMaterial({ color: 0x050505, roughness: 0.45, envMapIntensity: 0.9 }), SKIN = new THREE.MeshStandardMaterial({ color: 0x0c0a09, roughness: 0.6, envMapIntensity: 0.5 });
+  const TW = [0x5a1f1d, 0x6a6862, 0x18305c, 0x6a561c].map(c => new THREE.MeshStandardMaterial({ color: c, roughness: 1, envMapIntensity: 0.2 }));
   const pick = a => a[(rnd() * a.length) | 0];
-  // 胴: 腰から肩へ広がり、首の付け根へすぼまる。回転体を前後につぶして、背中の丸みを出す
-  const torsoG = new THREE.LatheGeometry([[0, 0], [0.15, 0.005], [0.165, 0.06], [0.16, 0.2], [0.152, 0.3], [0.165, 0.4], [0.195, 0.48], [0.208, 0.53], [0.19, 0.575], [0.13, 0.605], [0.075, 0.625], [0.055, 0.64], [0, 0.64]].map(([x, y]) => new THREE.Vector2(x, y)), 28);
-  const cap = (r, len, mat) => { const g = new THREE.CapsuleGeometry(r, len, 6, 14); g.translate(0, -len / 2 - r * 0.2, 0); return new THREE.Mesh(g, mat); };
   const person = (x, z) => {
-    const h = 1.56 + rnd() * 0.26, k = h / 1.7, root = new THREE.Group(); root.position.set(x, 0, z); root.rotation.y = (rnd() - 0.5) * 0.5; add(root);
-    const body = new THREE.Group(); root.add(body);
-    const cl = pick(CL), pt = pick(PT), sk = pick(SK), hr = pick(HR), lean = (rnd() - 0.5) * 0.09, legL = 0.82 * k, wide = 0.92 + rnd() * 0.2;
-    body.rotation.z = lean;
-    // 脚(片方に体重を乗せている)、靴
-    [-1, 1].forEach(sd => { const l = cap(0.074 * k, legL - 0.15, pt); l.position.set(sd * 0.085 * k, legL, 0); l.rotation.z = sd * 0.03 - lean * 0.8; l.scale.z = 0.92; body.add(l);
-      const shoe = new THREE.Mesh(new RoundedBoxGeometry(0.1 * k, 0.07, 0.27 * k, 2, 0.025), new THREE.MeshStandardMaterial({ color: 0x0c0c0d, roughness: 0.6 })); shoe.position.set(sd * 0.09 * k, 0.035, -0.04); shoe.rotation.y = sd * 0.12; body.add(shoe); });
-    const hip = new THREE.Mesh(new THREE.SphereGeometry(0.165 * k, 18, 12), pt); hip.scale.set(wide, 0.62, 0.72); hip.position.y = legL + 0.02; body.add(hip);
-    const torso = new THREE.Mesh(torsoG, cl); torso.scale.set(k * wide, k, k * 0.6); torso.position.y = legL - 0.02; body.add(torso);
-    const top = legL - 0.02 + 0.64 * k;
-    // 首、頭、耳、髪
-    const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.047 * k, 0.055 * k, 0.1 * k, 14), sk); neck.position.y = top + 0.03 * k; body.add(neck);
-    const hg = new THREE.Group(); hg.position.y = top + 0.15 * k; hg.rotation.z = (rnd() - 0.5) * 0.12; hg.rotation.x = (rnd() - 0.5) * 0.1; body.add(hg);
-    const head = new THREE.Mesh(new THREE.SphereGeometry(0.098 * k, 22, 18), sk); head.scale.set(0.88, 1.12, 1.0); hg.add(head);
-    const dark = new THREE.MeshStandardMaterial({ color: 0x1a120e, roughness: 0.7 });
-    [-1, 1].forEach(sd => { const eye = new THREE.Mesh(new THREE.SphereGeometry(0.013 * k, 10, 8), dark); eye.scale.set(1.5, 0.75, 0.5); eye.position.set(sd * 0.033 * k, 0.012 * k, -0.088 * k); hg.add(eye);
-      const brow = new THREE.Mesh(new THREE.BoxGeometry(0.034 * k, 0.006 * k, 0.01 * k), hr); brow.position.set(sd * 0.034 * k, 0.034 * k, -0.09 * k); brow.rotation.z = -sd * 0.12; hg.add(brow); });
-    { const nose = new THREE.Mesh(new THREE.SphereGeometry(0.015 * k, 10, 8), sk); nose.scale.set(0.8, 1.5, 1.1); nose.position.set(0, -0.012 * k, -0.098 * k); hg.add(nose);
-      const mouth = new THREE.Mesh(new THREE.BoxGeometry(0.036 * k, 0.005 * k, 0.008 * k), new THREE.MeshStandardMaterial({ color: 0x6a3a34, roughness: 0.6 })); mouth.position.set(0, -0.052 * k, -0.086 * k); hg.add(mouth); }
-    [-1, 1].forEach(sd => { const ear = new THREE.Mesh(new THREE.SphereGeometry(0.022 * k, 10, 8), sk); ear.scale.set(0.45, 1, 0.75); ear.position.set(sd * 0.086 * k, -0.005, 0.005); hg.add(ear); });
-    const style = rnd(), hair = new THREE.Mesh(new THREE.SphereGeometry(0.105 * k, 22, 18), hr); hair.scale.set(0.93, 1.1, 1.02); hair.position.set(0, 0.012 * k, 0.024 * k); hg.add(hair);
-    if (style < 0.3) { const back = cap(0.085 * k, (0.14 + rnd() * 0.2) * k, hr); back.position.set(0, 0.02 * k, 0.05 * k); back.scale.z = 0.55; hg.add(back); }
-    else if (style < 0.42) { const bun = new THREE.Mesh(new THREE.SphereGeometry(0.043 * k, 12, 10), hr); bun.position.set(0, 0.115 * k, 0.045 * k); hg.add(bun); }
-    else if (style < 0.5) { const brim = new THREE.Mesh(new THREE.CylinderGeometry(0.108 * k, 0.11 * k, 0.07 * k, 20), pick(CL)); brim.position.set(0, 0.07 * k, 0.01); hg.add(brim); }
-    if (rnd() < 0.32) { const tw = new THREE.Mesh(new THREE.TorusGeometry(0.078 * k, 0.027 * k, 8, 18), pick(TW)); tw.rotation.x = Math.PI / 2 + 0.22; tw.scale.set(1.22, 1, 1); tw.position.set(0, top + 0.03 * k, 0.004); body.add(tw); }
-    // 腕(肩の丸みからつなぐ)。下ろす／上げる／ドリンクを持つ
-    const sleeve = rnd() < 0.5 ? cl : sk, raise = rnd() < 0.28 ? (rnd() < 0.5 ? -1 : 1) : 0, hold = !raise && rnd() < 0.3 ? (rnd() < 0.5 ? -1 : 1) : 0, arms = [];
-    [-1, 1].forEach(sd => { const sh0 = new THREE.Group(); sh0.position.set(sd * 0.188 * k * wide, top - 0.105 * k, 0); body.add(sh0);
-      const ball = new THREE.Mesh(new THREE.SphereGeometry(0.06 * k, 12, 10), cl); sh0.add(ball);
-      const up = cap(0.05 * k, 0.24 * k, cl); sh0.add(up);
-      const fore = cap(0.04 * k, 0.22 * k, sleeve); fore.position.y = -0.3 * k; up.add(fore);
-      const hand = new THREE.Mesh(new THREE.SphereGeometry(0.042 * k, 10, 8), sk); hand.scale.set(0.8, 1.2, 0.55); hand.position.y = -0.31 * k; fore.add(hand);
+    const h = 1.56 + rnd() * 0.26, k = h / 1.7, fem = rnd() < 0.42, w = (fem ? 0.9 : 1) * (0.94 + rnd() * 0.16), sh = fem ? 0.9 : 1, hp = fem ? 1.08 : 1;
+    const root = new THREE.Group(); root.position.set(x, 0, z); root.rotation.y = (rnd() - 0.5) * 0.5; add(root);
+    const body = new THREE.Group(); root.add(body); const lean = (rnd() - 0.5) * 0.08; body.rotation.z = lean;
+    const m = pick(SH), S = r => r.map((v, i) => i < 5 ? v * k : v), mk = (rings, seg, mat, ct, cb) => { const o = new THREE.Mesh(loft(rings.map(S), seg, ct, cb), mat); body.add(o); return o; };
+    [-1, 1].forEach(sd => { const lx = sd * 0.092 * w;
+      mk([[0.07, lx * 1.05, 0.01, 0.052, 0.058], [0.2, lx * 1.04, 0.012, 0.056, 0.062], [0.34, lx * 1.03, 0.018, 0.062, 0.07, 0.9, 1.15], [0.48, lx * 1.02, 0.006, 0.056, 0.062], [0.56, lx * 1.01, -0.004, 0.06, 0.066, 1.1, 1], [0.72, lx, 0, 0.078 * w, 0.086], [0.84, lx * 0.98, 0.004, 0.09 * w, 0.096], [0.9, lx * 0.9, 0.006, 0.094 * w, 0.1]], 14, m);
+      const shoe = new THREE.Mesh(loft([[0, 0, 0, 0.05, 0.134, 1.05, 0.9], [0.035, 0, 0, 0.05, 0.135, 1.05, 0.9], [0.07, 0, 0.025, 0.046, 0.1, 0.8, 1], [0.1, 0, 0.05, 0.042, 0.062]].map(S), 12), m); shoe.position.set(lx * 1.05 * k, 0, -0.03 * k); shoe.rotation.y = sd * 0.14; body.add(shoe); });
+    mk([[0.84, 0, 0.004, 0.172 * w * hp, 0.118], [0.9, 0, 0.004, 0.176 * w * hp, 0.12], [1.0, 0, 0.006, 0.158 * w, 0.108, 1, 1.05], [1.1, 0, 0.004, 0.16 * w, 0.106, 1.02, 1.08], [1.2, 0, 0, 0.176 * w, 0.112, fem ? 1.14 : 1.06, 1.12], [1.3, 0, -0.002, 0.19 * w * sh, 0.118, fem ? 1.12 : 1.08, 1.16], [1.38, 0, 0.004, 0.2 * w * sh, 0.108, 1, 1.12], [1.425, 0, 0.01, 0.176 * w * sh, 0.092, 0.95, 1.05], [1.455, 0, 0.014, 0.11, 0.078], [1.475, 0, 0.016, 0.066, 0.064]], 24, m, false, false);
+    mk([[1.44, 0, 0.012, 0.052, 0.054], [1.5, 0, 0.004, 0.047, 0.05], [1.545, 0, -0.004, 0.05, 0.055]], 12, SKIN, false, false);
+    // 頭: あご→ほお→こめかみ→頭頂。後頭部が出る。耳だけ付ける(後ろ姿の決め手)
+    const hg = new THREE.Group(); hg.position.y = 1.53 * k; hg.rotation.z = (rnd() - 0.5) * 0.12; hg.rotation.y = (rnd() - 0.5) * 0.3; body.add(hg);
+    const hk = (rings, seg, mat) => { const o = new THREE.Mesh(loft(rings.map(S), seg), mat); hg.add(o); return o; };
+    hk([[0, 0, -0.022, 0.036, 0.048, 1.1, 0.8], [0.03, 0, -0.012, 0.056, 0.072, 1.08, 0.9], [0.07, 0, -0.002, 0.068, 0.088, 1.02, 1], [0.11, 0, 0.004, 0.074, 0.096, 0.98, 1.04], [0.15, 0, 0.008, 0.075, 0.098, 0.96, 1.06], [0.185, 0, 0.012, 0.068, 0.09, 0.95, 1.05], [0.21, 0, 0.014, 0.05, 0.068], [0.225, 0, 0.014, 0.022, 0.03]], 20, SKIN);
+    [-1, 1].forEach(sd => { const ear = new THREE.Mesh(new THREE.SphereGeometry(0.01 * k, 8, 6), SKIN); ear.scale.set(0.9, 2.6, 1.8); ear.position.set(sd * 0.076 * k, 0.105 * k, 0.012 * k); hg.add(ear); });
+    hk([[0.085, 0, 0.03, 0.074, 0.076, 0.25, 1.1], [0.12, 0, 0.022, 0.08, 0.09, 0.55, 1.1], [0.155, 0, 0.012, 0.082, 0.1, 0.92, 1.1], [0.19, 0, 0.012, 0.076, 0.096, 1, 1.08], [0.22, 0, 0.014, 0.058, 0.076], [0.24, 0, 0.014, 0.026, 0.034]], 20, HAIR);
+    const style = rnd();
+    if (fem && style < 0.5) hk([[-0.26, 0, 0.07, 0.085, 0.03], [-0.14, 0, 0.066, 0.1, 0.038], [-0.02, 0, 0.056, 0.092, 0.05], [0.09, 0, 0.04, 0.08, 0.07, 0.2, 1.1]], 16, HAIR);
+    else if (fem && style < 0.8) hk([[-0.02, 0, 0.03, 0.09, 0.085, 0.5, 1.05], [0.05, 0, 0.03, 0.088, 0.09, 0.4, 1.08], [0.1, 0, 0.03, 0.08, 0.08, 0.3, 1.1]], 16, HAIR);
+    else if (style > 0.88) { hk([[0.15, 0, 0.008, 0.084, 0.104], [0.2, 0, 0.012, 0.078, 0.098], [0.232, 0, 0.014, 0.06, 0.078], [0.25, 0, 0.014, 0.026, 0.034]], 18, m); const br = new THREE.Mesh(new THREE.CylinderGeometry(0.075 * k, 0.075 * k, 0.008 * k, 16, 1, false, Math.PI, Math.PI), m); br.position.set(0, 0.158 * k, -0.088 * k); br.scale.z = 1.25; hg.add(br); }
+    if (rnd() < 0.3) { const tw = new THREE.Mesh(new THREE.TorusGeometry(0.082 * k, 0.03 * k, 8, 18), pick(TW)); tw.rotation.x = Math.PI / 2 + 0.2; tw.scale.set(1.2, 1, 1); tw.position.set(0, 1.47 * k, 0.008 * k); body.add(tw); }
+    // 腕
+    const raise = rnd() < 0.28 ? (rnd() < 0.5 ? -1 : 1) : 0, hold = !raise && rnd() < 0.3 ? (rnd() < 0.5 ? -1 : 1) : 0, arms = [];
+    [-1, 1].forEach(sd => { const sh0 = new THREE.Group(); sh0.position.set(sd * 0.2 * w * sh * k, 1.385 * k, 0.004 * k); body.add(sh0);
+      sh0.add(new THREE.Mesh(loft([[-0.3, 0, 0, 0.038, 0.04], [-0.2, 0, 0, 0.05, 0.052], [-0.06, 0, 0, 0.06, 0.06], [0, 0, 0, 0.062, 0.056], [0.035, sd * -0.02, 0, 0.04, 0.044]].map(S), 12), m));
+      const fore = new THREE.Group(); fore.position.y = -0.3 * k; sh0.add(fore);
+      fore.add(new THREE.Mesh(loft([[-0.27, 0, 0, 0.026, 0.022], [-0.2, 0, 0, 0.032, 0.03], [-0.08, 0, 0, 0.04, 0.04], [0, 0, 0, 0.039, 0.041]].map(S), 12), SKIN));
+      const hand = new THREE.Mesh(loft([[-0.11, 0, 0, 0.018, 0.008], [-0.07, 0, 0, 0.036, 0.013], [-0.02, 0, 0, 0.04, 0.016], [0, 0, 0, 0.028, 0.02]].map(S), 10), SKIN); hand.position.y = -0.27 * k; hand.rotation.y = Math.PI / 2; fore.add(hand);
       if (raise === sd) { sh0.rotation.x = 2.6 + rnd() * 0.35; sh0.rotation.z = sd * 0.14; fore.rotation.x = 0.3; }
-      else if (hold === sd) { sh0.rotation.x = 0.25; sh0.rotation.z = sd * 0.08; fore.rotation.x = 1.45; const cup = new THREE.Mesh(new THREE.CylinderGeometry(0.036, 0.027, 0.1, 14), new THREE.MeshPhysicalMaterial({ color: 0xe9eef2, roughness: 0.1, transmission: 0.7, thickness: 0.01, transparent: true, opacity: 0.6 })); cup.position.set(0, -0.33 * k, -0.04); cup.rotation.x = -1.45; fore.add(cup); }
+      else if (hold === sd) { sh0.rotation.x = 0.22; sh0.rotation.z = sd * 0.08; fore.rotation.x = 1.5; const cup = new THREE.Mesh(new THREE.CylinderGeometry(0.036, 0.027, 0.1, 14), new THREE.MeshPhysicalMaterial({ color: 0xe9eef2, roughness: 0.1, transparent: true, opacity: 0.35, envMapIntensity: 1.2 })); cup.position.set(0, -0.34 * k, -0.045); cup.rotation.x = -1.5; fore.add(cup); }
       else { sh0.rotation.z = sd * (0.09 + rnd() * 0.05); sh0.rotation.x = 0.03 + rnd() * 0.14; fore.rotation.x = 0.1 + rnd() * 0.35; }
       arms.push({ sh0, raised: raise === sd, base: sh0.rotation.x }); });
     root.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
     people.push({ root, body, hg, arms, ph: rnd() * 6, amp: 0.01 + rnd() * 0.02, lean, react: 0 });
   };
-  // 立ち位置(行き先に立つ場所のまわりは空ける)
   [[1.0, 4.5], [1.8, 4.42], [2.55, 4.5], [4.35, 4.45], [5.05, 4.4], [5.8, 4.5], [0.9, 5.25], [1.7, 5.45], [2.5, 5.15], [3.3, 5.6], [4.2, 5.25], [5.1, 5.55], [5.9, 5.35], [1.2, 6.3], [2.2, 6.5], [3.6, 6.4], [4.6, 6.6], [1.6, 7.3], [0.8, 8.2], [5.6, 6.2]].forEach(([x, z]) => person(x + (rnd() - 0.5) * 0.14, z + (rnd() - 0.5) * 0.14));
 }
 
@@ -329,13 +410,23 @@ cv.addEventListener("pointerdown", e => { down = { x: e.clientX, y: e.clientY };
 cv.addEventListener("pointermove", e => { if (!drag) return; yaw = drag.yaw + (e.clientX - drag.x) * 0.004; pitch = Math.max(-0.7, Math.min(0.6, drag.pitch + (e.clientY - drag.y) * 0.004)); });
 // 行き先: 押すと、その場所へすっと移る
 let move = null;
-const go = i => { const st = STOPS[i]; move = { t0: performance.now(), from: EYE.clone(), to: new THREE.Vector3(...st.p), y0: yaw, y1: st.yaw + Math.round((yaw - st.yaw) / (Math.PI * 2)) * Math.PI * 2, p0: pitch, p1: st.pitch }; document.querySelectorAll("#bar [data-i]").forEach(b => b.classList.toggle("on", +b.dataset.i === i)); at = i; $("#tip").textContent = i === 3 ? (thrown ? `投げたピック ${thrown} 枚` : "画面を軽く押すと、客席へピックを投げます") : ""; };
+const go = i => { const st = STOPS[i]; move = { t0: performance.now(), from: EYE.clone(), to: new THREE.Vector3(...st.p), y0: yaw, y1: st.yaw + Math.round((yaw - st.yaw) / (Math.PI * 2)) * Math.PI * 2, p0: pitch, p1: st.pitch }; document.querySelectorAll("#bar [data-i]").forEach(b => b.classList.toggle("on", +b.dataset.i === i)); at = i; $("#tip").textContent = i === 3 ? (thrown ? `投げたピック ${thrown} 枚` : "画面を軽く押すと、客席へピックを投げます") : i === 4 ? (barState.drunk ? `飲んだビール ${barState.drunk} 杯` : "画面を軽く押すと、生ビールを頼めます") : ""; };
 document.querySelectorAll("#bar [data-i]").forEach(b => b.onclick = () => go(+b.dataset.i));
 // 画質: 高(陰と影を計算)／軽(スマホ向け。陰と影を止めて、解像度を下げる)
 let high = !matchMedia("(pointer:coarse)").matches;
 const setQ = v => { high = v; gtao.enabled = v; renderer.shadowMap.enabled = v; L.forEach(l => l.castShadow = v); renderer.setPixelRatio(Math.min(devicePixelRatio || 1, v ? 1.5 : 1)); scene.traverse(o => { if (o.material) o.material.needsUpdate = true; }); size(); $("#q").textContent = "画質: " + (v ? "高" : "軽"); };
 $("#q").onclick = () => setQ(!high);
-const release = e => { const tap = down && Math.hypot(e.clientX - down.x, e.clientY - down.y) < 8; down = null; drag = null; if (tap && at === 3) throwPick(e.clientX, e.clientY); };
+const release = e => { const tap = down && Math.hypot(e.clientX - down.x, e.clientY - down.y) < 8; down = null; drag = null; if (tap && at === 3) throwPick(e.clientX, e.clientY); if (tap && at === 4) orderBeer(); };
+/* ---- 遊び: ドリンクカウンターで生ビールを頼む(押す → 注がれる → 目の前に出てくる → もう一度押すと飲む) ---- */
+function orderBeer() { const b = barState, t = clock.getElapsedTime();
+  if (b.phase === "idle") { b.phase = "pour"; b.t = t; b.level = 0; b.beer.visible = true; b.beer.position.copy(b.tap); b.beer.rotation.set(0, 0, 0); $("#tip").textContent = "注いでいます…"; }
+  else if (b.phase === "ready") { b.phase = "drink"; b.t = t; $("#tip").textContent = "かんぱい"; } }
+function stepBeer(t) { const b = barState; if (b.phase === "idle") return; const u = t - b.t, set = lv => { b.level = lv; b.liq.scale.y = Math.max(0.001, lv); b.liq.position.y = -0.055 + 0.05 * lv; b.liq.visible = lv > 0.01; b.foam.visible = lv > 0.05; b.foam.position.y = -0.055 + 0.1 * lv + 0.008; };
+  if (b.phase === "pour") { const k = Math.min(1, u / 2.4); set(k * 0.86); b.handles[0].rotation.x = Math.min(0.9, u * 4) * (k < 1 ? 1 : 0); b.stream.visible = k < 1 && u > 0.2; b.stream.position.set(b.tap.x, b.tap.y + 0.1, b.tap.z); if (k >= 1) { b.phase = "slide"; b.t = t; } }
+  else if (b.phase === "slide") { const k = Math.min(1, u / 0.9), e = 1 - Math.pow(1 - k, 3); b.beer.position.lerpVectors(b.tap, b.serve, e); b.beer.position.y += Math.sin(k * Math.PI) * 0.06; if (k >= 1) { b.phase = "ready"; $("#tip").textContent = "生ビールです。もう一度押すと飲みます"; } }
+  else if (b.phase === "drink") { const k = Math.min(1, u / 2.6), up = Math.min(1, k * 3), dn = Math.max(0, (k - 0.8) * 5), near = camera.position.clone().add(new THREE.Vector3(Math.sin(-yaw) * 0.0, -0.13, 0.32).applyAxisAngle(new THREE.Vector3(0, 1, 0), 0)), e = up * (1 - dn);
+    b.beer.position.lerpVectors(b.serve, near, e); b.beer.rotation.x = -e * Math.max(0, (k - 0.25)) * 1.5; set(0.86 * (1 - Math.min(1, Math.max(0, (k - 0.3) / 0.5))));
+    if (k >= 1) { b.phase = "idle"; b.drunk++; b.beer.visible = false; b.beer.rotation.set(0, 0, 0); $("#tip").textContent = `飲んだビール ${b.drunk} 杯`; } } }
 cv.addEventListener("pointerup", release); cv.addEventListener("pointercancel", () => { down = null; drag = null; });
 /* ---- 遊び: ステージの上から、客席へピックを投げる ---- */
 let at = 0, thrown = 0; const picks = [], PICK_COL = [0x7a3d1d, 0xe9e6dc, 0xc9433f, 0xd8b23a, 0x2f5fb8, 0x1c1c1e];
@@ -367,7 +458,7 @@ renderer.setAnimationLoop(() => {
   beams.forEach((b, i) => b.material.uniforms.k.value = 0.8 + 0.2 * Math.sin(t * 0.5 + i));
   // 曲に合わせて小さく揺れる(170bpm の半分の速さ)
   const beat = t * Math.PI * 2 * (170 / 60) / 2;
-  const dt = Math.min(0.05, t - (stepPicks.last ?? t)); stepPicks.last = t; stepPicks(dt, t);
+  const dt = Math.min(0.05, t - (stepPicks.last ?? t)); stepPicks.last = t; stepPicks(dt, t); stepBeer(t);
   people.forEach(o => { const b = Math.max(0, Math.sin(beat + o.ph)), r = o.react > t ? Math.min(1, (o.react - t) / 0.4) : 0; o.body.position.y = b * o.amp + r * Math.abs(Math.sin(t * 9 + o.ph)) * 0.09; o.hg.rotation.x = -b * 0.06 - r * 0.25;
     o.arms.forEach(a => { a.sh0.rotation.x = a.raised ? a.base + Math.sin(beat * 2 + o.ph) * 0.16 : a.base + r * (2.7 - a.base); }); });
   grade.uniforms.time.value = t % 10;
